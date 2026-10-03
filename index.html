@@ -1,880 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1" name="viewport"/>
-  <title> Ankit | Software Engineer &amp; Healthcare IT Specialist
-  </title>
-  <meta content="Ankit — Software Engineer with 5+ years of experience in LIMS, healthcare IT, laboratory machine integration and software deployment." name="description"/>
-  <link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23102130'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-size='23' font-weight='bold' fill='%2365e2ce'%3EA%3C/text%3E%3C/svg%3E" rel="icon" type="image/svg+xml"/>
-  <style>:root {
-    --bg:#f4f7fa;
-    --ink:#102130;
-    --muted:#526575;
-    --line:#dce4eb;
-    --mint:#65e2ce}
-
-* {
-    box-sizing:border-box}
-
-html {
-    scroll-behavior:smooth;
-    scroll-padding-top:90px}
-
-body {
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    color:var(--ink);
-    background:var(--bg);
-    line-height:1.65}
-
-a {
-    color:inherit;
-    text-decoration:none}
-
-a:focus-visible,button:focus-visible {
-    outline:3px solid #159985;
-    outline-offset:5px}
-
-header {
-    position:sticky;
-    top:0;
-    z-index:5;
-    background:#f4f7faf5;
-    border-bottom:1px solid var(--line);
-    backdrop-filter:blur(12px)}
-
-nav {
-    max-width:1180px;
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:20px 32px;
-    gap:25px}
-
-.brand {
-    font-size:20px;
-    font-weight:800;
-    letter-spacing:-.7px}
-
-.brand span {
-    color:#168b7b}
-
-.links {
-    display:flex;
-    gap:28px;
-    font-size:14px;
-    font-weight:600}
-
-.links a:hover {
-    color:#168b7b}
-
-main {
-    max-width:1180px;
-    margin:auto;
-    padding:0 32px}
-
-.hero {
-    display:grid;
-    grid-template-columns:1.4fr .8fr;
-    gap:70px;
-    align-items:center;
-    padding:85px 0 80px}
-
-.eyebrow {
-    text-transform:uppercase;
-    letter-spacing:2px;
-    font-size:12px;
-    font-weight:700;
-    color:#168b7b;
-    margin-bottom:20px}
-
-h1 {
-    font-size:clamp(52px,7vw,88px);
-    line-height:1.02;
-    letter-spacing:-4px;
-    margin:0 0 25px}
-
-h1 span {
-    display:block;
-    font-weight:400;
-    font-size:.58em;
-    letter-spacing:-2px;
-    margin-top:15px}
-
-p {
-    margin:0 0 18px}
-
-.lead {
-    font-size:19px;
-    color:var(--muted);
-    max-width:620px}
-
-.buttons {
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-top:30px}
-
-.button {
-    display:inline-block;
-    padding:12px 22px;
-    border:1px solid var(--line);
-    border-radius:6px;
-    font-size:14px;
-    font-weight:700;
-    background:white}
-
-.button.primary {
-    background:var(--ink);
-    color:white;
-    border-color:var(--ink)}
-
-.button:hover {
-    transform:translateY(-2px)}
-
-.profile {
-    background:var(--ink);
-    color:white;
-    border-radius:14px;
-    padding:30px;
-    position:relative;
-    overflow:hidden}
-
-.monogram {
-    font-size:105px;
-    font-weight:800;
-    line-height:1.2;
-    color:var(--mint);
-    letter-spacing:-8px;
-    padding:12px 0 35px}
-
-.profile .small {
-    color:#a5b6c4;
-    font-size:14px}
-
-.profile strong {
-    display:block;
-    font-size:21px}
-
-.profile-line {
-    height:1px;
-    background:#354653;
-    margin:24px 0}
-
-.profile-grid {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px}
-
-.profile-grid strong {
-    font-size:28px}
-
-.profile-grid span {
-    font-size:12px;
-    color:#a5b6c4}
-
-.intro-strip {
-    display:flex;
-    gap:28px;
-    padding:20px 0;
-    border-block:1px solid var(--line);
-    flex-wrap:wrap;
-    font-size:14px;
-    font-weight:600;
-    color:var(--muted)}
-
-section {
-    padding:72px 0;
-    border-bottom:1px solid var(--line)}
-
-.section-head {
-    display:grid;
-    grid-template-columns:1fr 2fr;
-    gap:30px;
-    margin-bottom:35px}
-
-h2 {
-    font-size:34px;
-    line-height:1.2;
-    letter-spacing:-1px;
-    margin:0}
-
-.section-head p {
-    color:var(--muted);
-    max-width:670px;
-    font-size:17px}
-
-.number {
-    font-size:12px;
-    color:#168b7b;
-    font-weight:700;
-    letter-spacing:2px;
-    margin-bottom:12px}
-
-.experience {
-    display:grid;
-    grid-template-columns:1fr 2fr;
-    gap:30px;
-    padding:32px 0;
-    border-top:1px solid var(--line)}
-
-.date {
-    color:var(--muted);
-    font-size:14px;
-    margin-top:8px}
-
-h3 {
-    font-size:21px;
-    line-height:1.35;
-    margin:0 0 8px}
-
-.role {
-    color:#168b7b;
-    font-size:15px;
-    font-weight:600;
-    margin-bottom:18px}
-
-ul {
-    padding-left:20px;
-    margin:0;
-    color:var(--muted)}
-
-li {
-    padding-bottom:8px}
-
-.skills {
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:18px}
-
-.skill-card {
-    padding:28px;
-    background:white;
-    border:1px solid var(--line);
-    border-radius:10px}
-
-.skill-card h3 {
-    font-size:18px}
-
-.tags {
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:18px}
-
-.tag {
-    font-size:14px;
-    padding:5px 10px;
-    background:#f1f5f8;
-    border-radius:4px;
-    color:#445969}
-
-.project {
-    display:grid;
-    grid-template-columns:1fr 1.4fr;
-    gap:40px;
-    padding:34px;
-    border:1px solid var(--line);
-    background:white;
-    border-radius:12px}
-
-.project-mark {
-    font-family:monospace;
-    font-size:clamp(32px,4vw,55px);
-    color:#168b7b;
-    background:#e9f8f4;
-    border-radius:8px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-height:190px}
-
-.project p {
-    color:var(--muted)}
-
-.education {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:28px}
-
-.education article {
-    border-top:2px solid #168b7b;
-    padding-top:20px}
-
-.education p {
-    font-size:15px;
-    color:var(--muted)}
-
-.contact {
-    background:var(--ink);
-    color:white;
-    margin-top:60px;
-    border:0;
-    border-radius:14px;
-    padding:46px;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:35px}
-
-.contact .number {
-    color:var(--mint)}
-
-.contact p {
-    color:#a5b6c4;
-    margin-top:16px}
-
-.contact-links {
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    gap:15px;
-    overflow-wrap:anywhere}
-
-.contact-links a {
-    border-bottom:1px solid #354653;
-    padding-bottom:12px;
-    font-size:17px}
-
-.contact-links a:hover {
-    color:var(--mint)}
-
-footer {
-    display:flex;
-    justify-content:space-between;
-    gap:20px;
-    padding:30px 0;
-    font-size:12px;
-    color:var(--muted)}
-
-@media(max-width:760px) {
-    nav {
-    padding:16px 20px}
-
-.links {
-    gap:14px;
-    font-size:12px}
-
-.links .optional {
-    display:none}
-
-main {
-    padding:0 20px}
-
-.hero {
-    grid-template-columns:1fr;
-    gap:35px;
-    padding:50px 0}
-
-.hero h1 {
-    letter-spacing:-2px}
-
-.profile {
-    padding:25px}
-
-.monogram {
-    font-size:65px;
-    padding:0 0 12px}
-
-.section-head,.experience,.project,.contact {
-    grid-template-columns:1fr;
-    gap:22px}
-
-.skills {
-    grid-template-columns:1fr}
-
-.education {
-    grid-template-columns:1fr;
-    gap:30px}
-
-section {
-    padding:50px 0}
-
-.project {
-    padding:24px}
-
-.project-mark {
-    min-height:120px}
-
-.contact {
-    padding:28px;
-    margin-top:40px}
-
-.intro-strip {
-    gap:12px 24px}
-
-footer {
-    flex-direction:column;
-    gap:5px}
-}
-
-@media(prefers-reduced-motion:reduce) {
-    html {
-    scroll-behavior:auto}
-
-.button:hover {
-    transform:none}
-}
-
-@media print {
-    header,.buttons,footer {
-    display:none}
-
-body {
-    background:white}
-
-.hero,section {
-    padding:20px 0}
-
-.profile,.contact {
-    print-color-adjust:exact}
-
-.contact {
-    break-inside:avoid}
-
-.experience,.skill-card {
-    break-inside:avoid}
-}
-  </style>
- </head>
- <body>
-  <header>
-   <nav aria-label="Main navigation">
-    <a class="brand" href="#home">
-    Er. Ankit         
-     <span>
-      
-     </span>
-    </a>
-    <div class="links">
-     <a class="optional" href="#about">
-      About
-     </a>
-     <a href="#experience">
-      Experience
-     </a>
-     <a class="optional" href="#skills">
-      Skills
-     </a>
-     <a href="#projects">
-      Projects
-     </a>
-     <a href="#contact">
-      Contact
-     </a>
-    </div>
-   </nav>
-  </header>
-  <main>
-   <div class="hero" id="home">
-    <div>
-     <div class="eyebrow">
-      Software Engineer · New Delhi, India
-     </div>
-     <h1>
-      Hi, I’m Ankit
-      <span>
-       I connect software
-       <br/>
-       with healthcare.
-      </span>
-     </h1>
-     <p class="lead">
-      From laboratory machines to reliable IT systems, I develop, integrate, and deploy software that helps healthcare teams work better.
-     </p>
-     <div class="buttons">
-      <a class="button primary" href="#experience">
-       Explore my experience
-      </a>
-      <a class="button" download="" href="Ankit-Resume.pdf">
-       Download résumé
-      </a>
-     </div>
-    </div>
-    <aside aria-label="Profile at a glance" class="profile">
-     <div class="small">
-      HEALTHCARE IT &amp; LIMS SPECIALIST
-     </div>
-     <div aria-hidden="true" class="monogram">
-      Ankit
-     </div>
-     <strong>
-      Engineering reliable connections.
-     </strong>
-     <div class="profile-line">
-     </div>
-     <div class="profile-grid">
-      <div>
-       <strong>
-        5+
-       </strong>
-       <span>
-        YEARS OF EXPERIENCE
-       </span>
-      </div>
-      <div>
-       <strong>
-        India &amp; beyond
-       </strong>
-       <span>
-        PROJECT DELIVERY
-       </span>
-      </div>
-     </div>
-    </aside>
-   </div>
-   <div class="intro-strip">
-    <span>
-     Laboratory integration
-    </span>
-    <span>
-     Software development
-    </span>
-    <span>
-     Server configuration
-    </span>
-    <span>
-     Application deployment
-    </span>
-   </div>
-   <section id="about">
-    <div class="section-head">
-     <div>
-      <div class="number">
-       01 / PROFILE
-      </div>
-      <h2>
-       About me
-      </h2>
-     </div>
-     <div>
-      <p>
-       I’m a Software Engineer specializing in Healthcare IT, Laboratory Information Management Systems (LIMS), and Hospital Information Systems (HIS).
-      </p>
-      <p>
-       My work spans custom laboratory applications, machine interfacing, software deployment, and server configuration across local, physical, and cloud environments. I combine hands-on technical support with workflow design and stakeholder coordination to deliver stable systems across client locations in India and internationally.
-      </p>
-     </div>
-    </div>
-   </section>
-   <section id="experience">
-    <div class="section-head">
-     <div>
-      <div class="number">
-       02 / CAREER
-      </div>
-      <h2>
-       Experience
-      </h2>
-     </div>
-     <p>
-      Practical experience bringing applications, infrastructure, and laboratory workflows together.
-     </p>
-    </div>
-    <article class="experience">
-     <div>
-      <h3>
-       Itdose Infosystems Pvt. Ltd.
-      </h3>
-      <p class="date">
-       New Delhi, India
-       <br/>
-       April 2022 – Present
-      </p>
-     </div>
-     <div>
-      <h3>
-       Sr. Functional Engineer
-      </h3>
-      <p class="role">
-       Software Engineer
-      </p>
-      <ul>
-       <li>
-        Lead end-to-end development and deployment of custom laboratory machine EXE applications for automated data capture.
-       </li>
-       <li>
-        Configure local, physical, and cloud servers supporting LIMS and HIS operations.
-       </li>
-       <li>
-        Integrate diagnostic machines across laboratory departments with LIMS software.
-       </li>
-       <li>
-        Provide on-site and remote technical support for incident resolution and deployment stability.
-       </li>
-       <li>
-        Coordinate with cross-functional teams and stakeholders to align project scope and improve workflows.
-       </li>
-      </ul>
-     </div>
-    </article>
-    <article class="experience">
-     <div>
-      <h3>
-       Kaizen IT Services Pvt. Ltd.
-      </h3>
-      <p class="date">
-       Deputed at Central Board of Direct Taxes
-       <br/>
-       June 2021 – April 2022
-      </p>
-     </div>
-     <div>
-      <h3>
-       Technical Support Engineer
-      </h3>
-      <ul>
-       <li>
-        Supported departmental applications including ITBA, Insight, and e-filing systems.
-       </li>
-       <li>
-        Installed, configured, and troubleshot switches, routers, and software packages.
-       </li>
-       <li>
-        Executed daily data backup protocols to protect operational data and support recovery.
-       </li>
-       <li>
-        Supported user acceptance testing and deployment of software updates across enterprise networks.
-       </li>
-      </ul>
-     </div>
-    </article>
-   </section>
-   <section id="skills">
-    <div class="section-head">
-     <div>
-      <div class="number">
-       03 / TOOLKIT
-      </div>
-      <h2>
-       Technical skills
-      </h2>
-     </div>
-     <p>
-      Software development, healthcare integration, and the infrastructure that keeps systems running.
-     </p>
-    </div>
-    <div class="skills">
-     <article class="skill-card">
-      <h3>
-       Languages &amp; development
-      </h3>
-      <div class="tags">
-       <span class="tag">
-        Java
-       </span>
-       <span class="tag">
-        Python
-       </span>
-       <span class="tag">
-        C++
-       </span>
-       <span class="tag">
-        Android
-       </span>
-       <span class="tag">
-        Visual Studio Code
-       </span>
-      </div>
-     </article>
-     <article class="skill-card">
-      <h3>
-       Healthcare systems
-      </h3>
-      <div class="tags">
-       <span class="tag">
-        LIMS integration
-       </span>
-       <span class="tag">
-        HIS
-       </span>
-       <span class="tag">
-        Machine interfacing
-       </span>
-       <span class="tag">
-        Gap analysis
-       </span>
-       <span class="tag">
-        Workflow design
-       </span>
-      </div>
-     </article>
-     <article class="skill-card">
-      <h3>
-       Databases &amp; tools
-      </h3>
-      <div class="tags">
-       <span class="tag">
-        SQL
-       </span>
-       <span class="tag">
-        MySQL
-       </span>
-       <span class="tag">
-        Power BI
-       </span>
-       <span class="tag">
-        JIRA
-       </span>
-       <span class="tag">
-        Mantis
-       </span>
-      </div>
-     </article>
-     <article class="skill-card">
-      <h3>
-       Infrastructure &amp; networks
-      </h3>
-      <div class="tags">
-       <span class="tag">
-        Server configuration
-       </span>
-       <span class="tag">
-        Routing &amp; switching
-       </span>
-       <span class="tag">
-        Application deployment
-       </span>
-       <span class="tag">
-        Data backup
-       </span>
-       <span class="tag">
-        Local &amp; cloud environments
-       </span>
-      </div>
-     </article>
-    </div>
-   </section>
-   <section id="projects">
-    <div class="section-head">
-     <div>
-      <div class="number">
-       04 / PROJECT
-      </div>
-      <h2>
-       Selected work
-      </h2>
-     </div>
-     <p>
-      Building tools that bridge the distance between people and systems.
-     </p>
-    </div>
-    <article class="project">
-     <div aria-hidden="true" class="project-mark">
-      client ⇄ server
-     </div>
-     <div>
-      <h3>
-       Remote Client-Server Application
-      </h3>
-      <p>
-       A real-time remote desktop controller built with socket programming in Java and Python. The application handles mouse and keyboard events alongside continuous screen frame streaming.
-      </p>
-      <div class="tags">
-       <span class="tag">
-        Socket programming
-       </span>
-       <span class="tag">
-        Java / Python
-       </span>
-       <span class="tag">
-        Remote desktop
-       </span>
-      </div>
-     </div>
-    </article>
-   </section>
-   <section id="education">
-    <div class="section-head">
-     <div>
-      <div class="number">
-       05 / FOUNDATION
-      </div>
-      <h2>
-       Education &amp; certification
-      </h2>
-     </div>
-    </div>
-    <div class="education">
-     <article>
-      <h3>
-       B.Tech · Computer Science &amp; Engineering
-      </h3>
-      <p>
-       Kanpur Institute of Technology
-       <br/>
-       2019 · 70.26%
-      </p>
-     </article>
-     <article>
-      <h3>
-       School education
-      </h3>
-      <p>
-          Kendriya Vidyalaya No. 2 AFS Chakeri, Kanpur
-          <br />
-          Senior Secondary · 75.00% . 2015
-          <br />
-          Secondary        · 74.00% . 2013
-      </p>
-
-     </article>
-     <article>
-      <h3>
-       Certificate in Networking
-      </h3>
-      <p>
-          Networking certification<br>
-          Python certification<br>
-          Java certification<br>
-          Android certification
-      </p>
-     </article>
-    </div>
-   </section>
-   <section class="contact" id="contact">
-    <div>
-     <div class="number">
-      06 / CONTACT
-     </div>
-     <h2>
-      Let’s connect.
-     </h2>
-     <p>
-      For conversations about software engineering, healthcare IT, and laboratory integration.
-     </p>
-     <p>
-      New Delhi, India · 110096
-     </p>
-    </div>
-    <div class="contact-links">
-     <a href="mailto:ankitkanaujia8@gmail.com">
-      ankitkanaujia8@gmail.com
-     </a>
-     <a href="tel:+918574518136">
-      +91 8574518136
-     </a>
-     <a href="https://www.linkedin.com/in/ankit-8986a3196" rel="noopener noreferrer" target="_blank">
-      Connect on LinkedIn
-     </a>
-    </div>
-   </section>
-   <footer>
-    <span>
-     ©
-     <span id="year">
-      2026
-     </span>
-     Ankit. Software Engineer.
-    </span>
-    <a href="#home">
-     Back to top
-    </a>
-   </footer>
-  </main>
-  <script>
-   document.getElementById('year').textContent=new Date().getFullYear();
-  </script>
- </body>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ankit | Software Engineer &amp; Healthcare IT Specialist</title>
+<meta name="description" content="Ankit — Software Engineer with 5+ years of experience in LIMS, healthcare IT, laboratory machine integration and software deployment."/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23102130'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-size='23' font-weight='bold' fill='%2365e2ce'%3EA%3C/text%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#f3f6f8;--card:#fff;--ink:#0e1d2b;--muted:#506373;--line:#d9e3ea;--teal:#0f8f7e;--mint:#65e2ce;--tint:#e6f6f2;--dark:#0e1d2b;--amber:#f2a541;
+--head:'Bricolage Grotesque',Georgia,sans-serif;--body:'IBM Plex Sans',Arial,sans-serif}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#09131d;--card:#102130;--ink:#e8eff4;--muted:#9db0bf;--line:#223646;--teal:#43d3bd;--tint:#0f2a2d;--dark:#050c13}}
+:root[data-theme=dark]{--bg:#09131d;--card:#102130;--ink:#e8eff4;--muted:#9db0bf;--line:#223646;--teal:#43d3bd;--tint:#0f2a2d;--dark:#050c13}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.65;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:3px solid var(--teal);outline-offset:4px}
+h1,h2,h3{font-family:var(--head);margin:0}
+p{margin:0 0 16px}
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+nav{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:16px 32px;gap:20px}
+.brand{font:800 20px var(--head);letter-spacing:-.5px}
+.brand i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mint);margin-left:5px}
+.links{display:flex;align-items:center;gap:24px;font-size:14px;font-weight:500}
+.links a:hover{color:var(--teal)}
+.theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:5px 12px;font:500 13px var(--body);cursor:pointer}
+main{max-width:1180px;margin:auto;padding:0 32px}
+/* hero */
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:center;padding:80px 0 56px}
+.status{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--teal);background:var(--tint);padding:6px 14px;border-radius:20px;margin-bottom:24px}
+.status b{width:8px;height:8px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+h1{font-size:clamp(46px,6.4vw,82px);line-height:1;letter-spacing:-3px;font-weight:800}
+h1 em{display:block;font-style:normal;font-weight:500;font-size:.5em;letter-spacing:-1.5px;margin-top:16px;color:var(--muted)}
+.lead{font-size:19px;color:var(--muted);max-width:560px;margin-top:26px}
+.buttons{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.button{padding:12px 22px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-weight:600;background:var(--card);transition:transform .2s}
+.button.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+:root[data-theme=dark] .button.primary{color:#04201b}
+.button:hover{transform:translateY(-2px)}
+/* flow diagram */
+.flow{background:var(--dark);color:#fff;border-radius:16px;padding:28px;position:relative}
+.flow h2{font-size:15px;font-weight:500;color:#a5b6c4;margin-bottom:22px}
+.node{display:flex;align-items:center;gap:14px;background:#14293a;border:1px solid #27414f;border-radius:10px;padding:13px 16px;position:relative}
+.node b{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;background:#0f3b3a;color:var(--mint);font:700 13px var(--head);flex:none}
+.node strong{display:block;font:700 16px var(--head)}
+.node span{font-size:13px;color:#a5b6c4}
+.wire{height:30px;margin-left:33px;border-left:2px dashed #3c5a6a;position:relative}
+.wire::after{content:"";position:absolute;left:-6px;top:0;width:10px;height:10px;border-radius:50%;background:var(--amber);animation:travel 2.4s linear infinite}
+.wire.w2::after{animation-delay:-1.2s}
+@keyframes travel{to{top:calc(100% - 10px)}}
+.flow p{font-size:13px;color:#a5b6c4;margin:18px 0 0}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.stat{padding:24px 26px;border-right:1px solid var(--line)}
+.stat:last-child{border:0}
+.stat strong{display:block;font:800 36px var(--head);letter-spacing:-1px;color:var(--teal)}
+.stat span{font-size:14px;color:var(--muted)}
+section{padding:80px 0 0}
+.head{max-width:680px;margin-bottom:34px}
+h2.t{font-size:clamp(30px,4vw,42px);letter-spacing:-1.2px;line-height:1.1;margin-bottom:12px}
+.head p{color:var(--muted);font-size:17px}
+/* what I do */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px}
+.card .ic{width:40px;height:40px;border-radius:10px;background:var(--tint);color:var(--teal);display:grid;place-items:center;font:700 15px var(--head);margin-bottom:16px}
+.card h3{font-size:18px;margin-bottom:8px}
+.card p{font-size:15px;color:var(--muted);margin:0}
+/* timeline */
+.timeline{position:relative;padding-left:34px}
+.timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.job{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:30px;margin-bottom:22px}
+.job::before{content:"";position:absolute;left:-34px;top:36px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--teal)}
+.job.now::before{background:var(--teal)}
+.job-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:6px}
+.job h3{font-size:24px;letter-spacing:-.6px}
+.when{font-size:14px;font-weight:600;color:var(--teal);background:var(--tint);padding:3px 12px;border-radius:14px;height:fit-content}
+.org{color:var(--muted);font-size:15px;margin-bottom:18px}
+.org strong{color:var(--ink);font-weight:600}
+ul{padding-left:20px;margin:0;color:var(--muted)}
+li{padding-bottom:7px}
+li::marker{color:var(--teal)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.tag{font-size:14px;padding:4px 11px;background:var(--tint);border-radius:6px;color:var(--teal);font-weight:500}
+.tags.plain .tag{background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+/* skills */
+.skills{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.skills .card h3{font-size:18px}
+.skills .tags{margin-top:14px}
+/* project */
+.project{display:grid;grid-template-columns:1fr 1.2fr;gap:36px;padding:34px;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.arch{background:var(--dark);border-radius:12px;padding:26px;display:flex;flex-direction:column;justify-content:center;gap:12px;color:#fff;font:500 14px/1.4 ui-monospace,Menlo,monospace}
+.arch div{display:flex;justify-content:space-between;gap:10px;background:#14293a;border:1px solid #27414f;border-radius:8px;padding:11px 14px}
+.arch div span{color:var(--mint)}
+.arch .mid{text-align:center;color:var(--amber);justify-content:center;background:none;border:0;padding:0}
+.project h3{font-size:26px;letter-spacing:-.6px;margin-bottom:12px}
+.project p,.project li{color:var(--muted)}
+/* education */
+.edu{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.edu .card{border-top:3px solid var(--teal)}
+.edu .yr{font-size:13px;font-weight:600;color:var(--teal);margin-bottom:6px}
+.edu p{margin:0 0 4px}
+.edu .big{font:800 30px var(--head);color:var(--ink)}
+/* contact */
+.contact{background:var(--dark);color:#fff;border-radius:18px;padding:48px;margin-top:80px;display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.contact h2{font-size:clamp(32px,4vw,46px);letter-spacing:-1.2px;margin-bottom:14px}
+.contact p{color:#a5b6c4}
+.clinks{display:flex;flex-direction:column;justify-content:center;gap:14px;overflow-wrap:anywhere}
+.clinks a{border-bottom:1px solid #354653;padding-bottom:12px;font-size:17px}
+.clinks a:hover{color:var(--mint)}
+.clinks small{display:block;font-size:12px;color:#a5b6c4}
+footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-size:13px;color:var(--muted)}
+.reveal{animation:rise .8s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+@media(max-width:900px){.grid4{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+@media(max-width:760px){nav{padding:14px 20px}.links{gap:12px;font-size:12px}.links .opt{display:none}main{padding:0 20px}
+.hero{grid-template-columns:1fr;gap:36px;padding:46px 0 36px}h1{letter-spacing:-2px}
+.skills,.project,.contact,.edu,.grid4{grid-template-columns:1fr}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important}.button:hover{transform:none}}
+@media print{header,.buttons,footer,.theme{display:none}body{background:#fff}.job,.card{break-inside:avoid}.flow,.contact,.arch{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<header>
+<nav aria-label="Main navigation">
+ <a class="brand" href="#home">Er. Ankit<i></i></a>
+ <div class="links">
+  <a class="opt" href="#about">What I do</a><a href="#experience">Experience</a><a class="opt" href="#skills">Skills</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
+  <button class="theme" id="theme" type="button" aria-label="Toggle dark mode">Dark</button>
+ </div>
+</nav>
+</header>
+<main>
+<div class="hero" id="home">
+ <div class="reveal">
+  <div class="status"><b></b>Software Engineer · New Delhi, India</div>
+  <h1>Hi, I’m Ankit<em>I connect software with healthcare.</em></h1>
+  <p class="lead">From laboratory machines to reliable IT systems, I develop, integrate, and deploy software that helps healthcare teams work better. 5+ years across LIMS, HIS, and server infrastructure.</p>
+  <div class="buttons">
+   <a class="button primary" href="#experience">Explore my experience</a>
+   <a class="button" download href="Ankit-Resume.pdf">Download résumé</a>
+   <a class="button" href="#contact">Get in touch</a>
+  </div>
+ </div>
+ <aside class="flow reveal" aria-label="How lab data flows through the systems I work on" style="animation-delay:.15s">
+  <h2>How I connect a laboratory</h2>
+  <div class="node"><b>01</b><div><strong>Diagnostic machine</strong><span>Analyzer results captured automatically</span></div></div>
+  <div class="wire"></div>
+  <div class="node"><b>EXE</b><div><strong>Custom machine application</strong><span>Built, deployed and supported by me</span></div></div>
+  <div class="wire w2"></div>
+  <div class="node"><b>LIMS</b><div><strong>Lab information system</strong><span>Reports flow into HIS workflows</span></div></div>
+  <p>Hosted on local, physical or cloud servers I configure.</p>
+ </aside>
+</div>
+
+<div class="stats">
+ <div class="stat"><strong>5+</strong><span>Years of experience</span></div>
+ <div class="stat"><strong>2</strong><span>Organisations, enterprise to healthcare</span></div>
+ <div class="stat"><strong>India + intl.</strong><span>Client locations supported</span></div>
+ <div class="stat"><strong>On-site + remote</strong><span>Support and deployment</span></div>
+</div>
+
+<section id="about">
+ <div class="head">
+  <h2 class="t">What I do</h2>
+  <p>I’m a Software Engineer specialising in Healthcare IT, Laboratory Information Management Systems (LIMS), and Hospital Information Systems (HIS). I combine hands-on technical work with workflow design and stakeholder coordination to deliver stable systems.</p>
+ </div>
+ <div class="grid4">
+  <div class="card"><div class="ic">&lt;/&gt;</div><h3>Lab application development</h3><p>Custom machine EXE applications for automated data capture, from build to deployment.</p></div>
+  <div class="card"><div class="ic">⇄</div><h3>Machine interfacing</h3><p>Integrating diagnostic machines across laboratory departments with LIMS software.</p></div>
+  <div class="card"><div class="ic">▤</div><h3>Server configuration</h3><p>Local, physical and cloud servers that keep LIMS and HIS running reliably.</p></div>
+  <div class="card"><div class="ic">✓</div><h3>Support &amp; deployment</h3><p>On-site and remote incident resolution, plus coordination across teams and clients.</p></div>
+ </div>
+</section>
+
+<section id="experience">
+ <div class="head">
+  <h2 class="t">Experience</h2>
+  <p>Practical experience bringing applications, infrastructure, and laboratory workflows together.</p>
+ </div>
+ <div class="timeline">
+  <article class="job now">
+   <div class="job-top"><h3>Sr. Functional Engineer</h3><span class="when">Apr 2022 – Present</span></div>
+   <p class="org"><strong>Itdose Infosystems Pvt. Ltd.</strong> · New Delhi, India · Software Engineer</p>
+   <ul>
+    <li>Lead end-to-end development and deployment of custom laboratory machine EXE applications for automated data capture.</li>
+    <li>Configure local, physical, and cloud servers supporting LIMS and HIS operations.</li>
+    <li>Integrate diagnostic machines across laboratory departments with LIMS software.</li>
+    <li>Provide on-site and remote technical support for incident resolution and deployment stability.</li>
+    <li>Coordinate with cross-functional teams and stakeholders to align project scope and improve workflows.</li>
+   </ul>
+   <div class="tags"><span class="tag">LIMS</span><span class="tag">HIS</span><span class="tag">Machine interfacing</span><span class="tag">Server configuration</span><span class="tag">Deployment</span></div>
+  </article>
+  <article class="job">
+   <div class="job-top"><h3>Technical Support Engineer</h3><span class="when">Jun 2021 – Apr 2022</span></div>
+   <p class="org"><strong>Kaizen IT Services Pvt. Ltd.</strong> · Deputed at Central Board of Direct Taxes</p>
+   <ul>
+    <li>Supported departmental applications including ITBA, Insight, and e-filing systems.</li>
+    <li>Installed, configured, and troubleshot switches, routers, and software packages.</li>
+    <li>Executed daily data backup protocols to protect operational data and support recovery.</li>
+    <li>Supported user acceptance testing and deployment of software updates across enterprise networks.</li>
+   </ul>
+   <div class="tags"><span class="tag">Application support</span><span class="tag">Networking</span><span class="tag">Backups</span><span class="tag">UAT</span></div>
+  </article>
+ </div>
+</section>
+
+<section id="skills">
+ <div class="head">
+  <h2 class="t">Technical skills</h2>
+  <p>Software development, healthcare integration, and the infrastructure that keeps systems running.</p>
+ </div>
+ <div class="skills">
+  <article class="card"><h3>Languages &amp; development</h3><div class="tags plain"><span class="tag">Java</span><span class="tag">Python</span><span class="tag">C++</span><span class="tag">Android</span><span class="tag">Visual Studio Code</span></div></article>
+  <article class="card"><h3>Healthcare systems</h3><div class="tags plain"><span class="tag">LIMS integration</span><span class="tag">HIS</span><span class="tag">Machine interfacing</span><span class="tag">Gap analysis</span><span class="tag">Workflow design</span></div></article>
+  <article class="card"><h3>Databases &amp; tools</h3><div class="tags plain"><span class="tag">SQL</span><span class="tag">MySQL</span><span class="tag">Power BI</span><span class="tag">JIRA</span><span class="tag">Mantis</span></div></article>
+  <article class="card"><h3>Infrastructure &amp; networks</h3><div class="tags plain"><span class="tag">Server configuration</span><span class="tag">Routing &amp; switching</span><span class="tag">Application deployment</span><span class="tag">Data backup</span><span class="tag">Local &amp; cloud environments</span></div></article>
+ </div>
+</section>
+
+<section id="projects">
+ <div class="head">
+  <h2 class="t">Selected work</h2>
+  <p>Building tools that bridge the distance between people and systems.</p>
+ </div>
+ <article class="project">
+  <div class="arch" aria-hidden="true">
+   <div>Client <span>mouse + keyboard</span></div>
+   <div class="mid">⇅ sockets</div>
+   <div>Server <span>screen frames</span></div>
+  </div>
+  <div>
+   <h3>Remote Client-Server Application</h3>
+   <p>A real-time remote desktop controller built with socket programming in Java and Python.</p>
+   <ul>
+    <li>Sends mouse and keyboard events from client to server.</li>
+    <li>Streams continuous screen frames back to the controller.</li>
+   </ul>
+   <div class="tags"><span class="tag">Socket programming</span><span class="tag">Java</span><span class="tag">Python</span><span class="tag">Remote desktop</span></div>
+  </div>
+ </article>
+</section>
+
+<section id="education">
+ <div class="head"><h2 class="t">Education &amp; certification</h2></div>
+ <div class="edu">
+  <article class="card">
+   <div class="yr">2019</div>
+   <h3>B.Tech · Computer Science &amp; Engineering</h3>
+   <p>Kanpur Institute of Technology</p>
+   <p class="big">70.26%</p>
+  </article>
+  <article class="card">
+   <div class="yr">2013 – 2015</div>
+   <h3>School education</h3>
+   <p>Kendriya Vidyalaya No. 2 AFS Chakeri, Kanpur</p>
+   <p>Senior Secondary (2015): <strong>75.00%</strong></p>
+   <p>Secondary (2013): <strong>74.00%</strong></p>
+  </article>
+  <article class="card">
+   <div class="yr">Certifications</div>
+   <h3>Certificate in Networking</h3>
+   <div class="tags plain"><span class="tag">Networking</span><span class="tag">Python</span><span class="tag">Java</span><span class="tag">Android</span></div>
+  </article>
+ </div>
+</section>
+
+<section class="contact" id="contact">
+ <div>
+  <h2>Let’s connect.</h2>
+  <p>For conversations about software engineering, healthcare IT, and laboratory integration.</p>
+  <p>New Delhi, India · 110096</p>
+ </div>
+ <div class="clinks">
+  <a href="mailto:ankitkanaujia8@gmail.com"><small>Email</small>ankitkanaujia8@gmail.com</a>
+  <a href="tel:+918574518136"><small>Phone</small>+91 8574518136</a>
+  <a href="https://www.linkedin.com/in/ankit-8986a3196" rel="noopener noreferrer" target="_blank"><small>LinkedIn</small>Connect on LinkedIn</a>
+ </div>
+</section>
+
+<footer>
+ <span>© <span id="year">2026</span> Ankit. Software Engineer.</span>
+ <a href="#home">Back to top</a>
+</footer>
+</main>
+<script>
+document.getElementById('year').textContent=new Date().getFullYear();
+(function(){var r=document.documentElement,b=document.getElementById('theme');
+function dark(){return r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches}
+function sync(){b.textContent=dark()?'Light':'Dark'}
+b.onclick=function(){r.dataset.theme=dark()?'light':'dark';sync()};sync()})();
+</script>
+</body>
 </html>
