@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Ankit | Senior Software Engineer &amp; Healthcare IT Specialist</title>
-<meta name="description" content="Ankit — Senior Software Engineer with 5+ years of experience in LIMS, healthcare IT, laboratory machine integration and software deployment."/>
+<title>Ankit | Software Engineer &amp; Healthcare IT Specialist</title>
+<meta name="description" content="Ankit — Software Engineer with 5+ years of experience in LIMS, healthcare IT, laboratory machine integration and software deployment."/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23102130'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-size='23' font-weight='bold' fill='%2365e2ce'%3EA%3C/text%3E%3C/svg%3E"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -87,6 +87,13 @@ li::marker{color:var(--teal)}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .tag{font-size:14px;padding:4px 11px;background:var(--tint);border-radius:6px;color:var(--teal);font-weight:500}
 .tags.plain .tag{background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+/* clients */
+.clients{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.client{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;transition:border-color .2s,transform .2s}
+.client:hover{border-color:var(--teal);transform:translateY(-2px)}
+.client b{display:grid;place-items:center;width:44px;height:44px;border-radius:10px;background:var(--tint);color:var(--teal);font:800 18px var(--head);flex:none}
+.client strong{font:700 18px var(--head);letter-spacing:-.3px}
+.client span{display:block;font-size:13px;color:var(--muted);line-height:1.3}
 /* skills */
 .skills{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 .skills .card h3{font-size:18px}
@@ -116,10 +123,10 @@ li::marker{color:var(--teal)}
 footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-size:13px;color:var(--muted)}
 .reveal{animation:rise .8s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
-@media(max-width:900px){.grid4{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+@media(max-width:900px){.grid4,.clients{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}}
 @media(max-width:760px){nav{padding:14px 20px}.links{gap:12px;font-size:12px}.links .opt{display:none}main{padding:0 20px}
 .hero{grid-template-columns:1fr;gap:36px;padding:46px 0 36px}h1{letter-spacing:-2px}
-.skills,.project,.contact,.edu,.grid4{grid-template-columns:1fr}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
+.skills,.project,.contact,.edu,.grid4,.clients{grid-template-columns:1fr}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important}.button:hover{transform:none}}
 @media print{header,.buttons,footer,.theme{display:none}body{background:#fff}.job,.card{break-inside:avoid}.flow,.contact,.arch{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
 </style>
@@ -127,9 +134,9 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 <body>
 <header>
 <nav aria-label="Main navigation">
- <a class="brand" href="#home">Er. Ankit<i></i></a>
+ <a class="brand" href="#home">Ankit Kanaujia<i></i></a>
  <div class="links">
-  <a class="opt" href="#about">What I do</a><a href="#experience">Experience</a><a class="opt" href="#skills">Skills</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
+  <a class="opt" href="#about">What I do</a><a href="#experience">Experience</a><a class="opt" href="#clients">Clients</a><a class="opt" href="#skills">Skills</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
   <button class="theme" id="theme" type="button" aria-label="Toggle dark mode">Dark</button>
  </div>
 </nav>
@@ -137,7 +144,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 <main>
 <div class="hero" id="home">
  <div class="reveal">
-  <div class="status"><b></b>Senior Software Engineer · New Delhi, India</div>
+  <div class="status"><b></b>Software Engineer · New Delhi, India</div>
   <h1>Hi, I’m Ankit<em>I connect software with healthcare.</em></h1>
   <p class="lead">From laboratory machines to reliable IT systems, I develop, integrate, and deploy software that helps healthcare teams work better. 5+ years across LIMS, HIS, and server infrastructure.</p>
   <div class="buttons">
@@ -159,19 +166,19 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 
 <div class="stats">
  <div class="stat"><strong>5+</strong><span>Years of experience</span></div>
- <div class="stat"><strong>2</strong><span>Organisations, enterprise to healthcare</span></div>
- <div class="stat"><strong>India + intl.</strong><span>Client locations supported</span></div>
+ <div class="stat"><strong>~200+</strong><span>Projects implemented every year at Itdose</span></div>
+ <div class="stat"><strong>150+</strong><span>Clients supported at a time</span></div>
  <div class="stat"><strong>On-site + remote</strong><span>Support and deployment</span></div>
 </div>
 
 <section id="about">
  <div class="head">
   <h2 class="t">What I do</h2>
-  <p>I’m a Senior Software Engineer specialising in Healthcare IT, Laboratory Information Management Systems (LIMS), and Hospital Information Systems (HIS). I combine hands-on technical work with workflow design and stakeholder coordination to deliver stable systems.</p>
+  <p>I’m a Software Engineer specialising in Healthcare IT, Laboratory Information Management Systems (LIMS), and Hospital Information Systems (HIS). I combine hands-on technical work with workflow design and stakeholder coordination to deliver stable systems.</p>
  </div>
  <div class="grid4">
   <div class="card"><div class="ic">&lt;/&gt;</div><h3>Lab application development</h3><p>Custom machine EXE applications for automated data capture, from build to deployment.</p></div>
-  <div class="card"><div class="ic">⇄</div><h3>Machine interfacing</h3><p>Integrating diagnostic machines across laboratory departments with LIMS software.</p></div>
+  <div class="card"><div class="ic">⇄</div><h3>Machine integration &amp; barcodes</h3><p>Integrating diagnostic machines with LIMS and designing barcodes, with approximately 200+ implementations every year at Itdose.</p></div>
   <div class="card"><div class="ic">▤</div><h3>Server configuration</h3><p>Local, physical and cloud servers that keep LIMS and HIS running reliably.</p></div>
   <div class="card"><div class="ic">✓</div><h3>Support &amp; deployment</h3><p>On-site and remote incident resolution, plus coordination across teams and clients.</p></div>
  </div>
@@ -185,15 +192,17 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
  <div class="timeline">
   <article class="job now">
    <div class="job-top"><h3>Sr. Functional Engineer</h3><span class="when">Apr 2022 – Present</span></div>
-   <p class="org"><strong>Itdose Infosystems Pvt. Ltd.</strong> · New Delhi, India · Senior Software Engineer</p>
+   <p class="org"><strong>Itdose Infosystems Pvt. Ltd.</strong> · New Delhi, India · Software Engineer</p>
    <ul>
+    <li><strong>Participate in approximately 200+ implementation projects every year</strong> in healthcare IT, covering machine integration, barcode design, and ongoing support.</li>
+    <li><strong>Support 150+ clients at a time</strong>, handling incidents, deployments, and day-to-day LIMS and machine issues.</li>
     <li>Lead end-to-end development and deployment of custom laboratory machine EXE applications for automated data capture.</li>
     <li>Configure local, physical, and cloud servers supporting LIMS and HIS operations.</li>
     <li>Integrate diagnostic machines across laboratory departments with LIMS software.</li>
     <li>Provide on-site and remote technical support for incident resolution and deployment stability.</li>
     <li>Coordinate with cross-functional teams and stakeholders to align project scope and improve workflows.</li>
    </ul>
-   <div class="tags"><span class="tag">LIMS</span><span class="tag">HIS</span><span class="tag">Machine interfacing</span><span class="tag">Server configuration</span><span class="tag">Deployment</span></div>
+   <div class="tags"><span class="tag">LIMS</span><span class="tag">HIS</span><span class="tag">Machine interfacing</span><span class="tag">Barcode design</span><span class="tag">Server configuration</span><span class="tag">Deployment</span></div>
   </article>
   <article class="job">
    <div class="job-top"><h3>Technical Support Engineer</h3><span class="when">Jun 2021 – Apr 2022</span></div>
@@ -209,6 +218,23 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
  </div>
 </section>
 
+<section id="clients">
+ <div class="head">
+  <h2 class="t">Top Clients I support</h2>
+  <p>I support 150+ clients at a time. These are some of my recent clients for LIMS, machine integration and technical support.</p>
+ </div>
+ <div class="clients">
+     <div class="client"><b>M</b><div><strong>Medanta</strong><span>Active support</span></div></div>
+     <div class="client"><b>M</b><div><strong>MAX</strong><span>Active support</span></div></div>
+     <div class="client"><b>A</b><div><strong>Apollo</strong><span>Active support</span></div></div>
+     <div class="client"><b>N</b><div><strong>Nanjappa</strong><span>Active support</span></div></div>
+     <div class="client"><b>C</b><div><strong>Chandan Diagnostic</strong><span>Active support</span></div></div>
+     <div class="client"><b>D</b><div><strong>Diagnum Healthcare</strong><span>Active support</span></div></div>
+     <div class="client"><b>D</b><div><strong>DRX LAB</strong><span>Active support</span></div></div>
+     <div class="client"><b>D</b><div><strong>CRL Diagnostic</strong><span>Active support</span></div></div>
+ </div>
+</section>
+
 <section id="skills">
  <div class="head">
   <h2 class="t">Technical skills</h2>
@@ -216,7 +242,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
  </div>
  <div class="skills">
   <article class="card"><h3>Languages &amp; development</h3><div class="tags plain"><span class="tag">Java</span><span class="tag">Python</span><span class="tag">C++</span><span class="tag">Android</span><span class="tag">Visual Studio Code</span></div></article>
-  <article class="card"><h3>Healthcare systems</h3><div class="tags plain"><span class="tag">LIMS integration</span><span class="tag">HIS</span><span class="tag">Machine interfacing</span><span class="tag">Gap analysis</span><span class="tag">Workflow design</span></div></article>
+  <article class="card"><h3>Healthcare systems</h3><div class="tags plain"><span class="tag">LIMS integration</span><span class="tag">HIS</span><span class="tag">Machine interfacing</span><span class="tag">Barcode design</span><span class="tag">Gap analysis</span><span class="tag">Workflow design</span></div></article>
   <article class="card"><h3>Databases &amp; tools</h3><div class="tags plain"><span class="tag">SQL</span><span class="tag">MySQL</span><span class="tag">Power BI</span><span class="tag">JIRA</span><span class="tag">Mantis</span></div></article>
   <article class="card"><h3>Infrastructure &amp; networks</h3><div class="tags plain"><span class="tag">Server configuration</span><span class="tag">Routing &amp; switching</span><span class="tag">Application deployment</span><span class="tag">Data backup</span><span class="tag">Local &amp; cloud environments</span></div></article>
  </div>
@@ -272,7 +298,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 <section class="contact" id="contact">
  <div>
   <h2>Let’s connect.</h2>
-  <p>For conversations about Senior Software Engineering, healthcare IT, and laboratory integration.</p>
+  <p>For conversations about software engineering, healthcare IT, and laboratory integration.</p>
   <p>New Delhi, India · 110096</p>
  </div>
  <div class="clinks">
@@ -283,7 +309,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 </section>
 
 <footer>
- <span>© <span id="year">2026</span> Ankit. Senior Software Engineer.</span>
+ <span>© <span id="year">2026</span> Ankit. Software Engineer.</span>
  <a href="#home">Back to top</a>
 </footer>
 </main>
