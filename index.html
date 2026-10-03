@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Ankit | Software Engineer &amp; Healthcare IT Specialist</title>
-<meta name="description" content="Ankit — Software Engineer with 5+ years of experience in LIMS, healthcare IT, laboratory machine integration and software deployment."/>
+<title>Ankit | Senior Software Engineer &amp; Healthcare IT Specialist</title>
+<meta name="description" content="Ankit — Senior Software Engineer with 5+ years of experience in LIMS, healthcare IT, laboratory machine integration and software deployment."/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23102130'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-size='23' font-weight='bold' fill='%2365e2ce'%3EA%3C/text%3E%3C/svg%3E"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -27,6 +27,11 @@ nav{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content
 .brand i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mint);margin-left:5px}
 .links{display:flex;align-items:center;gap:24px;font-size:14px;font-weight:500}
 .links a:hover{color:var(--teal)}
+.links a.cta{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:24px;background:linear-gradient(120deg,#0f8f7e,#2fc9b0 60%,#65e2ce);color:#04201b;font-weight:700;font-size:14px;box-shadow:0 6px 18px -6px rgba(15,143,126,.7);transition:transform .2s,box-shadow .2s}
+.links a.cta:hover{color:#04201b;transform:translateY(-2px);box-shadow:0 10px 22px -6px rgba(15,143,126,.85)}
+.cta i{width:8px;height:8px;border-radius:50%;background:#04201b;animation:pulse 2s infinite}
+.cta::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:shine 4s ease-in-out infinite}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
 .theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:5px 12px;font:500 13px var(--body);cursor:pointer}
 main{max-width:1180px;margin:auto;padding:0 32px}
 /* hero */
@@ -120,13 +125,36 @@ li::marker{color:var(--teal)}
 .clinks a{border-bottom:1px solid #354653;padding-bottom:12px;font-size:17px}
 .clinks a:hover{color:var(--mint)}
 .clinks small{display:block;font-size:12px;color:#a5b6c4}
+dialog#quick{border:0;padding:0;background:transparent;max-width:min(760px,94vw);width:100%;color:#fff;overflow:visible}
+dialog#quick::backdrop{background:rgba(5,12,19,.7);backdrop-filter:blur(4px)}
+dialog#quick[open]{animation:rise .3s ease both}
+.qclose{position:absolute;top:10px;right:12px;z-index:2;width:36px;height:36px;border-radius:50%;border:1px solid #3c5a6a;background:#0e1d2b;color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.qclose:hover{border-color:var(--mint);color:var(--mint)}
+.quick{background:#14293a;border:1px solid #27414f;border-radius:16px;padding:34px;max-height:90vh;overflow:auto;color:#fff}
+.quick p{color:#a5b6c4}
+.clinks-btn{grid-column:1/-1}
+.openq{padding:13px 24px;border-radius:24px;border:0;background:linear-gradient(120deg,#0f8f7e,#2fc9b0 60%,#65e2ce);color:#04201b;font:700 15px var(--body);cursor:pointer;transition:transform .2s}
+.openq:hover{transform:translateY(-2px)}
+.quick h3{font-size:24px;letter-spacing:-.5px;margin-bottom:6px}
+.quick>p{margin:0 0 22px;font-size:15px}
+.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.qgrid label{display:block;font-size:13px;font-weight:600;color:#a5b6c4}
+.qgrid .wide{grid-column:1/-1}
+.qgrid input,.qgrid textarea{width:100%;margin-top:6px;padding:11px 13px;background:#0e1d2b;border:1px solid #3c5a6a;border-radius:8px;color:#fff;font:400 15px var(--body)}
+.qgrid input::placeholder,.qgrid textarea::placeholder{color:#6f8596}
+.qgrid input:focus,.qgrid textarea:focus{outline:2px solid var(--mint);border-color:var(--mint)}
+.qbtns{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+.qbtns button{padding:12px 22px;border-radius:8px;border:1px solid var(--mint);font:600 15px var(--body);cursor:pointer;background:transparent;color:var(--mint)}
+.qbtns button.main{background:var(--mint);color:#06231f}
+.qbtns button:hover{transform:translateY(-2px)}
+.qnote{font-size:12px;color:#a5b6c4;margin:14px 0 0}
 footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-size:13px;color:var(--muted)}
 .reveal{animation:rise .8s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 @media(max-width:900px){.grid4,.clients{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}}
-@media(max-width:760px){nav{padding:14px 20px}.links{gap:12px;font-size:12px}.links .opt{display:none}main{padding:0 20px}
+@media(max-width:760px){nav{padding:14px 20px}.links{gap:12px;font-size:12px}.links a:not(.cta){display:none}.links a.cta{padding:8px 14px;font-size:13px}main{padding:0 20px}
 .hero{grid-template-columns:1fr;gap:36px;padding:46px 0 36px}h1{letter-spacing:-2px}
-.skills,.project,.contact,.edu,.grid4,.clients{grid-template-columns:1fr}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
+.skills,.project,.contact,.edu,.grid4,.clients,.qgrid{grid-template-columns:1fr}.quick{padding:22px}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important}.button:hover{transform:none}}
 @media print{header,.buttons,footer,.theme{display:none}body{background:#fff}.job,.card{break-inside:avoid}.flow,.contact,.arch{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
 </style>
@@ -137,6 +165,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
  <a class="brand" href="#home">Ankit Kanaujia<i></i></a>
  <div class="links">
   <a class="opt" href="#about">What I do</a><a href="#experience">Experience</a><a class="opt" href="#clients">Clients</a><a class="opt" href="#skills">Skills</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
+  <a class="cta" href="#quick" data-open-quick><i></i>Hiring? Connect fast</a>
   <button class="theme" id="theme" type="button" aria-label="Toggle dark mode">Dark</button>
  </div>
 </nav>
@@ -144,13 +173,13 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 <main>
 <div class="hero" id="home">
  <div class="reveal">
-  <div class="status"><b></b>Software Engineer · New Delhi, India</div>
+  <div class="status"><b></b>Senior Software Engineer · New Delhi, India</div>
   <h1>Hi, I’m Ankit<em>I connect software with healthcare.</em></h1>
   <p class="lead">From laboratory machines to reliable IT systems, I develop, integrate, and deploy software that helps healthcare teams work better. 5+ years across LIMS, HIS, and server infrastructure.</p>
   <div class="buttons">
    <a class="button primary" href="#experience">Explore my experience</a>
    <a class="button" download href="Ankit-Resume.pdf">Download résumé</a>
-   <a class="button" href="#contact">Get in touch</a>
+   <a class="button" href="#quick" data-open-quick>Hiring? Quick connect</a>
   </div>
  </div>
  <aside class="flow reveal" aria-label="How lab data flows through the systems I work on" style="animation-delay:.15s">
@@ -174,7 +203,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 <section id="about">
  <div class="head">
   <h2 class="t">What I do</h2>
-  <p>I’m a Software Engineer specialising in Healthcare IT, Laboratory Information Management Systems (LIMS), and Hospital Information Systems (HIS). I combine hands-on technical work with workflow design and stakeholder coordination to deliver stable systems.</p>
+  <p>I’m a Senior Software Engineer specialising in Healthcare IT, Laboratory Information Management Systems (LIMS), and Hospital Information Systems (HIS). I combine hands-on technical work with workflow design and stakeholder coordination to deliver stable systems.</p>
  </div>
  <div class="grid4">
   <div class="card"><div class="ic">&lt;/&gt;</div><h3>Lab application development</h3><p>Custom machine EXE applications for automated data capture, from build to deployment.</p></div>
@@ -192,7 +221,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
  <div class="timeline">
   <article class="job now">
    <div class="job-top"><h3>Sr. Functional Engineer</h3><span class="when">Apr 2022 – Present</span></div>
-   <p class="org"><strong>Itdose Infosystems Pvt. Ltd.</strong> · New Delhi, India · Software Engineer</p>
+   <p class="org"><strong>Itdose Infosystems Pvt. Ltd.</strong> · New Delhi, India · Senior Software Engineer</p>
    <ul>
     <li><strong>Participate in approximately 200+ implementation projects every year</strong> in healthcare IT, covering machine integration, barcode design, and ongoing support.</li>
     <li><strong>Support 150+ clients at a time</strong>, handling incidents, deployments, and day-to-day LIMS and machine issues.</li>
@@ -220,7 +249,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 
 <section id="clients">
  <div class="head">
-  <h2 class="t">Top Clients I support</h2>
+  <h2 class="t">Clients I support</h2>
   <p>I support 150+ clients at a time. These are some of my recent clients for LIMS, machine integration and technical support.</p>
  </div>
  <div class="clients">
@@ -228,13 +257,14 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
      <div class="client"><b>M</b><div><strong>MAX</strong><span>Active support</span></div></div>
      <div class="client"><b>A</b><div><strong>Apollo</strong><span>Active support</span></div></div>
      <div class="client"><b>N</b><div><strong>Nanjappa</strong><span>Active support</span></div></div>
-     <div class="client"><b>C</b><div><strong>Chandan Diagnostic</strong><span>Active support</span></div></div>
-     <div class="client"><b>D</b><div><strong>Diagnum Healthcare</strong><span>Active support</span></div></div>
+     <div class="client"><b>C</b><div><strong>Chandan</strong><span>Active support</span></div></div>
+     <div class="client"><b>D</b><div><strong>Diagnum</strong><span>Active support</span></div></div>
      <div class="client"><b>D</b><div><strong>DRX LAB</strong><span>Active support</span></div></div>
-     <div class="client"><b>D</b><div><strong>CRL Diagnostic</strong><span>Active support</span></div></div>
      <div class="client"><b>D</b><div><strong>National Path Lab (Nepal)</strong><span>Active support</span></div></div>
      <div class="client"><b>D</b><div><strong>Accuprobe</strong><span>Active support</span></div></div>
      <div class="client"><b>D</b><div><strong>Babina</strong><span>Active support</span></div></div>
+     <div class="client"><b>D</b><div><strong>Anderson</strong><span>Active support</span></div></div>
+     <div class="client"><b>D</b><div><strong>CRL Diagnostic</strong><span>Active support</span></div></div>
  </div>
 </section>
 
@@ -301,7 +331,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 <section class="contact" id="contact">
  <div>
   <h2>Let’s connect.</h2>
-  <p>For conversations about software engineering, healthcare IT, and laboratory integration.</p>
+  <p>For conversations about Senior Software Engineering, healthcare IT, and laboratory integration.</p>
   <p>New Delhi, India · 110096</p>
  </div>
  <div class="clinks">
@@ -309,15 +339,51 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
   <a href="tel:+918574518136"><small>Phone</small>+91 8574518136</a>
   <a href="https://www.linkedin.com/in/ankit-8986a3196" rel="noopener noreferrer" target="_blank"><small>LinkedIn</small>Connect on LinkedIn</a>
  </div>
+ <div class="clinks-btn"><button type="button" class="openq" data-open-quick>Share a job opening</button></div>
 </section>
 
 <footer>
- <span>© <span id="year">2026</span> Ankit. Software Engineer.</span>
+ <span>© <span id="year">2026</span> Ankit. Senior Software Engineer.</span>
  <a href="#home">Back to top</a>
 </footer>
 </main>
+<dialog id="quick" aria-label="Quick connect for employers">
+ <button type="button" class="qclose" id="qclose" aria-label="Close">×</button>
+ <div class="quick">
+  <h3>Quick connect for employers</h3>
+  <p>Hiring? Share your job opening in under a minute. I’ll get back to you quickly.</p>
+  <form id="qform" novalidate>
+   <div class="qgrid">
+    <label>Your name *<input id="qn" placeholder="e.g. Priya Sharma" autocomplete="name" required></label>
+    <label>Organisation *<input id="qo" placeholder="Company name" autocomplete="organization" required></label>
+    <label>Your email or phone *<input id="qc" placeholder="How can I reach you?" required></label>
+    <label>Job title *<input id="qj" placeholder="e.g. LIMS Support Engineer" required></label>
+    <label>Location<input id="ql" placeholder="City / Remote / Hybrid"></label>
+    <label>Job type<input id="qt" placeholder="Full-time / Contract"></label>
+    <label class="wide">Job details or link<textarea id="qd" rows="3" placeholder="Paste the job description, link, salary range or anything useful"></textarea></label>
+   </div>
+   <div class="qbtns">
+    <button type="button" class="main" id="qmail">Send by email</button>
+    <button type="button" id="qwa">Send on WhatsApp</button>
+   </div>
+   <p class="qnote">These buttons open your email app or WhatsApp with the message ready to send. Nothing is stored on this site.</p>
+  </form>
+ </div>
+</dialog>
 <script>
 document.getElementById('year').textContent=new Date().getFullYear();
+(function(){var f=document.getElementById('qform');
+function v(i){return document.getElementById(i).value.trim()}
+function msg(){var req=['qn','qo','qc','qj'];
+for(var i=0;i<req.length;i++){var e=document.getElementById(req[i]);if(!e.value.trim()){e.focus();e.reportValidity&&e.setCustomValidity('Please fill this in');e.reportValidity&&e.reportValidity();e.setCustomValidity&&e.setCustomValidity('');return null}}
+return 'Hi Ankit, I have a job opening to share.\n\nJob title: '+v('qj')+'\nOrganisation: '+v('qo')+'\nLocation: '+(v('ql')||'-')+'\nJob type: '+(v('qt')||'-')+'\nDetails: '+(v('qd')||'-')+'\n\nMy name: '+v('qn')+'\nContact: '+v('qc')}
+document.getElementById('qmail').onclick=function(){var m=msg();if(m)location.href='mailto:ankitkanaujia8@gmail.com?subject='+encodeURIComponent('Job opening: '+v('qj')+' at '+v('qo'))+'&body='+encodeURIComponent(m)};
+document.getElementById('qwa').onclick=function(){var m=msg();if(m)window.open('https://wa.me/918574518136?text='+encodeURIComponent(m),'_blank','noopener')};
+f.onsubmit=function(e){e.preventDefault()};
+var d=document.getElementById('quick');
+document.querySelectorAll('[data-open-quick]').forEach(function(el){el.addEventListener('click',function(e){e.preventDefault();d.showModal&&d.showModal();var n=document.getElementById('qn');n&&n.focus()})});
+document.getElementById('qclose').onclick=function(){d.close()};
+d.addEventListener('click',function(e){if(e.target===d)d.close()})})();
 (function(){var r=document.documentElement,b=document.getElementById('theme');
 function dark(){return r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches}
 function sync(){b.textContent=dark()?'Light':'Dark'}
