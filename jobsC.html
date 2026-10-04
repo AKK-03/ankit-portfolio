@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Job radar</title>
 <style>
-:root{--bg:#09131d;--card:#102130;--ink:#e8eff4;--muted:#9db0bf;--line:#223646;--mint:#65e2ce;--amber:#f2a541;--field:#0b1824;--border:#3c5a6a}
+:root{--bg:#09131d;--card:#102130;--ink:#e8eff4;--muted:#9db0bf;--line:#223646;--mint:#65e2ce;--amber:#f2a541}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 'IBM Plex Sans',Arial,sans-serif;padding:24px 20px 80px}
 main{max-width:880px;margin:auto}h1{font-size:34px;margin:0 0 4px;letter-spacing:-1px}h2{font-size:18px;margin:0 0 12px}p.s{color:var(--muted);margin:0 0 20px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
 label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:12px}
-input,textarea,select{width:100%;margin-top:5px;padding:10px 12px;background:var(--field);border:1px solid var(--border);border-radius:8px;color:var(--ink);font:15px 'IBM Plex Sans',Arial,sans-serif}
+input,textarea,select{width:100%;margin-top:5px;padding:10px 12px;background:#0b1824;border:1px solid #3c5a6a;border-radius:8px;color:#fff;font:15px 'IBM Plex Sans',Arial,sans-serif}
 input[type=checkbox]{width:auto;margin:0;padding:0}
 input:focus,textarea:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--mint)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.r3{grid-template-columns:repeat(3,1fr)}
@@ -17,21 +17,17 @@ input:focus,textarea:focus,select:focus,button:focus-visible,a:focus-visible{out
 button,.p a{padding:10px 16px;border-radius:8px;border:1px solid var(--mint);background:transparent;color:var(--mint);font:600 14px 'IBM Plex Sans',Arial,sans-serif;cursor:pointer;text-decoration:none;display:inline-block}
 button.m{background:var(--mint);color:#06231f}.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 .p{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:6px}.p a{text-align:center}
-.ch{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}.ch label{display:flex;align-items:center;gap:8px;margin:0;padding:6px 12px;border:1px solid var(--border);border-radius:18px;color:var(--ink);font-weight:500}
+.ch{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}.ch label{display:flex;align-items:center;gap:8px;margin:0;padding:6px 12px;border:1px solid #3c5a6a;border-radius:18px;color:var(--ink);font-weight:500}
 .ch button{padding:0 6px;border:0;font-size:16px;color:var(--amber)}
 #msg{position:fixed;top:16px;left:50%;transform:translateX(-50%);max-width:92vw;background:var(--amber);color:#2a1a00;font-weight:600;font-size:14px;padding:10px 18px;border-radius:24px;z-index:9;display:none;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 #lock{max-width:340px;margin:18vh auto}.hint{color:var(--muted);font-size:13px;margin:10px 0 0}
 @media(max-width:620px){.row,.r3{grid-template-columns:1fr}}
-
-:root{color-scheme:dark}:root[data-theme="light"]{color-scheme:light;--bg:#f3f7fa;--card:#fff;--ink:#152a38;--muted:#526879;--line:#d8e2e9;--mint:#087c6d;--amber:#a75900;--field:#f8fafc;--border:#b8cbd8}
-[hidden]{display:none!important}.toolbar{max-width:880px;margin:0 auto 18px;display:flex;justify-content:flex-end}.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}.tabs [aria-selected="true"]{background:var(--mint);color:var(--bg)}.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.chips button{padding:6px 10px}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}.tablewrap{overflow:auto}button:hover,.p a:hover{filter:brightness(1.12)}
 </style></head><body>
-<div class="toolbar"><button id="theme" type="button" aria-label="Switch color theme">Light mode</button></div>
 <div id="msg" role="status"></div>
 <div id="lock" class="card"><h2 id="lt">Enter PIN</h2><input id="pin" type="password" inputmode="numeric" autocomplete="off" aria-label="PIN"><div class="btns"><button class="m" id="go">Unlock</button></div><p id="msg0" class="hint" style="color:var(--amber)"></p></div>
 <main id="app" hidden>
 <h1>Job radar</h1><p class="s">Everything below is yours to set. Nothing is preset.</p>
-<div class="tabs" role="tablist" aria-label="Job radar tabs"><button id="settingsTab" role="tab" aria-selected="true" aria-controls="settingsPanel">Settings &amp; search</button><button id="detailsTab" role="tab" aria-selected="false" aria-controls="detailsPanel">Reminder details</button></div><section id="settingsPanel" role="tabpanel" aria-labelledby="settingsTab"><div class="card"><h2>Switches</h2>
+<div class="card"><h2>Switches</h2>
 <div class="sw"><div>Daily reminders (email + WhatsApp)<small id="st">Not connected</small></div><span class="tg"><input type="checkbox" id="on" aria-label="Daily reminders"><i></i></span></div>
 <div class="sw"><div>Hidden shortcut on portfolio<small id="scs">Tap the logo 5 times on this device</small></div><span class="tg"><input type="checkbox" id="sc" aria-label="Portfolio shortcut"><i></i></span></div></div>
 <div class="card"><h2>What to look for</h2>
@@ -39,11 +35,7 @@ button.m{background:var(--mint);color:#06231f}.btns{display:flex;gap:10px;flex-w
 <label>Job type</label><div class="ch" id="types"></div>
 <div class="row r3"><label>Experience (years)<input id="exp" type="number" min="0" placeholder="any"></label><label>Posted within<select id="days"><option value="1">24 hours</option><option value="3">3 days</option><option value="7">7 days</option><option value="30">30 days</option></select></label><label>Work mode<select id="remote"><option value="">Any</option><option value="1">Remote only</option></select></label></div></div>
 <div class="card"><h2>Reminder settings</h2>
-<div class="row r3"><label>Email recipients<textarea id="email" rows="3" placeholder="you@example.com&#10;another@example.com"></textarea></label><label>WhatsApp / mobile recipients<textarea id="wa" rows="3" placeholder="+919876543210&#10;+919876543211"></textarea></label><label>Add reminder time<input id="hour" type="time" value="09:00"></label></div>
-<p class="hint">Quick presets replace the selected times. Use Add time for extra reminders. Enter email addresses separated by commas, semicolons or new lines. Enter mobile numbers with a + country code, separated by commas, semicolons or new lines. Every recipient receives each scheduled reminder.</p>
-<div class="row"><label>Quick schedule<select id="quickSchedule"><option value="">Custom schedule</option><option value="09:00">Morning — 09:00</option><option value="09:00,18:00">Twice a day — 09:00, 18:00</option><option value="09:00,13:00,18:00">Three times a day — 09:00, 13:00, 18:00</option></select></label><div class="btns"><button id="addTime">Add custom time</button></div></div><div id="timeChips" class="chips"></div>
-<div class="row"><label>Repeat<select id="repeat"><option value="daily">Every day</option><option value="weekdays">Monday–Friday</option></select></label><label>Time zone<select id="timezone"><option value="Asia/Kolkata">India (Asia/Kolkata)</option><option value="UTC">UTC</option><option value="America/New_York">New York</option><option value="Europe/London">London</option><option value="Asia/Dubai">Dubai</option><option value="Asia/Singapore">Singapore</option></select></label></div>
-<p id="scheduleStatus" class="hint">Saved locally; email delivery requires a compatible reminder script.</p>
+<div class="row r3"><label>Send email to<input id="email" type="email" placeholder="you@example.com"></label><label>WhatsApp number<input id="wa" placeholder="+91…"></label><label>Send daily at<select id="hour"></select></label></div>
 <div class="btns"><button class="m" id="save">Save &amp; sync</button><button id="reset">Clear all</button></div></div>
 <div class="card"><h2>Search now</h2><div class="row"><label>Keyword<select id="pk"></select></label><label>Location<select id="pl"></select></label></div>
 <div class="p" id="ports"></div><p class="hint" id="ph"></p>
@@ -52,20 +44,11 @@ button.m{background:var(--mint);color:#06231f}.btns{display:flex;gap:10px;flex-w
 <div class="btns"><button id="cadd">Add portal</button></div></div>
 <div class="card"><h2>Reminder connection</h2><label>Apps Script web app URL<input id="url" placeholder="https://script.google.com/macros/s/…/exec"></label><label>Secret token<input id="tok" type="password"></label>
 <div class="btns"><button id="conn" class="m">Connect &amp; load settings</button><button id="test">Send test now</button><button id="lk">Change PIN</button></div></div>
-</section><section id="detailsPanel" role="tabpanel" aria-labelledby="detailsTab" hidden><div class="card"><h2>Saved reminder details</h2><p id="detailStatus" class="hint"></p><div class="tablewrap"><table><thead><tr><th>Channel</th><th>Recipient</th><th>Reminder times</th><th>Repeat / time zone</th></tr></thead><tbody id="detailRows"></tbody></table></div><p id="detailSearch" class="hint"></p><div class="btns"><button id="editDetails">Edit settings</button></div></div></section></main>
+</main>
 <script>
 var $=function(i){return document.getElementById(i)},L=localStorage,enc=encodeURIComponent,tt;
-var D={kw:[],loc:[],types:[],exp:'',days:'1',remote:'',hour:'9',email:'',wa:'',off:[],custom:[],times:['09:00'],repeat:'daily',timezone:'Asia/Kolkata',scheduleSynced:false},st=Object.assign({},D);
-try{var saved=JSON.parse(L.getItem('jr_state')||'{}');Object.assign(st,saved);if(!saved.times)st.times=[String(saved.hour||9).padStart(2,'0')+':00']}catch(e){}
-if(!Array.isArray(st.times))st.times=[String(st.hour||9).padStart(2,'0')+':00'];
-function theme(t){document.documentElement.dataset.theme=t;L.setItem('jr_theme',t);$('theme').textContent=t==='dark'?'Light mode':'Dark mode';$('theme').setAttribute('aria-pressed',String(t==='light'))}theme(L.getItem('jr_theme')||'dark');$('theme').onclick=function(){theme(document.documentElement.dataset.theme==='dark'?'light':'dark')};
-function tab(details){$('settingsPanel').hidden=details;$('detailsPanel').hidden=!details;$('settingsTab').setAttribute('aria-selected',String(!details));$('detailsTab').setAttribute('aria-selected',String(details));if(details)detailsView()}
-$('settingsTab').onclick=function(){tab(false)};$('detailsTab').onclick=function(){tab(true)};$('editDetails').onclick=function(){tab(false)};
-function mobiles(v){return Array.from(new Set(String(v||'').split(/[,;\n]+/).map(function(n){return n.replace(/[\s().-]/g,'')}).filter(Boolean)))}
-function emails(v){return Array.from(new Set(v.split(/[\s,;]+/).filter(Boolean)))}
-function timesView(){var joined=st.times.join(',');$('quickSchedule').value=['09:00','09:00,18:00','09:00,13:00,18:00'].indexOf(joined)>=0?joined:'';$('timeChips').replaceChildren();st.times.forEach(function(t){var b=document.createElement('button');b.textContent=t+' ×';b.setAttribute('aria-label','Remove reminder at '+t);b.onclick=function(){st.times=st.times.filter(function(v){return v!==t});st.scheduleSynced=false;persist();timesView()};$('timeChips').appendChild(b)});$('scheduleStatus').textContent=st.scheduleSynced?'Schedule confirmed by connected script.':'Saved locally; email delivery requires a compatible reminder script.'}
-function detailsView(){var b=$('detailRows');b.replaceChildren();emails(st.email).map(function(e){return ['Email',e]}).concat(mobiles(st.wa).map(function(n){return ['WhatsApp',n]})).forEach(function(recipient){var tr=document.createElement('tr');[recipient[0],recipient[1],st.times.join(', ')||'No times selected',st.repeat+' / '+st.timezone].forEach(function(v){var td=document.createElement('td');td.textContent=v;tr.appendChild(td)});b.appendChild(tr)});if(!b.children.length){var tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=4;td.textContent='No recipients saved. Add recipients in Settings & search.';tr.appendChild(td);b.appendChild(tr)}$('detailStatus').textContent=st.scheduleSynced?'Schedule confirmed by connected script.':'Schedule saved on this device. Delivery is not confirmed.';$('detailSearch').textContent='Keywords: '+(st.kw.join(', ')||'None')+' · Locations: '+(st.loc.join(', ')||'Any')+' · WhatsApp: '+(st.wa||'Not set')}
-$('addTime').onclick=function(){var t=$('hour').value;if(!t){say('Choose a reminder time.');return}if(st.times.indexOf(t)<0)st.times.push(t);st.times.sort();st.scheduleSynced=false;persist();timesView()};$('quickSchedule').onchange=function(){if(!this.value)return;st.times=this.value.split(',');st.scheduleSynced=false;persist();timesView()};
+var D={kw:[],loc:[],types:[],exp:'',days:'1',remote:'',hour:'9',email:'',wa:'',off:[],custom:[]},st=Object.assign({},D);
+try{Object.assign(st,JSON.parse(L.getItem('jr_state')||'{}'))}catch(e){}
 function persist(){L.setItem('jr_state',JSON.stringify(st))}
 function say(t){var m=$('msg');m.textContent=t;m.style.display='block';clearTimeout(tt);tt=setTimeout(function(){m.style.display='none'},4500)}
 async function h(s){try{var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('jr'+s));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}catch(e){var n=5381;for(var i=0;i<s.length;i++)n=(n*33^s.charCodeAt(i))>>>0;return 'x'+n}}
@@ -92,19 +75,20 @@ function toggles(){var b=$('ptog');b.innerHTML='';var names=built('x','x').map(f
 names.forEach(function(n,i){var lb=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=st.off.indexOf(n)<0;
 cb.onchange=function(){st.off=st.off.filter(function(x){return x!==n});if(!cb.checked)st.off.push(n);persist();ports()};lb.appendChild(cb);lb.appendChild(document.createTextNode(n));
 if(i>=names.length-st.custom.length){var x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Remove '+n);x.onclick=function(e){e.preventDefault();st.custom=st.custom.filter(function(c){return c.n!==n});persist();toggles();ports()};lb.appendChild(x)}b.appendChild(lb)})}
-function form(){$('kw').value=st.kw.join('\n');$('loc').value=st.loc.join('\n');$('exp').value=st.exp;$('days').value=st.days;$('remote').value=st.remote;$('email').value=st.email;$('wa').value=st.wa;$('hour').value=st.times[0]||'09:00';$('repeat').value=st.repeat;$('timezone').value=st.timezone;timesView();
+function form(){$('kw').value=st.kw.join('\n');$('loc').value=st.loc.join('\n');$('exp').value=st.exp;$('days').value=st.days;$('remote').value=st.remote;$('email').value=st.email;$('wa').value=st.wa;$('hour').value=st.hour;
 $('types').innerHTML='';TY.forEach(function(t){var lb=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.value=t[0];cb.checked=st.types.indexOf(t[0])>-1;lb.appendChild(cb);lb.appendChild(document.createTextNode(t[1]));$('types').appendChild(lb)})}
-function read(){st.kw=lines('kw');st.loc=lines('loc');st.exp=$('exp').value;st.days=$('days').value;st.remote=$('remote').value;st.email=$('email').value.trim();st.wa=$('wa').value.trim();st.hour=String(parseInt((st.times[0]||'09:00').split(':')[0],10));st.repeat=$('repeat').value;st.timezone=$('timezone').value;
+function read(){st.kw=lines('kw');st.loc=lines('loc');st.exp=$('exp').value;st.days=$('days').value;st.remote=$('remote').value;st.email=$('email').value.trim();st.wa=$('wa').value.trim();st.hour=$('hour').value;
 st.types=Array.from($('types').querySelectorAll('input:checked')).map(function(c){return c.value});persist()}
 function lists(){pick('pk',st.kw,$('pk').value);pick('pl',st.loc,$('pl').value);ports()}
 function conn(){return $('url').value.trim()&&$('tok').value.trim()}
 function api(a,x){if(!conn()){say('Connect your reminder script first (Reminder connection card).');$('conn').scrollIntoView({behavior:'smooth',block:'center'});return Promise.reject()}
 return fetch($('url').value.trim()+'?action='+a+'&token='+enc($('tok').value.trim())+(x||'')).then(function(r){return r.json()}).then(function(j){if(j.error){say(j.error);throw 0}return j}).catch(function(e){if(e!==0)say('Could not reach the script. Check the URL and that it is deployed for Anyone.');throw e})}
-function status(j){$('on').checked=!!j.enabled;$('st').textContent=(j.enabled?'Active — '+(Array.isArray(j.times)?j.times.join(', '):j.hour+':00'):'Paused')+(j.last?' · last run '+j.last:'')}
-function load(j){if(j.kw===undefined)return;st.kw=j.kw?j.kw.split('|'):[];st.loc=j.loc?j.loc.split('|'):[];st.types=j.jt?j.jt.split('|'):[];st.days=j.days||'1';st.hour=j.hour||'9';st.email=Array.isArray(j.emails)?j.emails.join(', '):(j.email||'');if(Array.isArray(j.times))st.times=j.times.filter(function(t){return /^([01]\d|2[0-3]):[0-5]\d$/.test(t)});else if(j.hour!==undefined)st.times=[String(j.hour).padStart(2,'0')+':00'];st.repeat=j.repeat==='weekdays'?'weekdays':'daily';st.timezone=j.timezone||'Asia/Kolkata';st.scheduleSynced=j.scheduleVersion>=2;st.wa=Array.isArray(j.mobiles)?j.mobiles.join(', '):(j.wa||'');st.remote=j.remote||'';persist();form();lists()}
-function sync(){var es=emails($('email').value);var ms=mobiles($('wa').value);if(ms.some(function(n){return !/^\+[1-9]\d{7,14}$/.test(n)})){say('Use valid mobile numbers with country codes, e.g. +919876543210.');return}if(!es.length||es.some(function(e){var x=document.createElement('input');x.type='email';x.value=e;return !x.checkValidity()})){say('Enter at least one valid email address.');return}if(!st.times.length){say('Add at least one reminder time.');return}st.scheduleSynced=false;read();st.email=es.join(', ');st.wa=ms.join(', ');$('wa').value=st.wa;persist();lists();timesView();var x='&kw='+enc(st.kw.join('|'))+'&loc='+enc(st.loc.join('|'))+'&jt='+enc(st.types.join('|'))+'&days='+st.days+'&hour='+st.hour+'&email='+enc(st.email)+'&wa='+enc(st.wa)+'&remote='+st.remote+'&emails='+enc(JSON.stringify(emails(st.email)))+'&mobiles='+enc(JSON.stringify(mobiles(st.wa)))+'&times='+enc(JSON.stringify(st.times))+'&repeat='+enc(st.repeat)+'&timezone='+enc(st.timezone);
-if(!conn()){say('Saved on this device. Connect the script to start reminders.');return}api('save',x).then(function(j){status(j);st.scheduleSynced=j.scheduleVersion>=2;persist();timesView();say(st.scheduleSynced?'Saved and synced to reminders.':'Saved. Script must support scheduleVersion 2 to confirm multiple times and recipients.')}).catch(function(){})}
+function status(j){$('on').checked=!!j.enabled;$('st').textContent=(j.enabled?'Active — daily at '+j.hour+':00':'Paused')+(j.last?' · last run '+j.last:'')}
+function load(j){if(j.kw===undefined)return;st.kw=j.kw?j.kw.split('|'):[];st.loc=j.loc?j.loc.split('|'):[];st.types=j.jt?j.jt.split('|'):[];st.days=j.days||'1';st.hour=j.hour||'9';st.email=j.email||'';st.wa=j.wa||'';st.remote=j.remote||'';persist();form();lists()}
+function sync(){read();lists();var x='&kw='+enc(st.kw.join('|'))+'&loc='+enc(st.loc.join('|'))+'&jt='+enc(st.types.join('|'))+'&days='+st.days+'&hour='+st.hour+'&email='+enc(st.email)+'&wa='+enc(st.wa)+'&remote='+st.remote;
+if(!conn()){say('Saved on this device. Connect the script to start reminders.');return}api('save',x).then(function(j){status(j);say('Saved and synced to reminders.')}).catch(function(){})}
 function start(){$('lock').hidden=true;$('app').hidden=false;
+for(var i=0;i<24;i++){var o=document.createElement('option');o.value=i;o.textContent=(i%12||12)+':00 '+(i<12?'AM':'PM');$('hour').appendChild(o)}
 $('url').value=L.getItem('jr_url')||'';$('tok').value=L.getItem('jr_tok')||'';form();lists();toggles();
 var on=L.getItem('jh_shortcut')!=='off';$('sc').checked=on;$('scs').textContent=on?'On — tap the logo 5 times on this device':'Off on this device';
 $('sc').onchange=function(){var v=$('sc').checked;L.setItem('jh_shortcut',v?'on':'off');$('scs').textContent=v?'On — tap the logo 5 times on this device':'Off on this device';say('Shortcut turned '+(v?'on':'off')+'.')};
