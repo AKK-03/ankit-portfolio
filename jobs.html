@@ -194,6 +194,6 @@ $('pk').onchange=function(){addSearchSelection('pk','searchKeywords')};$('pl').o
 $('reset').onclick=function(){if(confirm('Clear all saved search settings on this device?')){var o=st.custom;st=JSON.parse(JSON.stringify(D));persist();form();lists();toggles();say('Cleared.')}};
 $('cadd').onclick=function(){var n=$('cn').value.trim(),u=$('cu').value.trim();if(!n||!/^https?:\/\//.test(u)||u.indexOf('{keyword}')<0){say('Add a name and a link that starts with https:// and contains {keyword}.');return}st.custom.push({n:n,t:u});persist();$('cn').value=$('cu').value='';toggles();ports();say(n+' added.')};
 $('conn').onclick=function(){L.setItem('jr_url',$('url').value.trim());L.setItem('jr_tok',$('tok').value.trim());api('status').then(function(j){status(j);load(j);say('Connected.')}).catch(function(){})};
-$('test').onclick=function(){say('Sending test…');api('test').then(function(j){say('Test done: '+j.sent+' openings found.')}).catch(function(){})};
+$('test').onclick=function(){say('Sending test…');api('test').then(function(j){say('Test done: '+j.sent+' openings found.'+(j.err?' Problem: '+j.err:(j.sent===0?' No jobs matched your filters (try more days, fewer job types, no location).':' Check your inbox and Spam.')))}).catch(function(){})};
 if(conn())api('status').then(status).catch(function(){})}
 </script></body></html>
