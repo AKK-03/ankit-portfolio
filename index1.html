@@ -157,42 +157,6 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 .skills,.project,.contact,.edu,.grid4,.clients,.qgrid{grid-template-columns:1fr}.quick{padding:22px}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important}.button:hover{transform:none}}
 @media print{header,.buttons,footer,.theme{display:none}body{background:#fff}.job,.card{break-inside:avoid}.flow,.contact,.arch{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
-/* chat widget */
-.cb-fab{position:fixed;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));z-index:20;display:flex;align-items:center;gap:10px;padding:14px 20px;border:0;border-radius:32px;background:linear-gradient(120deg,#0f8f7e,#2fc9b0 60%,#65e2ce);color:#04201b;font:700 15px var(--body);cursor:pointer;box-shadow:0 12px 28px -8px rgba(15,143,126,.8);transition:transform .2s}
-.cb-fab:hover{transform:translateY(-3px)}
-.cb-fab svg{width:20px;height:20px;flex:none}
-.cb-fab .dot{position:absolute;top:-2px;right:-2px;width:12px;height:12px;border-radius:50%;background:var(--amber);border:2px solid var(--bg);animation:pulse 2s infinite}
-.cb-panel{position:fixed;right:max(20px,env(safe-area-inset-right));bottom:max(88px,calc(env(safe-area-inset-bottom) + 70px));z-index:21;width:min(380px,calc(100vw - 32px));height:min(600px,calc(100% - 120px));display:none;flex-direction:column;background:#14293a;color:#fff;border:1px solid #27414f;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px -12px rgba(0,0,0,.55)}
-.cb-panel.open{display:flex;animation:rise .3s ease both}
-.cb-head{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#0e1d2b;border-bottom:1px solid #27414f}
-.cb-av{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--mint);color:#06231f;font:800 18px var(--head);flex:none}
-.cb-head strong{display:block;font:700 16px var(--head)}
-.cb-head small{display:flex;align-items:center;gap:6px;font-size:12px;color:#a5b6c4}
-.cb-head small i{width:7px;height:7px;border-radius:50%;background:var(--mint)}
-.cb-x{margin-left:auto;width:32px;height:32px;border-radius:50%;border:1px solid #3c5a6a;background:transparent;color:#fff;font-size:20px;line-height:1;cursor:pointer}
-.cb-x:hover{border-color:var(--mint);color:var(--mint)}
-.cb-direct{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 14px 0;padding:13px 16px;border-radius:12px;background:#25d366;color:#04200f;font:700 15px var(--body);text-align:center;transition:transform .2s}
-.cb-direct:hover{transform:translateY(-2px)}
-.cb-direct svg{width:20px;height:20px;flex:none}
-.cb-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
-.cb-m{max-width:86%;padding:10px 14px;border-radius:14px;font-size:14.5px;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere}
-.cb-m.bot{align-self:flex-start;background:#0e1d2b;border:1px solid #27414f;border-bottom-left-radius:4px}
-.cb-m.me{align-self:flex-end;background:var(--mint);color:#06231f;border-bottom-right-radius:4px}
-.cb-act{align-self:flex-start;display:flex;flex-wrap:wrap;gap:8px}
-.cb-act a,.cb-act button{padding:8px 14px;border-radius:18px;border:1px solid var(--mint);background:transparent;color:var(--mint);font:600 13px var(--body);cursor:pointer}
-.cb-act a.solid,.cb-act button.solid{background:#25d366;border-color:#25d366;color:#04200f}
-.cb-act a:hover,.cb-act button:hover{transform:translateY(-1px)}
-.cb-chips{display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
-.cb-chips::-webkit-scrollbar{display:none}
-.cb-chips button{flex:none;padding:7px 13px;border-radius:16px;border:1px solid #3c5a6a;background:#0e1d2b;color:#e8eff4;font:500 13px var(--body);cursor:pointer}
-.cb-chips button:hover{border-color:var(--mint);color:var(--mint)}
-.cb-in{display:flex;gap:8px;padding:12px 14px;border-top:1px solid #27414f;background:#0e1d2b}
-.cb-in input{flex:1;min-width:0;padding:10px 13px;background:#14293a;border:1px solid #3c5a6a;border-radius:20px;color:#fff;font:400 15px var(--body)}
-.cb-in input::placeholder{color:#6f8596}
-.cb-in input:focus{outline:2px solid var(--mint);border-color:var(--mint)}
-.cb-in button{padding:0 16px;border:0;border-radius:20px;background:var(--mint);color:#06231f;font:700 14px var(--body);cursor:pointer}
-@media(max-width:760px){.cb-fab span{display:none}.cb-fab{padding:15px}.cb-panel{right:12px;left:12px;width:auto;bottom:max(84px,calc(env(safe-area-inset-bottom) + 70px))}}
-@media print{.cb-fab,.cb-panel{display:none}}
 </style>
 </head>
 <body>
@@ -406,17 +370,6 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
   </form>
  </div>
 </dialog>
-<button type="button" class="cb-fab" id="cbfab" aria-label="Open chat" aria-expanded="false" aria-controls="cbpanel">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>
- <span>Chat with Ankit</span><i class="dot"></i>
-</button>
-<section class="cb-panel" id="cbpanel" role="dialog" aria-label="Chat with Ankit">
- <div class="cb-head"><div class="cb-av">A</div><div><strong>Ankit’s assistant</strong><small><i></i>Replies instantly · Ankit replies on WhatsApp</small></div><button type="button" class="cb-x" id="cbx" aria-label="Close chat">×</button></div>
- <a class="cb-direct" id="cbdirect" href="#" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>Hiring team? Chat with Ankit now</a>
- <div class="cb-log" id="cblog" aria-live="polite"></div>
- <div class="cb-chips" id="cbchips"></div>
- <form class="cb-in" id="cbform" autocomplete="off"><input id="cbtext" placeholder="Ask about Ankit’s experience…" aria-label="Type your message"><button type="submit">Send</button></form>
-</section>
 <script>
 document.getElementById('year').textContent=new Date().getFullYear();
 (function(){var f=document.getElementById('qform');
@@ -435,39 +388,6 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()})})();
 function dark(){return r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches}
 function sync(){b.textContent=dark()?'Light':'Dark'}
 b.onclick=function(){r.dataset.theme=dark()?'light':'dark';sync()};sync()})();
-(function(){
-var WA='918574518136',MAIL='ankitkanaujia8@gmail.com';
-var fab=document.getElementById('cbfab'),panel=document.getElementById('cbpanel'),log=document.getElementById('cblog'),chips=document.getElementById('cbchips'),form=document.getElementById('cbform'),txt=document.getElementById('cbtext'),direct=document.getElementById('cbdirect');
-function wa(t){return 'https://wa.me/'+WA+'?text='+encodeURIComponent(t)}
-direct.href=wa('Hi Ankit, I am from a hiring team and would like to chat with you about an opportunity.');
-function say(t,who){var m=document.createElement('div');m.className='cb-m '+who;m.textContent=t;log.appendChild(m);log.scrollTop=log.scrollHeight;return m}
-function actions(list){var d=document.createElement('div');d.className='cb-act';list.forEach(function(a){var e;if(a.href){e=document.createElement('a');e.href=a.href;if(/^https?:/.test(a.href)){e.target='_blank';e.rel='noopener noreferrer'}}else{e=document.createElement('button');e.type='button';e.onclick=a.fn}
-e.textContent=a.t;if(a.solid)e.className='solid';d.appendChild(e)});log.appendChild(d);log.scrollTop=log.scrollHeight}
-var chatAct={t:'Chat with Ankit on WhatsApp',href:wa('Hi Ankit, I am from a hiring team and would like to chat with you.'),solid:1};
-function openForm(){var d=document.getElementById('quick');close();d.showModal&&d.showModal();var n=document.getElementById('qn');n&&n.focus()}
-var A={
-chat:function(){say('Opening a direct chat is one tap. Ankit usually replies quickly on WhatsApp.','bot');actions([chatAct,{t:'Email instead',href:'mailto:'+MAIL},{t:'Call +91 8574518136',href:'tel:+918574518136'}])},
-job:function(){say('Happy to take the details. You can fill a short form, or send them straight to Ankit.','bot');actions([{t:'Share a job opening',fn:openForm},chatAct])},
-exp:function(){say('Ankit is a Senior Software Engineer with 5+ years in healthcare IT.\n\n• Itdose Infosystems (Apr 2022 – now): Sr. Functional Engineer, about 200+ LIMS/machine-integration projects a year, supporting 150+ clients.\n• Kaizen IT Services (2021–22): Technical Support Engineer at Central Board of Direct Taxes.','bot');actions([{t:'See full experience',href:'#experience',fn:null}])},
-skills:function(){say('• Development: Java, Python, C++, Android\n• Healthcare: LIMS, HIS, machine interfacing, barcode design, workflow design\n• Infrastructure: server configuration, networking, deployment, backups\n• Tools: SQL, MySQL, Power BI, JIRA','bot');actions([{t:'See all skills',href:'#skills'}])},
-clients:function(){say('Ankit supports 150+ clients at a time, including Medanta, MAX, Apollo, Nanjappa, Diagnum, DRX Lab, National Path Lab (Nepal) and CRL Diagnostic.','bot')},
-cv:function(){say('You can download Ankit’s résumé here.','bot');actions([{t:'Download résumé',href:'Ankit-Resume.pdf'}])},
-loc:function(){say('Ankit is based in New Delhi, India, and works on-site and remote.','bot');actions([chatAct])},
-contact:function(){say('Reach Ankit any of these ways:','bot');actions([chatAct,{t:'Email',href:'mailto:'+MAIL},{t:'Call',href:'tel:+918574518136'},{t:'LinkedIn',href:'https://www.linkedin.com/in/ankit-8986a3196'}])}};
-var chipList=[['Chat with Ankit','chat'],['Share a job opening','job'],['Experience','exp'],['Skills','skills'],['Clients','clients'],['Résumé','cv'],['Contact','contact']];
-chipList.forEach(function(c){var b=document.createElement('button');b.type='button';b.textContent=c[0];b.onclick=function(){say(c[0],'me');A[c[1]]()};chips.appendChild(b)});
-var rules=[[/(chat|talk|speak|whatsapp|connect|call me|directly|human)/,'chat'],[/(job|opening|vacanc|hiring|hire|recruit|role|position|opportunit)/,'job'],[/(experience|work|career|itdose|kaizen|background)/,'exp'],[/(skill|tech|java|python|lims|his\b|stack|tool|sql)/,'skills'],[/(client|customer|hospital|lab\b)/,'clients'],[/(resume|résumé|cv)/,'cv'],[/(where|location|delhi|remote|relocat|based)/,'loc'],[/(email|mail|phone|number|contact|reach|linkedin)/,'contact']];
-function reply(q){var l=q.toLowerCase();for(var i=0;i<rules.length;i++)if(rules[i][0].test(l)){A[rules[i][1]]();return}
-say('I can’t answer that one, but Ankit can. Send your message straight to him:','bot');actions([{t:'Send this to Ankit on WhatsApp',href:wa('Hi Ankit, '+q),solid:1},{t:'Share a job opening',fn:openForm}])}
-form.onsubmit=function(e){e.preventDefault();var q=txt.value.trim();if(!q)return;say(q,'me');txt.value='';setTimeout(function(){reply(q)},350)};
-var started=false;
-function open(){panel.classList.add('open');fab.setAttribute('aria-expanded','true');fab.querySelector('.dot').style.display='none';
-if(!started){started=true;say('Hi, I’m Ankit’s assistant. Are you on a hiring team? Tap the green button above to chat with Ankit directly, or ask me anything about his work.','bot')}txt.focus()}
-function close(){panel.classList.remove('open');fab.setAttribute('aria-expanded','false')}
-fab.onclick=function(){panel.classList.contains('open')?close():open()};
-document.getElementById('cbx').onclick=close;
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel.classList.contains('open'))close()});
-})();
 </script>
 </body>
 </html>
