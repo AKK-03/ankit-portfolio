@@ -157,6 +157,10 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 .skills,.project,.contact,.edu,.grid4,.clients,.qgrid{grid-template-columns:1fr}.quick{padding:22px}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important}.button:hover{transform:none}}
 @media print{header,.buttons,footer,.theme{display:none}body{background:#fff}.job,.card{break-inside:avoid}.flow,.contact,.arch{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+.photo{position:relative;width:116px;height:116px;border-radius:50%;border:3px solid var(--mint);box-shadow:0 0 0 6px var(--tint);overflow:hidden;background:var(--dark);display:grid;place-items:center;margin-bottom:28px}
+.photo span{font:800 46px var(--head);color:var(--mint)}
+.photo img,.cb-av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cb-av{position:relative;overflow:hidden}
 /* chat widget */
 .cb-fab{position:fixed;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));z-index:20;display:flex;align-items:center;gap:10px;padding:14px 20px;border:0;border-radius:32px;background:linear-gradient(120deg,#0f8f7e,#2fc9b0 60%,#65e2ce);color:#04201b;font:700 15px var(--body);cursor:pointer;box-shadow:0 12px 28px -8px rgba(15,143,126,.8);transition:transform .2s}
 .cb-fab:hover{transform:translateY(-3px)}
@@ -193,6 +197,20 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 .cb-in button{padding:0 16px;border:0;border-radius:20px;background:var(--mint);color:#06231f;font:700 14px var(--body);cursor:pointer}
 @media(max-width:760px){.cb-fab span{display:none}.cb-fab{padding:15px}.cb-panel{right:12px;left:12px;width:auto;bottom:max(84px,calc(env(safe-area-inset-bottom) + 70px))}}
 @media print{.cb-fab,.cb-panel{display:none}}
+/* contact picker */
+dialog#pick{border:0;padding:0;background:transparent;max-width:min(400px,92vw);width:100%;color:#fff;overflow:visible}
+dialog#pick::backdrop{background:rgba(5,12,19,.7);backdrop-filter:blur(4px)}
+dialog#pick[open]{animation:rise .25s ease both}
+.pk{background:#14293a;border:1px solid #27414f;border-radius:16px;padding:26px}
+.pk h3{font-size:20px;letter-spacing:-.4px;margin-bottom:4px}
+.pk p.v{margin:0 0 18px;font-size:14px;color:#a5b6c4;overflow-wrap:anywhere}
+.pk .opts{display:flex;flex-direction:column;gap:10px}
+.pk .opts a,.pk .opts button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:12px 16px;border-radius:10px;border:1px solid #3c5a6a;background:#0e1d2b;color:#fff;font:600 15px var(--body);cursor:pointer;transition:transform .2s,border-color .2s}
+.pk .opts small{font:400 12px var(--body);color:#a5b6c4;margin-top:2px}
+.pk .opts a:hover,.pk .opts button:hover{border-color:var(--mint);transform:translateY(-2px)}
+.pk .opts .wa{background:#25d366;border-color:#25d366;color:#04200f}
+.pk .opts .wa small{color:#0b3a1c}
+.pk .opts .wa:hover{border-color:#25d366}
 </style>
 </head>
 <body>
@@ -209,6 +227,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 <main>
 <div class="hero" id="home">
  <div class="reveal">
+  <div class="photo"><span aria-hidden="true">A</span><img src="ankit.jpg" alt="Photo of Ankit Kanaujia" width="116" height="116" onerror="this.remove()"></div>
   <div class="status"><b></b>Senior Software Engineer · New Delhi, India</div>
   <h1>Hi, I’m Ankit<em>I connect software with healthcare.</em></h1>
   <p class="lead">From laboratory machines to reliable IT systems, I develop, integrate, and deploy software that helps healthcare teams work better. 5+ years across LIMS, HIS, and server infrastructure.</p>
@@ -406,12 +425,16 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
   </form>
  </div>
 </dialog>
+<dialog id="pick" aria-label="Choose how to get in touch">
+ <button type="button" class="qclose" id="pkclose" aria-label="Close">×</button>
+ <div class="pk"><h3 id="pkt"></h3><p class="v" id="pkv"></p><div class="opts" id="pko"></div></div>
+</dialog>
 <button type="button" class="cb-fab" id="cbfab" aria-label="Open chat" aria-expanded="false" aria-controls="cbpanel">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>
  <span>Chat with Ankit</span><i class="dot"></i>
 </button>
 <section class="cb-panel" id="cbpanel" role="dialog" aria-label="Chat with Ankit">
- <div class="cb-head"><div class="cb-av">A</div><div><strong>Ankit’s assistant</strong><small><i></i>Replies instantly · Ankit replies on WhatsApp</small></div><button type="button" class="cb-x" id="cbx" aria-label="Close chat">×</button></div>
+ <div class="cb-head"><div class="cb-av">A<img src="ankit.jpg" alt="" onerror="this.remove()"></div><div><strong>Ankit’s assistant</strong><small><i></i>Replies instantly · Ankit replies on WhatsApp</small></div><button type="button" class="cb-x" id="cbx" aria-label="Close chat">×</button></div>
  <a class="cb-direct" id="cbdirect" href="#" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>Hiring team? Chat with Ankit now</a>
  <div class="cb-log" id="cblog" aria-live="polite"></div>
  <div class="cb-chips" id="cbchips"></div>
@@ -467,6 +490,26 @@ function close(){panel.classList.remove('open');fab.setAttribute('aria-expanded'
 fab.onclick=function(){panel.classList.contains('open')?close():open()};
 document.getElementById('cbx').onclick=close;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel.classList.contains('open'))close()});
+})();
+(function(){
+var d=document.getElementById('pick'),t=document.getElementById('pkt'),v=document.getElementById('pkv'),o=document.getElementById('pko');
+function opt(label,sub,href,cls,blank){var a=document.createElement('a');a.href=href;if(cls)a.className=cls;a.setAttribute('data-direct','');if(blank){a.target='_blank';a.rel='noopener noreferrer'}
+a.innerHTML='<span></span><small></small>';a.children[0].textContent=label;a.children[1].textContent=sub;a.onclick=function(){setTimeout(function(){d.close()},150)};o.appendChild(a)}
+function copy(label,val){var b=document.createElement('button');b.type='button';b.innerHTML='<span></span><small></small>';b.children[0].textContent=label;b.children[1].textContent='Copy to clipboard';
+b.onclick=function(){var done=function(){b.children[0].textContent='Copied ✓'};if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(val).then(done,done)}else{var x=document.createElement('textarea');x.value=val;document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch(e){}x.remove();done()}};o.appendChild(b)}
+function show(kind,raw){o.innerHTML='';
+if(kind==='mail'){var m=raw.replace(/^mailto:/i,'').split('?')[0];t.textContent='Send an email';v.textContent=m;
+opt('Open Gmail','Compose in your browser','https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(m)+'&su='+encodeURIComponent('Opportunity for Ankit'),'',true);
+opt('Open mail app','Outlook, Apple Mail or your default app','mailto:'+m+'?subject='+encodeURIComponent('Opportunity for Ankit'));
+copy('Copy email address',m)}
+else{var n=raw.replace(/^tel:/i,''),digits=n.replace(/\D/g,'');t.textContent='Contact by phone';v.textContent='+'+digits.replace(/^(\d{2})(\d+)$/,'$1 $2');
+opt('Chat on WhatsApp','Opens WhatsApp with a message ready','https://wa.me/'+digits+'?text='+encodeURIComponent('Hi Ankit, I am from a hiring team and would like to talk with you.'),'wa',true);
+opt('Call now','Opens your dialer, ready to call','tel:+'+digits);
+copy('Copy phone number','+'+digits)}
+d.showModal&&d.showModal()}
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="mailto:"],a[href^="tel:"]');if(!a||a.hasAttribute('data-direct'))return;e.preventDefault();var h=a.getAttribute('href');show(/^mailto:/i.test(h)?'mail':'tel',h)});
+document.getElementById('pkclose').onclick=function(){d.close()};
+d.addEventListener('click',function(e){if(e.target===d)d.close()});
 })();
 </script>
 </body>
