@@ -476,10 +476,6 @@ header{box-shadow:0 8px 30px -26px rgba(14,29,43,.5)}
 .skills .tags.plain .tag:hover{transform:translateY(-2px);background:var(--teal);border-color:var(--teal);color:#fff}
 :root[data-theme=dark] .skills .tags.plain .tag:hover{color:#04201b}
 @media(max-width:760px){.skills .card{padding:24px;grid-template-columns:46px 1fr}.skills .card::before{width:46px;height:46px}.skills .card::after{font-size:48px}}
-
-/* resume-driven sub-portfolio manager */
-.cms-resume-modal{position:fixed;inset:0;z-index:1100;display:none;place-items:center;padding:20px;background:rgba(5,12,19,.88);font-family:var(--body)}
-.cms-resume-modal.open{display:grid}.cms-resume-box{width:min(760px,100%);max-height:88vh;overflow:auto;background:#14293a;color:#fff;border:1px solid #27414f;border-radius:16px;padding:26px}.cms-resume-box h2{margin-bottom:6px}.cms-resume-box p{color:#a5b6c4}.cms-resume-row{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.cms-resume-row input{flex:1;min-width:220px;padding:10px;border:1px solid #3c5a6a;border-radius:8px;background:#0e1d2b;color:#fff}.cms-resume-row button,.cms-resume-item button,.cms-resume-item a{padding:9px 12px;border:0;border-radius:8px;background:var(--mint);color:#06231f;font:700 12px var(--body);cursor:pointer}.cms-resume-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px 0;border-top:1px solid #27414f}.cms-resume-item small{display:block;color:#a5b6c4}.cms-resume-actions{display:flex;gap:7px;flex-wrap:wrap}.cms-resume-actions .danger{background:#ef6b6b;color:#260707}.cms-resume-close{float:right;background:#243b4c!important;color:#fff!important}.cms-resume-note{font-size:12px}.cms-resume-file{display:none}
 </style>
 <script>
 (function(){var r=document.documentElement,M={snow:'light',cream:'light',sky:'light',mint:'light',lavender:'light',slate:'dark',midnight:'dark',charcoal:'dark'},V=['--bg','--card','--line','--tint','--dark'];
@@ -788,16 +784,9 @@ r.classList.add('js')})();
 <input id="cmsPassword" type="password" placeholder="Password" autocomplete="current-password">
 <button id="cmsSignIn" type="button">Sign in</button><p class="cms-msg" id="cmsMsg"></p>
 </div></div>
-
-<div class="cms-resume-modal" id="cmsResumeModal"><div class="cms-resume-box">
-<button class="cms-resume-close" id="cmsResumeClose" type="button">Close</button><h2>Resume → Sub-portfolio</h2>
-<p>Upload a PDF or DOCX. The resume is stored securely and a separate portfolio record is created. Its URL slug is based on the resume filename.</p>
-<div class="cms-resume-row"><input id="cmsResumeTitle" placeholder="Portfolio name (defaults to resume filename)"><button id="cmsResumePick" type="button">Choose resume</button><input class="cms-resume-file" id="cmsResumeFile" type="file" accept=".pdf,.doc,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
-<p class="cms-resume-note" id="cmsResumeMsg">Generated URL example: <b>senior-software-engineer.html</b></p><div id="cmsResumeList"></div>
-</div></div>
 <div class="cms-hint">Admin mode: edit text directly · click a block to select it</div>
 <div class="cms-bar" id="cmsBar"><span id="cmsStatus">Admin editing enabled</span>
-<button id="cmsSave" type="button">Save changes</button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button id="cmsLogout" type="button" class="secondary">Logout</button>
+<button id="cmsSave" type="button">Save changes</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button id="cmsLogout" type="button" class="secondary">Logout</button>
 <input id="cmsFile" type="file" accept="image/*" hidden></div>
 <script>
 document.getElementById('year').textContent=new Date().getFullYear();
@@ -883,21 +872,7 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
   }
   var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
   var main=document.querySelector('main'), login=document.getElementById('cmsLogin'), bar=document.getElementById('cmsBar'), msg=document.getElementById('cmsMsg'), status=document.getElementById('cmsStatus');
-  var params=new URLSearchParams(location.search), pageSlug=params.get('portfolio')||'';
-  var admin=params.get('admin')==='1', selected=null;
-  function slugify(v){return (v||'resume').replace(/\.[^.]+$/,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'resume'}
-  async function loadSubPortfolio(){
-    if(!pageSlug)return false;
-    var r=await sb.from('resume_portfolios').select('html,title,resume_url').eq('slug',pageSlug).maybeSingle();
-    if(r.data&&r.data.html){main.innerHTML=r.data.html;document.title=(r.data.title||pageSlug)+' | Portfolio';return true} return false;
-  }
-  async function listResumePortfolios(){
-    var box=document.getElementById('cmsResumeList');box.innerHTML='Loading…';
-    var r=await sb.from('resume_portfolios').select('id,title,slug,resume_url,storage_path,created_at').order('created_at',{ascending:false});
-    if(r.error){box.textContent='Table not ready: '+r.error.message;return}
-    box.innerHTML='';(r.data||[]).forEach(function(x){var row=document.createElement('div');row.className='cms-resume-item';var info=document.createElement('div');info.innerHTML='<strong></strong><small></small>';info.querySelector('strong').textContent=x.title;info.querySelector('small').textContent=x.slug+'.html';var act=document.createElement('div');act.className='cms-resume-actions';var view=document.createElement('a');view.textContent='View';view.target='_blank';view.rel='noopener';view.href=location.pathname+'?portfolio='+encodeURIComponent(x.slug);var del=document.createElement('button');del.className='danger';del.textContent='Delete';del.onclick=async function(){if(!confirm('Delete '+x.title+' and its uploaded resume?'))return; if(x.storage_path)await sb.storage.from(cfg.resumeBucket||'resumes').remove([x.storage_path]);var d=await sb.from('resume_portfolios').delete().eq('id',x.id);document.getElementById('cmsResumeMsg').textContent=d.error?'Delete failed: '+d.error.message:'Deleted '+x.title;listResumePortfolios()};act.append(view,del);row.append(info,act);box.append(row)});if(!(r.data||[]).length)box.textContent='No resume portfolios yet.';
-  }
-
+  var admin=new URLSearchParams(location.search).get('admin')==='1', selected=null;
   function setStatus(t){status.textContent=t}
   async function loadTheme(){
     try{var r=await sb.from('portfolio_content').select('html').eq('id',2).maybeSingle();
@@ -929,23 +904,11 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
   }
   async function boot(){
     loadTheme();
-    if(!(await loadSubPortfolio())) await loadSaved();
+    await loadSaved();
     if(!admin) return;
     var sess=(await sb.auth.getSession()).data.session;
     if(sess) editable(true); else {login.classList.add('open');login.setAttribute('aria-hidden','false')}
   }
-  document.getElementById('cmsResumes').onclick=function(){document.getElementById('cmsResumeModal').classList.add('open');listResumePortfolios()};
-  document.getElementById('cmsResumeClose').onclick=function(){document.getElementById('cmsResumeModal').classList.remove('open')};
-  document.getElementById('cmsResumePick').onclick=function(){document.getElementById('cmsResumeFile').click()};
-  document.getElementById('cmsResumeFile').onchange=async function(){
-    var f=this.files[0];if(!f)return;var m=document.getElementById('cmsResumeMsg'),title=document.getElementById('cmsResumeTitle').value.trim()||f.name.replace(/\.[^.]+$/,''),slug=slugify(title),ext=(f.name.split('.').pop()||'pdf').toLowerCase(),path='resumes/'+Date.now()+'-'+slug+'.'+ext;
-    m.textContent='Uploading resume…';var u=await sb.storage.from(cfg.resumeBucket||'resumes').upload(path,f,{upsert:false});if(u.error){m.textContent='Upload failed: '+u.error.message;return}
-    var pub=sb.storage.from(cfg.resumeBucket||'resumes').getPublicUrl(path).data.publicUrl;
-    /* Browser-only builds cannot reliably parse every PDF/DOCX. Create the sub-portfolio from the current template; a server/Edge Function can replace html with parsed resume data. */
-    var html=main.innerHTML, r=await sb.from('resume_portfolios').insert({title:title,slug:slug,resume_url:pub,storage_path:path,html:html,created_at:new Date().toISOString()}).select('id').single();
-    if(r.error){await sb.storage.from(cfg.resumeBucket||'resumes').remove([path]);m.textContent='Create failed: '+r.error.message;return}
-    m.textContent='Created: '+slug+'.html';this.value='';document.getElementById('cmsResumeTitle').value='';listResumePortfolios();
-  };
   document.getElementById('cmsSignIn').onclick=async function(){
     msg.textContent='Signing in…'; var r=await sb.auth.signInWithPassword({email:document.getElementById('cmsEmail').value.trim(),password:document.getElementById('cmsPassword').value});
     if(r.error){msg.textContent=r.error.message;return} login.classList.remove('open');editable(true);msg.textContent='';
@@ -955,7 +918,7 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
     main.querySelectorAll('[contenteditable]').forEach(function(e){e.removeAttribute('contenteditable')});
     main.querySelectorAll('[data-admin-button]').forEach(function(b){b.style.opacity='';if(b.dataset.adminDisabled==='1')b.style.display='none'});
     var html=main.innerHTML; editable(true); if(selected) selected.classList.add('cms-selected');
-    setStatus('Saving…'); var r=pageSlug?await sb.from('resume_portfolios').update({html:html,updated_at:new Date().toISOString()}).eq('slug',pageSlug):await sb.from('portfolio_content').upsert({id:1,html:html,updated_at:new Date().toISOString()});
+    setStatus('Saving…'); var r=await sb.from('portfolio_content').upsert({id:1,html:html,updated_at:new Date().toISOString()});
     setStatus(r.error?'Save failed: '+r.error.message:'Saved successfully ✓');
   };
   document.getElementById('cmsToggleButton').onclick=function(){
