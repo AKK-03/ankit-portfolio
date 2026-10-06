@@ -367,6 +367,55 @@ section>.head h2::after{
   .stat strong{font-size:44px !important}
 }
 
+
+/* ===== Career Highlight overlap fix — applied to portfolio(5).html ===== */
+.stat-featured{
+  padding-top:24px !important;
+}
+.stat-featured .stat-top{
+  padding-top:30px !important;
+  margin-bottom:18px !important;
+}
+.stat-featured .stat-badge{
+  top:12px !important;
+  right:12px !important;
+  left:auto !important;
+  padding:5px 11px !important;
+  font-size:10px !important;
+  line-height:1.2 !important;
+  white-space:nowrap !important;
+}
+.stat-featured strong{
+  position:relative !important;
+  z-index:1 !important;
+}
+@media(max-width:900px){
+  .stat-featured .stat-top{padding-top:28px !important}
+}
+
+
+/* ===== Hero + integration flow refresh ===== */
+.hero-kicker{display:inline-flex;margin:0 0 13px;padding:6px 10px;border:1px solid color-mix(in srgb,var(--teal) 25%,var(--line));border-radius:8px;background:var(--tint);color:var(--teal);font-size:10px;font-weight:800;letter-spacing:.1em}
+.hero h1{font-size:clamp(42px,5.1vw,68px);line-height:.98;letter-spacing:-3px;max-width:680px}
+.hero h1 span{color:var(--teal)}
+.hero .lead{max-width:650px;font-size:17px;line-height:1.7;margin-top:22px}
+.hero-proof{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.hero-proof span{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted);font-size:11px;font-weight:600}
+.hero .buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:min(100%,650px);margin-top:24px}
+.hero .button{display:flex;align-items:center;justify-content:center;white-space:nowrap;padding:12px 14px}
+.flow{box-shadow:0 28px 60px -42px rgba(5,12,19,.8);border:1px solid #20384a}
+.flow h2{font-size:17px;color:#fff;margin-bottom:6px}
+.flow h2::after{content:"End-to-end bidirectional analyzer integration";display:block;margin-top:4px;color:#7f96a7;font:400 11px var(--body)}
+.node{transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.node:hover{transform:translateX(5px);border-color:var(--mint);box-shadow:0 12px 28px -20px rgba(101,226,206,.45)}
+.node strong{font-size:15px}
+.node span{display:block;line-height:1.45;margin-top:2px}
+@media(max-width:760px){
+ .hero .buttons{grid-template-columns:1fr}
+ .hero .button{white-space:normal}
+ .hero h1{letter-spacing:-2px}
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="cms-config.js"></script>
@@ -386,23 +435,23 @@ section>.head h2::after{
 <div class="hero" id="home">
  <div class="reveal">
   <div class="photo"><span aria-hidden="true">A</span><img src="ankit.jpg" alt="Photo of Ankit Kanaujia" width="116" height="116" onerror="this.remove()"></div>
-  <div class="status"><b></b>Senior Software Engineer · New Delhi, India</div>
-  <h1>Hi, I’m Ankit<em>I connect software with healthcare.</em></h1>
-  <p class="lead">From laboratory machines to reliable IT systems, I develop, integrate, and deploy software that helps healthcare teams work better. 5+ years across LIMS, HIS, and server infrastructure.</p>
+  <div class="status"><b></b>Senior Software Engineer · Healthcare IT · New Delhi, India</div>
+  <div class="hero-kicker">LABORATORY INTEGRATION · LIMS / HIS · INTEROPERABILITY</div><h1>Building the software bridge between <span>laboratory analyzers</span> and healthcare systems.</h1>
+  <p class="lead">I design, develop and deploy bidirectional machine interfaces that move patient demographics, sample queries, results and graphs reliably between diagnostic analyzers, LIMS/LIS and HIS/HIMS.</p><div class="hero-proof"><span>HL7 / ASTM</span><span>TCP/IP / RS-232</span><span>.NET / C++</span><span>SQL Server</span><span>On-premise / Cloud</span></div>
   <div class="buttons">
-   <a class="button primary" href="#experience">Explore my experience</a>
+   <a class="button primary" href="#experience">Explore experience</a>
    <a class="button" download href="Ankit-Resume.pdf">Download résumé</a>
    <a class="button" href="#quick" data-open-quick>Hiring? Quick connect</a>
   </div>
  </div>
  <aside class="flow reveal" aria-label="How lab data flows through the systems I work on" style="animation-delay:.15s">
-  <h2>How I connect a laboratory</h2>
-  <div class="node"><b>01</b><div><strong>Diagnostic machine</strong><span>Analyzer results captured automatically</span></div></div>
+  <h2>How I connect laboratory systems</h2>
+  <div class="node"><b>01</b><div><strong>Diagnostic machine</strong><span>Patient/sample testing · queries · results & graphs</span></div></div>
   <div class="wire"></div>
-  <div class="node"><b>EXE</b><div><strong>Custom machine application</strong><span>Built, deployed and supported by me</span></div></div>
+  <div class="node"><b>EXE</b><div><strong>Communication & custom interface</strong><span>HL7 · ASTM · TCP/IP · RS-232 · ACK · demography</span></div></div>
   <div class="wire w2"></div>
-  <div class="node"><b>LIMS</b><div><strong>Lab information system</strong><span>Reports flow into HIS workflows</span></div></div>
-  <p>Hosted on local, physical or cloud servers I configure.</p>
+  <div class="node"><b>LIMS</b><div><strong>LIMS / LIS & clinical workflow</strong><span>Parameter mapping · validation · HIS/HIMS result flow</span></div></div>
+  <p>Bidirectional integration deployed on local, on-premise or cloud infrastructure.</p>
  </aside>
 </div>
 
