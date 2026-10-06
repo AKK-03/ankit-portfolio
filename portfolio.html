@@ -955,8 +955,46 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
  function command(raw){
   function cleanVoice(el){return (el&&el.innerText?el.innerText:'').replace(/\s+/g,' ').trim()}
   var q=(raw||'').toLowerCase().replace(/[?!.,]/g,' ').replace(/\s+/g,' ').trim();
+    // Stop must be handled before any read/search intent.
+    // cancel() immediately stops speech already queued by speechSynthesis.
+    if(/^(stop|cancel|quiet|be quiet|shut up)$/.test(q) ||
+       /\b(stop|cancel)\s+(reading|speaking|talking|voice|speech)\b/.test(q) ||
+       /\b(stop|cancel)\s+(the\s+)?(reading|voice|speech)\b/.test(q)){
+      if(window.speechSynthesis) window.speechSynthesis.cancel();
+      note('Reading stopped.',true);
+      return;
+    }
   note('Heard: “'+raw+'”',true);
-  function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
+  
+    // Open chatbot and place dictated text in the input (do not auto-send).
+    var chatWrite=q.match(/^(?:open\s+chat\s+and\s+)?(?:write|type|put|enter)(?:\s+in)?(?:\s+the)?\s+chat(?:bot)?(?:\s+(?:that|message|saying))?\s+(.+)$/i)
+      || q.match(/^open\s+chat\s+and\s+(?:write|type|put|enter)\s+(.+)$/i)
+      || q.match(/^(?:write|type)\s+in\s+chat(?:bot)?\s+(?:that\s+)?(.+)$/i);
+    if(chatWrite && chatWrite[1]){
+      var msg=chatWrite[1].trim();
+      var chatFab=document.getElementById('cbFab');
+      var chatPanel=document.getElementById('cbPanel');
+      var chatInput=document.getElementById('cbInput');
+      if(chatFab) chatFab.click();
+      else if(chatPanel) chatPanel.classList.add('open');
+      // Resolve the input after opening in case the widget initializes lazily.
+      setTimeout(function(){
+        var input=document.getElementById('cbInput') ||
+                  document.querySelector('.cb-in input') ||
+                  document.querySelector('#cbPanel input[type="text"]');
+        if(input){
+          input.value=msg;
+          input.dispatchEvent(new Event('input',{bubbles:true}));
+          input.focus();
+          note('Chat opened and your message is ready to review.',true);
+        }else{
+          note('Chat opened, but I could not find the message box.',true);
+        }
+      },120);
+      return;
+    }
+
+function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   function section(id,label){var el=document.getElementById(id);if(!el)return false;note('Answering about '+label+'…');speak(cleanVoice(el).slice(0,1800));el.scrollIntoView({behavior:'smooth',block:'start'});return true}
   if(has(['stop','be quiet','stop talking','stop reading','cancel speech'])){stop();return note('Stopped.')}
   if(has(['help','what can i say','what can i ask','how do i use','commands'])){if(help)help.classList.add('open');speak("You can ask me naturally about Ankit\'s experience, skills, projects, education, clients, current work, contact details, laboratory machines, or resume. You can also ask me to open WhatsApp, email, chat, view the resume, or download it.");return note('Voice help opened. Ask naturally or try an example.')}
