@@ -60,11 +60,16 @@ h1 em{display:block;font-style:normal;font-weight:500;font-size:.5em;letter-spac
 @keyframes travel{to{top:calc(100% - 10px)}}
 .flow p{font-size:13px;color:#a5b6c4;margin:18px 0 0}
 /* stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
-.stat{padding:24px 26px;border-right:1px solid var(--line)}
-.stat:last-child{border:0}
-.stat strong{display:block;font:800 36px var(--head);letter-spacing:-1px;color:var(--teal)}
-.stat span{font-size:14px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;border:0;background:transparent;overflow:visible}
+.stat{position:relative;overflow:hidden;min-height:178px;padding:24px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,var(--card),color-mix(in srgb,var(--tint) 32%,var(--card)));transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.stat::after{content:"";position:absolute;width:110px;height:110px;border-radius:50%;right:-42px;top:-48px;background:var(--tint);opacity:.85}
+.stat:hover{transform:translateY(-5px);border-color:var(--teal);box-shadow:0 16px 34px -24px rgba(15,143,126,.7)}
+.stat-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.stat-icon{position:relative;z-index:1;width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:var(--tint);color:var(--teal)}
+.stat-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.stat strong{position:relative;z-index:1;display:block;font:800 38px var(--head);line-height:1;letter-spacing:-1.4px;color:var(--teal)}
+.stat h3{font-size:16px;line-height:1.25;letter-spacing:-.2px;margin:0 0 6px}
+.stat span{display:block;font-size:13.5px;line-height:1.45;color:var(--muted)}
 section{padding:80px 0 0}
 .head{max-width:680px;margin-bottom:34px}
 h2.t{font-size:clamp(30px,4vw,42px);letter-spacing:-1.2px;line-height:1.1;margin-bottom:12px}
@@ -151,9 +156,9 @@ dialog#quick[open]{animation:rise .3s ease both}
 footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-size:13px;color:var(--muted)}
 .reveal{animation:rise .8s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
-@media(max-width:900px){.grid4,.clients{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+@media(max-width:900px){.grid4,.clients{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){nav{padding:14px 20px}.links{gap:12px;font-size:12px}.links a:not(.cta){display:none}.links a.cta{padding:8px 14px;font-size:13px}main{padding:0 20px}
-.hero{grid-template-columns:1fr;gap:36px;padding:46px 0 36px}h1{letter-spacing:-2px}
+.hero{grid-template-columns:1fr;gap:36px;padding:46px 0 36px}h1{letter-spacing:-2px}.stats{grid-template-columns:1fr 1fr;gap:12px}.stat{min-height:164px;padding:20px}
 .skills,.project,.contact,.edu,.grid4,.clients,.qgrid{grid-template-columns:1fr}.quick{padding:22px}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important}.button:hover{transform:none}}
 @media print{header,.buttons,footer,.theme{display:none}body{background:#fff}.job,.card{break-inside:avoid}.flow,.contact,.arch{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
@@ -263,11 +268,23 @@ dialog#pick[open]{animation:rise .25s ease both}
  </aside>
 </div>
 
-<div class="stats">
- <div class="stat"><strong>5+</strong><span>Years of experience</span></div>
- <div class="stat"><strong>100+</strong><span>Machine integration implementation projects every year</span></div>
- <div class="stat"><strong>150+</strong><span>Clients supported with live &amp; ongoing technical support</span></div>
- <div class="stat"><strong>600+</strong><span>Sites with machine integration implementations delivered overall</span></div>
+<div class="stats" aria-label="Career highlights">
+ <div class="stat">
+  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3v4M16 3v4M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg></div><strong>5+</strong></div>
+  <h3>Years Experience</h3><span>Healthcare IT &amp; software engineering</span>
+ </div>
+ <div class="stat">
+  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 11h2M13 11h2M9 15h2M13 15h2"/></svg></div><strong>100+</strong></div>
+  <h3>Sites / Year</h3><span>Machine integration implementations</span>
+ </div>
+ <div class="stat">
+  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM17 8h4M19 6v4"/></svg></div><strong>150+</strong></div>
+  <h3>Clients at a Time</h3><span>Live &amp; ongoing technical support</span>
+ </div>
+ <div class="stat">
+  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h11l-3-3M17 17H6l3 3M18 7l-3 3M6 17l3-3"/></svg></div><strong>600+</strong></div>
+  <h3>Sites Delivered</h3><span>Machine integration implementations overall</span>
+ </div>
 </div>
 
 <section id="about">
