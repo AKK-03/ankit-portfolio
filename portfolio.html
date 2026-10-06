@@ -484,6 +484,25 @@ header{box-shadow:0 8px 30px -26px rgba(14,29,43,.5)}
 /* voice command assistant */
 .voice-fab{position:fixed;left:max(20px,env(safe-area-inset-left));bottom:max(20px,env(safe-area-inset-bottom));z-index:22;display:none;align-items:center;gap:9px;padding:12px 17px;border:0;border-radius:28px;background:var(--dark);color:#fff;font:700 14px var(--body);cursor:pointer;box-shadow:0 12px 28px -10px rgba(0,0,0,.5)}
 .voice-fab.on{display:inline-flex}.voice-fab.listening{background:var(--teal)}.voice-fab svg{width:18px;height:18px}.voice-status{position:fixed;left:20px;bottom:78px;z-index:22;display:none;max-width:min(430px,calc(100vw - 40px));padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:500 12px var(--body);box-shadow:var(--shadow-sm)}.voice-status.on{display:block}.cms-voice-state{font-weight:800}.cms-voice-state.enabled{color:var(--mint)}.cms-voice-state.disabled{color:#ef8b8b}@media(max-width:760px){.voice-fab span{display:none}.voice-fab{padding:14px}.voice-status{left:12px;bottom:76px}}@media print{.voice-fab,.voice-status{display:none!important}}
+
+/* ===== Compact floating assistant controls ===== */
+.cb-fab,.voice-fab{width:54px;height:54px;padding:0!important;border-radius:50%!important;display:none;align-items:center;justify-content:center;gap:0;box-shadow:0 12px 28px -10px rgba(0,0,0,.42);transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.cb-fab{display:flex;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom));left:auto}
+.voice-fab.on{display:flex;left:auto;right:max(20px,env(safe-area-inset-right));bottom:max(84px,calc(env(safe-area-inset-bottom) + 64px));background:var(--dark)}
+.cb-fab span,.voice-fab span{display:none!important}
+.cb-fab svg,.voice-fab svg{width:23px;height:23px;margin:0;flex:none}
+.cb-fab:hover,.voice-fab:hover{transform:translateY(-3px);box-shadow:0 16px 32px -10px rgba(0,0,0,.48)}
+.voice-fab.listening{background:var(--teal);animation:voiceListenPulse 1.35s ease-in-out infinite}
+@keyframes voiceListenPulse{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--teal) 22%,transparent),0 16px 32px -10px rgba(0,0,0,.48)}}
+.cb-fab::before,.voice-fab::before{content:attr(data-tooltip);position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(5px);padding:7px 10px;border-radius:8px;background:#0e1d2b;color:#fff;font:600 12px var(--body);white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .18s ease,visibility .18s}
+.cb-fab::after,.voice-fab::after{content:"";position:absolute;right:calc(100% + 6px);top:50%;transform:translateY(-50%);border:6px solid transparent;border-left-color:#0e1d2b;opacity:0;visibility:hidden;transition:opacity .18s ease,visibility .18s}
+.cb-fab:hover::before,.cb-fab:focus-visible::before,.voice-fab:hover::before,.voice-fab:focus-visible::before,.cb-fab:hover::after,.cb-fab:focus-visible::after,.voice-fab:hover::after,.voice-fab:focus-visible::after{opacity:1;visibility:visible}
+.cb-fab:hover::before,.cb-fab:focus-visible::before,.voice-fab:hover::before,.voice-fab:focus-visible::before{transform:translateY(-50%) translateX(0)}
+.voice-status{left:auto;right:86px;bottom:max(88px,calc(env(safe-area-inset-bottom) + 68px))}
+.cb-panel{bottom:max(84px,calc(env(safe-area-inset-bottom) + 64px))}
+@media(max-width:760px){.cb-fab,.voice-fab{width:50px;height:50px;right:max(12px,env(safe-area-inset-right))}.cb-fab{bottom:max(12px,env(safe-area-inset-bottom))}.voice-fab.on{bottom:max(72px,calc(env(safe-area-inset-bottom) + 60px))}.cb-fab::before,.cb-fab::after,.voice-fab::before,.voice-fab::after{display:none}.voice-status{left:12px;right:72px;bottom:max(74px,calc(env(safe-area-inset-bottom) + 62px))}.cb-panel{bottom:max(74px,calc(env(safe-area-inset-bottom) + 62px))}}
+@media print{.cb-fab,.voice-fab{display:none!important}}
+
 </style>
 <script>
 (function(){var r=document.documentElement,M={snow:'light',cream:'light',sky:'light',mint:'light',lavender:'light',slate:'dark',midnight:'dark',charcoal:'dark'},V=['--bg','--card','--line','--tint','--dark'];
@@ -774,7 +793,7 @@ r.classList.add('js')})();
  <button type="button" class="qclose" id="pkclose" aria-label="Close">×</button>
  <div class="pk"><h3 id="pkt"></h3><p class="v" id="pkv"></p><div class="opts" id="pko"></div></div>
 </dialog>
-<button type="button" class="cb-fab" id="cbfab" aria-label="Open chat" aria-expanded="false" aria-controls="cbpanel">
+<button type="button" class="cb-fab" id="cbfab" aria-label="Chat with Ankit" aria-expanded="false" aria-controls="cbpanel" data-tooltip="Chat with Ankit" title="Chat with Ankit">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>
  <span>Chat with Ankit</span><i class="dot"></i>
 </button>
@@ -787,7 +806,7 @@ r.classList.add('js')})();
 </section>
 
 
-<button type="button" class="voice-fab" id="voiceFab" aria-label="Voice commands" title="Voice commands"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg><span>Voice command</span></button>
+<button type="button" class="voice-fab" id="voiceFab" aria-label="Voice Assistant" title="Voice Assistant" data-tooltip="Voice Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg><span>Voice command</span></button>
 <div class="voice-status" id="voiceStatus" role="status" aria-live="polite"></div>
 <div class="cms-login" id="cmsLogin" aria-hidden="true"><div class="cms-box">
 <h2>Portfolio Admin</h2><p>Sign in with the admin account created in Supabase.</p>
