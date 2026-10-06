@@ -979,7 +979,7 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
   speak("I couldn't find that in Ankit's portfolio. You can ask me about his experience, skills, projects, education, clients, laboratory machines, contact details, or resume.");note("I couldn't find that in the portfolio. Tap ? for examples.")
 }
  function start(){if(!enabled())return;if(!SR)return note('Voice recognition is not supported in this browser. Try Chrome or Edge.');if(listening)return stop();rec=new SR();rec.lang='en-IN';rec.interimResults=false;rec.continuous=false;rec.onstart=function(){listening=true;fab.classList.add('listening');note('Listening…',true)};rec.onresult=function(e){command(e.results[0][0].transcript)};rec.onerror=function(e){note(e.error==='not-allowed'?'Microphone permission was denied.':'Voice error: '+e.error)};rec.onend=function(){listening=false;fab.classList.remove('listening');setTimeout(function(){status.classList.remove('on')},2500)};rec.start()}
- function openHelp(){if(help)help.classList.add('open');if(live)live.textContent='Ready. Ask anything about Ankit's portfolio, or try an example.'}
+    function openHelp() { if (help) help.classList.add('open'); if (live) live.textContent = "Ready. Ask anything about Ankit's portfolio, or try an example."; }
  function closeHelp(){if(help)help.classList.remove('open')}
  fab.onclick=function(){if(!enabled())return;start()};
  if(helpBadge)helpBadge.onclick=openHelp;
