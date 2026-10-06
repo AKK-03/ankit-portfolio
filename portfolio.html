@@ -953,12 +953,13 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
  function resume(which){var a=document.querySelector('[data-admin-button="'+which+'"]');if(!a||a.dataset.adminDisabled==='1'||getComputedStyle(a).display==='none')return note('That résumé action is currently disabled.');if(which==='view-resume')window.open(a.href,'_blank','noopener');else a.click();note(which==='view-resume'?'Opening résumé.':'Downloading résumé.')}
  function openChat(text){var b=document.getElementById('cbfab'),p=document.getElementById('cbpanel'),i=document.getElementById('cbtext');if(b&&!p.classList.contains('open'))b.click();setTimeout(function(){if(i){i.focus();if(text)i.value=text}},100);note(text?'I wrote your message in chat. Review it and press Send.':'Opening chat.')}
  function command(raw){
+  function cleanVoice(el){return (el&&el.innerText?el.innerText:'').replace(/\s+/g,' ').trim()}
   var q=(raw||'').toLowerCase().replace(/[?!.,]/g,' ').replace(/\s+/g,' ').trim();
   note('Heard: “'+raw+'”',true);
   function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
-  function section(id,label){var el=document.getElementById(id);if(!el)return false;note('Answering about '+label+'…');speak(clean(el).slice(0,1800));el.scrollIntoView({behavior:'smooth',block:'start'});return true}
+  function section(id,label){var el=document.getElementById(id);if(!el)return false;note('Answering about '+label+'…');speak(cleanVoice(el).slice(0,1800));el.scrollIntoView({behavior:'smooth',block:'start'});return true}
   if(has(['stop','be quiet','stop talking','stop reading','cancel speech'])){stop();return note('Stopped.')}
-  if(has(['help','what can i say','what can i ask','how do i use','commands'])){if(help)help.classList.add('open');speak("You can ask me naturally about Ankit's experience, skills, projects, education, clients, current work, contact details, laboratory machines, or resume. You can also ask me to open WhatsApp, email, chat, view the resume, or download it.");return note('Voice help opened. Ask naturally or try an example.')}
+  if(has(['help','what can i say','what can i ask','how do i use','commands'])){if(help)help.classList.add('open');speak("You can ask me naturally about Ankit\'s experience, skills, projects, education, clients, current work, contact details, laboratory machines, or resume. You can also ask me to open WhatsApp, email, chat, view the resume, or download it.");return note('Voice help opened. Ask naturally or try an example.')}
   if(has(['download','save','get'])&&has(['resume','résumé','cv'])){var a=document.querySelector('[data-admin-button="download-resume"]');if(a){note('Downloading résumé…');a.click();return}}
   if(has(['resume','résumé','cv'])&&has(['view','show','open','see','read'])){var a=document.querySelector('[data-admin-button="view-resume"]');if(a){note('Opening résumé…');window.open(a.href,'_blank','noopener');return}}
   if(has(['whatsapp','what s app','message him','message ankit'])){var a=document.querySelector('a[href*="wa.me"],a[href*="whatsapp"]');if(a){note('Opening WhatsApp…');window.open(a.href,'_blank','noopener');return}}
@@ -972,14 +973,14 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
   if(has(['client','customers','companies worked with']))return section('clients','clients');
   if(has(['machine','analyzer','laboratory machine','lab machine','instrument']))return section('machines','laboratory machine experience');
   if(has(['contact','reach him','reach ankit','hire','hiring','get in touch','phone','mobile']))return section('contact','contact information');
-  if(has(['who is ankit','tell me about ankit','about ankit','introduce ankit','what does ankit do','what do you do','summary','profile'])){var hero=document.querySelector('.hero');if(hero){note('Here is a quick introduction…');speak(clean(hero).slice(0,1500));hero.scrollIntoView({behavior:'smooth'});return}}
+  if(has(['who is ankit','tell me about ankit','about ankit','introduce ankit','what does ankit do','what do you do','summary','profile'])){var hero=document.querySelector('.hero');if(hero){note('Here is a quick introduction…');speak(cleanVoice(hero).slice(0,1500));hero.scrollIntoView({behavior:'smooth'});return}}
   var tokens=q.split(' ').filter(function(x){return x.length>3&&['what','when','where','which','about','tell','does','have','with','from','that','this','please','could','would','ankit'].indexOf(x)<0});
-  var candidates=Array.from(document.querySelectorAll('main section')).map(function(el){var txt=clean(el).toLowerCase(),score=0;tokens.forEach(function(t){if(txt.indexOf(t)>=0)score++});return {el:el,score:score}}).sort(function(a,b){return b.score-a.score});
-  if(candidates[0]&&candidates[0].score>0){var h=candidates[0].el.querySelector('h2,h3'),label=h?h.textContent.trim():'portfolio';note('I found this in '+label+'…');speak(clean(candidates[0].el).slice(0,1800));candidates[0].el.scrollIntoView({behavior:'smooth',block:'start'});return}
-  speak("I couldn't find that in Ankit's portfolio. You can ask me about his experience, skills, projects, education, clients, laboratory machines, contact details, or resume.");note("I couldn't find that in the portfolio. Tap ? for examples.")
+  var candidates=Array.from(document.querySelectorAll('main section')).map(function(el){var txt=cleanVoice(el).toLowerCase(),score=0;tokens.forEach(function(t){if(txt.indexOf(t)>=0)score++});return {el:el,score:score}}).sort(function(a,b){return b.score-a.score});
+  if(candidates[0]&&candidates[0].score>0){var h=candidates[0].el.querySelector('h2,h3'),label=h?h.textContent.trim():'portfolio';note('I found this in '+label+'…');speak(cleanVoice(candidates[0].el).slice(0,1800));candidates[0].el.scrollIntoView({behavior:'smooth',block:'start'});return}
+  speak("I couldn\'t find that in Ankit\'s portfolio. You can ask me about his experience, skills, projects, education, clients, laboratory machines, contact details, or resume.");note("I couldn\'t find that in the portfolio. Tap ? for examples.")
 }
  function start(){if(!enabled())return;if(!SR)return note('Voice recognition is not supported in this browser. Try Chrome or Edge.');if(listening)return stop();rec=new SR();rec.lang='en-IN';rec.interimResults=false;rec.continuous=false;rec.onstart=function(){listening=true;fab.classList.add('listening');note('Listening…',true)};rec.onresult=function(e){command(e.results[0][0].transcript)};rec.onerror=function(e){note(e.error==='not-allowed'?'Microphone permission was denied.':'Voice error: '+e.error)};rec.onend=function(){listening=false;fab.classList.remove('listening');setTimeout(function(){status.classList.remove('on')},2500)};rec.start()}
-    function openHelp() { if (help) help.classList.add('open'); if (live) live.textContent = "Ready. Ask anything about Ankit's portfolio, or try an example."; }
+    function openHelp() { if (help) help.classList.add('open'); if (live) live.textContent = "Ready. Ask anything about Ankit\'s portfolio, or try an example."; }
  function closeHelp(){if(help)help.classList.remove('open')}
  fab.onclick=function(){if(!enabled())return;start()};
  if(helpBadge)helpBadge.onclick=openHelp;
