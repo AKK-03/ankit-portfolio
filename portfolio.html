@@ -503,6 +503,34 @@ header{box-shadow:0 8px 30px -26px rgba(14,29,43,.5)}
 @media(max-width:760px){.cb-fab,.voice-fab{width:50px;height:50px;right:max(12px,env(safe-area-inset-right))}.cb-fab{bottom:max(12px,env(safe-area-inset-bottom))}.voice-fab.on{bottom:max(72px,calc(env(safe-area-inset-bottom) + 60px))}.cb-fab::before,.cb-fab::after,.voice-fab::before,.voice-fab::after{display:none}.voice-status{left:12px;right:72px;bottom:max(74px,calc(env(safe-area-inset-bottom) + 62px))}.cb-panel{bottom:max(74px,calc(env(safe-area-inset-bottom) + 62px))}}
 @media print{.cb-fab,.voice-fab{display:none!important}}
 
+
+/* ===== Voice Assistant discoverability panel ===== */
+.voice-help{
+ position:fixed;right:max(84px,calc(env(safe-area-inset-right) + 64px));
+ bottom:max(82px,calc(env(safe-area-inset-bottom) + 62px));z-index:24;
+ width:min(340px,calc(100vw - 32px));display:none;padding:18px;
+ border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);
+ box-shadow:0 22px 52px -18px rgba(0,0,0,.45);font-family:var(--body)
+}
+.voice-help.open{display:block;animation:rise .22s ease both}
+.voice-help-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.voice-help-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--tint);color:var(--teal);font-size:18px}
+.voice-help h3{font:800 18px var(--head);margin:0}
+.voice-help-close{margin-left:auto;width:30px;height:30px;border:0;border-radius:50%;background:var(--bg);color:var(--ink);font-size:19px;cursor:pointer}
+.voice-help p{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.5}
+.voice-examples{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.voice-examples button{border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:var(--bg);color:var(--ink);font:600 11px var(--body);cursor:pointer}
+.voice-examples button:hover{border-color:var(--teal);color:var(--teal)}
+.voice-start{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:11px 14px;background:var(--teal);color:#fff;font:700 13px var(--body);cursor:pointer}
+.voice-live{margin-top:10px;padding:8px 10px;border-radius:8px;background:var(--bg);color:var(--muted);font-size:12px;min-height:36px}
+.voice-help-badge{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(137px,calc(env(safe-area-inset-bottom) + 117px));z-index:23;width:20px;height:20px;display:none;place-items:center;border:2px solid var(--bg);border-radius:50%;background:var(--amber);color:#3a2200;font:800 11px var(--body);cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.voice-help-badge.on{display:grid}
+@media(max-width:760px){
+ .voice-help{left:12px;right:72px;bottom:max(72px,calc(env(safe-area-inset-bottom) + 60px));width:auto}
+ .voice-help-badge{right:max(8px,env(safe-area-inset-right));bottom:max(122px,calc(env(safe-area-inset-bottom) + 110px))}
+}
+@media print{.voice-help,.voice-help-badge{display:none!important}}
+
 </style>
 <script>
 (function(){var r=document.documentElement,M={snow:'light',cream:'light',sky:'light',mint:'light',lavender:'light',slate:'dark',midnight:'dark',charcoal:'dark'},V=['--bg','--card','--line','--tint','--dark'];
@@ -807,6 +835,18 @@ r.classList.add('js')})();
 
 
 <button type="button" class="voice-fab" id="voiceFab" aria-label="Voice Assistant" title="Voice Assistant" data-tooltip="Voice Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg><span>Voice command</span></button>
+<button type="button" class="voice-help-badge" id="voiceHelpBadge" aria-label="Voice command help" title="Voice command help">?</button>
+<div class="voice-help" id="voiceHelp" aria-label="Voice Assistant help">
+ <div class="voice-help-head"><div class="voice-help-icon">🎙</div><div><h3>Voice Assistant</h3></div><button type="button" class="voice-help-close" id="voiceHelpClose" aria-label="Close voice help">×</button></div>
+ <p>Tap <b>Start listening</b>, then try one of these commands:</p>
+ <div class="voice-examples">
+  <button type="button">Read experience</button><button type="button">Read skills</button><button type="button">Read projects</button>
+  <button type="button">View resume</button><button type="button">Download resume</button><button type="button">Open WhatsApp</button>
+  <button type="button">Open email</button><button type="button">Open chat</button><button type="button">Voice help</button>
+ </div>
+ <button type="button" class="voice-start" id="voiceStart">🎙 Start listening</button>
+ <div class="voice-live" id="voiceLive" role="status" aria-live="polite">Ready. Choose a command or start speaking.</div>
+</div>
 <div class="voice-status" id="voiceStatus" role="status" aria-live="polite"></div>
 <div class="cms-login" id="cmsLogin" aria-hidden="true"><div class="cms-box">
 <h2>Portfolio Admin</h2><p>Sign in with the admin account created in Supabase.</p>
@@ -902,19 +942,19 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
    Public visitors load saved content automatically.
    Open portfolio.html?admin=1 to sign in and edit. */
 (function(){
- var fab=document.getElementById('voiceFab'),status=document.getElementById('voiceStatus'); if(!fab||!status)return;
+ var fab=document.getElementById('voiceFab'),status=document.getElementById('voiceStatus'),help=document.getElementById('voiceHelp'),helpBadge=document.getElementById('voiceHelpBadge'),helpClose=document.getElementById('voiceHelpClose'),startBtn=document.getElementById('voiceStart'),live=document.getElementById('voiceLive'); if(!fab||!status)return;
  var SR=window.SpeechRecognition||window.webkitSpeechRecognition, rec=null, listening=false;
  function enabled(){return localStorage.getItem('portfolioVoiceEnabled')!=='0'}
- function apply(){fab.classList.toggle('on',enabled());if(!enabled()){stop();status.classList.remove('on')}}
+ function apply(){fab.classList.toggle('on',enabled());if(helpBadge)helpBadge.classList.toggle('on',enabled());if(!enabled()){stop();status.classList.remove('on');if(help)help.classList.remove('open')}}
  window.portfolioVoice={enabled:enabled,setEnabled:function(v){localStorage.setItem('portfolioVoiceEnabled',v?'1':'0');apply();document.dispatchEvent(new CustomEvent('portfolio-voice-change',{detail:{enabled:v}}))}};
- function note(t,keep){status.textContent=t;status.classList.add('on');if(!keep)setTimeout(function(){if(!listening)status.classList.remove('on')},3500)}
+ function note(t,keep){status.textContent=t;if(live)live.textContent=t;status.classList.add('on');if(!keep)setTimeout(function(){if(!listening)status.classList.remove('on')},3500)}
  function speak(t){if(!('speechSynthesis' in window))return; speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.rate=1;u.pitch=1;speechSynthesis.speak(u)}
  function section(id,label){var el=document.getElementById(id);if(!el)return note(label+' section was not found.');el.scrollIntoView({behavior:'smooth',block:'start'});var text=(el.innerText||'').replace(/\s+/g,' ').trim();speak(text.slice(0,3200));note('Reading '+label+'. Say “stop reading” to stop.')}
  function resume(which){var a=document.querySelector('[data-admin-button="'+which+'"]');if(!a||a.dataset.adminDisabled==='1'||getComputedStyle(a).display==='none')return note('That résumé action is currently disabled.');if(which==='view-resume')window.open(a.href,'_blank','noopener');else a.click();note(which==='view-resume'?'Opening résumé.':'Downloading résumé.')}
  function openChat(text){var b=document.getElementById('cbfab'),p=document.getElementById('cbpanel'),i=document.getElementById('cbtext');if(b&&!p.classList.contains('open'))b.click();setTimeout(function(){if(i){i.focus();if(text)i.value=text}},100);note(text?'I wrote your message in chat. Review it and press Send.':'Opening chat.')}
  function command(raw){var q=(raw||'').toLowerCase().trim();note('Heard: “'+raw+'”');
   if(/stop (reading|speaking)|be quiet|stop voice/.test(q)){speechSynthesis&&speechSynthesis.cancel();return note('Stopped reading.')}
-  if(/help|what can i say|commands/.test(q)){speak('You can ask me to read a section, view or download the resume, open WhatsApp, open email, or open chat.');return note('Try: read experience, read skills, view resume, download resume, open WhatsApp, open email, or open chat.')}
+  if(/help|what can i say|commands/.test(q)){if(help)help.classList.add('open');speak('You can ask me to read experience, skills, projects, education, or clients. You can also view or download the resume, open WhatsApp, open email, or open chat.');return note('Voice help opened. Try one of the example commands.')}
   var secs=[[/read (about|profile|summary)/,'about','About'],[/read (experience|work|career)/,'experience','Experience'],[/read clients?/,'clients','Clients'],[/read (skills?|technology|technical skills)/,'skills','Skills'],[/read projects?/,'projects','Projects'],[/read education/,'education','Education'],[/read contact/,'contact','Contact']];for(var x of secs)if(x[0].test(q))return section(x[1],x[2]);
   if(/(view|open|show) (the )?(resume|résumé|cv)/.test(q))return resume('view-resume');
   if(/download (the )?(resume|résumé|cv)/.test(q))return resume('download-resume');
@@ -927,7 +967,14 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
  }
  function stop(){if(rec&&listening){try{rec.stop()}catch(e){}}listening=false;fab.classList.remove('listening')}
  function start(){if(!enabled())return;if(!SR)return note('Voice recognition is not supported in this browser. Try Chrome or Edge.');if(listening)return stop();rec=new SR();rec.lang='en-IN';rec.interimResults=false;rec.continuous=false;rec.onstart=function(){listening=true;fab.classList.add('listening');note('Listening…',true)};rec.onresult=function(e){command(e.results[0][0].transcript)};rec.onerror=function(e){note(e.error==='not-allowed'?'Microphone permission was denied.':'Voice error: '+e.error)};rec.onend=function(){listening=false;fab.classList.remove('listening');setTimeout(function(){status.classList.remove('on')},2500)};rec.start()}
- fab.onclick=start;document.addEventListener('portfolio-voice-change',apply);apply();
+ function openHelp(){if(help)help.classList.add('open');if(live)live.textContent='Ready. Choose a command or start speaking.'}
+ function closeHelp(){if(help)help.classList.remove('open')}
+ fab.onclick=function(){if(!enabled())return;openHelp()};
+ if(helpBadge)helpBadge.onclick=openHelp;
+ if(helpClose)helpClose.onclick=closeHelp;
+ if(startBtn)startBtn.onclick=start;
+ if(help)help.querySelectorAll('.voice-examples button').forEach(function(b){b.onclick=function(){var t=b.textContent.trim();if(live)live.textContent='Example: “'+t+'”';if(t.toLowerCase()==='voice help'){command(t)}}});
+ document.addEventListener('portfolio-voice-change',apply);apply();
 })();
 
 (function(){
