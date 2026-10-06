@@ -838,14 +838,14 @@ r.classList.add('js')})();
 <button type="button" class="voice-help-badge" id="voiceHelpBadge" aria-label="Voice command help" title="Voice command help">?</button>
 <div class="voice-help" id="voiceHelp" aria-label="Voice Assistant help">
  <div class="voice-help-head"><div class="voice-help-icon">🎙</div><div><h3>Voice Assistant</h3></div><button type="button" class="voice-help-close" id="voiceHelpClose" aria-label="Close voice help">×</button></div>
- <p>Tap <b>Start listening</b>, then try one of these commands:</p>
+ <p>Tap <b>Start listening</b> and ask naturally. You don't need an exact command:</p>
  <div class="voice-examples">
   <button type="button">Read experience</button><button type="button">Read skills</button><button type="button">Read projects</button>
   <button type="button">View resume</button><button type="button">Download resume</button><button type="button">Open WhatsApp</button>
   <button type="button">Open email</button><button type="button">Open chat</button><button type="button">Voice help</button>
  </div>
  <button type="button" class="voice-start" id="voiceStart">🎙 Start listening</button>
- <div class="voice-live" id="voiceLive" role="status" aria-live="polite">Ready. Choose a command or start speaking.</div>
+ <div class="voice-live" id="voiceLive" role="status" aria-live="polite">Ready. Ask anything about Ankit's portfolio, or try an example.</div>
 </div>
 <div class="voice-status" id="voiceStatus" role="status" aria-live="polite"></div>
 <div class="cms-login" id="cmsLogin" aria-hidden="true"><div class="cms-box">
@@ -952,22 +952,34 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
  function section(id,label){var el=document.getElementById(id);if(!el)return note(label+' section was not found.');el.scrollIntoView({behavior:'smooth',block:'start'});var text=(el.innerText||'').replace(/\s+/g,' ').trim();speak(text.slice(0,3200));note('Reading '+label+'. Say “stop reading” to stop.')}
  function resume(which){var a=document.querySelector('[data-admin-button="'+which+'"]');if(!a||a.dataset.adminDisabled==='1'||getComputedStyle(a).display==='none')return note('That résumé action is currently disabled.');if(which==='view-resume')window.open(a.href,'_blank','noopener');else a.click();note(which==='view-resume'?'Opening résumé.':'Downloading résumé.')}
  function openChat(text){var b=document.getElementById('cbfab'),p=document.getElementById('cbpanel'),i=document.getElementById('cbtext');if(b&&!p.classList.contains('open'))b.click();setTimeout(function(){if(i){i.focus();if(text)i.value=text}},100);note(text?'I wrote your message in chat. Review it and press Send.':'Opening chat.')}
- function command(raw){var q=(raw||'').toLowerCase().trim();note('Heard: “'+raw+'”');
-  if(/stop (reading|speaking)|be quiet|stop voice/.test(q)){speechSynthesis&&speechSynthesis.cancel();return note('Stopped reading.')}
-  if(/help|what can i say|commands/.test(q)){if(help)help.classList.add('open');speak('You can ask me to read experience, skills, projects, education, or clients. You can also view or download the resume, open WhatsApp, open email, or open chat.');return note('Voice help opened. Try one of the example commands.')}
-  var secs=[[/read (about|profile|summary)/,'about','About'],[/read (experience|work|career)/,'experience','Experience'],[/read clients?/,'clients','Clients'],[/read (skills?|technology|technical skills)/,'skills','Skills'],[/read projects?/,'projects','Projects'],[/read education/,'education','Education'],[/read contact/,'contact','Contact']];for(var x of secs)if(x[0].test(q))return section(x[1],x[2]);
-  if(/(view|open|show) (the )?(resume|résumé|cv)/.test(q))return resume('view-resume');
-  if(/download (the )?(resume|résumé|cv)/.test(q))return resume('download-resume');
-  if(/(open|start|go to) whatsapp/.test(q)){window.open('https://wa.me/918574518136?text='+encodeURIComponent('Hi Ankit, I visited your portfolio and would like to connect.'),'_blank','noopener');return note('Opening WhatsApp.')}
-  if(/(open|send|write) (an )?(email|mail)/.test(q)){location.href='mailto:ankitkanaujia8@gmail.com?subject='+encodeURIComponent('Opportunity / Portfolio enquiry');return note('Opening your email app.')}
-  var m=q.match(/(?:write|type|put)(?: on| in| to)? (?:the )?(?:chat|chatbot)\s*(?:that|message)?\s*(.*)/);if(m)return openChat((m[1]||'').trim());
-  if(/(open|start|show) (the )?(chat|chatbot)/.test(q))return openChat('');
-  if(/go to (experience|skills|projects|education|clients|contact)/.test(q)){var id=q.match(/go to (experience|skills|projects|education|clients|contact)/)[1];document.getElementById(id)?.scrollIntoView({behavior:'smooth'});return note('Opening '+id+'.')}
-  speak('Sorry, I did not understand that command. Say voice help to hear examples.');note('Command not recognised. Say “voice help” for examples.');
- }
- function stop(){if(rec&&listening){try{rec.stop()}catch(e){}}listening=false;fab.classList.remove('listening')}
+ function command(raw){
+  var q=(raw||'').toLowerCase().replace(/[?!.,]/g,' ').replace(/\s+/g,' ').trim();
+  note('Heard: “'+raw+'”',true);
+  function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
+  function section(id,label){var el=document.getElementById(id);if(!el)return false;note('Answering about '+label+'…');speak(clean(el).slice(0,1800));el.scrollIntoView({behavior:'smooth',block:'start'});return true}
+  if(has(['stop','be quiet','stop talking','stop reading','cancel speech'])){stop();return note('Stopped.')}
+  if(has(['help','what can i say','what can i ask','how do i use','commands'])){if(help)help.classList.add('open');speak("You can ask me naturally about Ankit's experience, skills, projects, education, clients, current work, contact details, laboratory machines, or resume. You can also ask me to open WhatsApp, email, chat, view the resume, or download it.");return note('Voice help opened. Ask naturally or try an example.')}
+  if(has(['download','save','get'])&&has(['resume','résumé','cv'])){var a=document.querySelector('[data-admin-button="download-resume"]');if(a){note('Downloading résumé…');a.click();return}}
+  if(has(['resume','résumé','cv'])&&has(['view','show','open','see','read'])){var a=document.querySelector('[data-admin-button="view-resume"]');if(a){note('Opening résumé…');window.open(a.href,'_blank','noopener');return}}
+  if(has(['whatsapp','what s app','message him','message ankit'])){var a=document.querySelector('a[href*="wa.me"],a[href*="whatsapp"]');if(a){note('Opening WhatsApp…');window.open(a.href,'_blank','noopener');return}}
+  if(has(['email','e mail','mail him','send mail','send an email'])){var a=document.querySelector('a[href^="mailto:"]');if(a){note('Opening email…');location.href=a.href;return}}
+  if(has(['chat','chatbot','talk to ankit','talk with ankit'])){var b=document.getElementById('cbFab');if(b){note('Opening chat…');b.click();return}}
+  if(has(['experience','career','work history','employment','job history']))return section('experience','experience');
+  if(has(['current job','current role','working now','work now','currently work','where does he work','where is he working','company','employer']))return section('experience','current work');
+  if(has(['skill','technology','technologies','tech stack','programming','tools','hl7','dot net','.net','c#','c sharp','sql','lims','lis']))return section('skills','skills');
+  if(has(['project','built','developed']))return section('projects','projects');
+  if(has(['education','study','studied','degree','qualification','college','university']))return section('education','education');
+  if(has(['client','customers','companies worked with']))return section('clients','clients');
+  if(has(['machine','analyzer','laboratory machine','lab machine','instrument']))return section('machines','laboratory machine experience');
+  if(has(['contact','reach him','reach ankit','hire','hiring','get in touch','phone','mobile']))return section('contact','contact information');
+  if(has(['who is ankit','tell me about ankit','about ankit','introduce ankit','what does ankit do','what do you do','summary','profile'])){var hero=document.querySelector('.hero');if(hero){note('Here is a quick introduction…');speak(clean(hero).slice(0,1500));hero.scrollIntoView({behavior:'smooth'});return}}
+  var tokens=q.split(' ').filter(function(x){return x.length>3&&['what','when','where','which','about','tell','does','have','with','from','that','this','please','could','would','ankit'].indexOf(x)<0});
+  var candidates=Array.from(document.querySelectorAll('main section')).map(function(el){var txt=clean(el).toLowerCase(),score=0;tokens.forEach(function(t){if(txt.indexOf(t)>=0)score++});return {el:el,score:score}}).sort(function(a,b){return b.score-a.score});
+  if(candidates[0]&&candidates[0].score>0){var h=candidates[0].el.querySelector('h2,h3'),label=h?h.textContent.trim():'portfolio';note('I found this in '+label+'…');speak(clean(candidates[0].el).slice(0,1800));candidates[0].el.scrollIntoView({behavior:'smooth',block:'start'});return}
+  speak("I couldn't find that in Ankit's portfolio. You can ask me about his experience, skills, projects, education, clients, laboratory machines, contact details, or resume.");note("I couldn't find that in the portfolio. Tap ? for examples.")
+}
  function start(){if(!enabled())return;if(!SR)return note('Voice recognition is not supported in this browser. Try Chrome or Edge.');if(listening)return stop();rec=new SR();rec.lang='en-IN';rec.interimResults=false;rec.continuous=false;rec.onstart=function(){listening=true;fab.classList.add('listening');note('Listening…',true)};rec.onresult=function(e){command(e.results[0][0].transcript)};rec.onerror=function(e){note(e.error==='not-allowed'?'Microphone permission was denied.':'Voice error: '+e.error)};rec.onend=function(){listening=false;fab.classList.remove('listening');setTimeout(function(){status.classList.remove('on')},2500)};rec.start()}
- function openHelp(){if(help)help.classList.add('open');if(live)live.textContent='Ready. Choose a command or start speaking.'}
+ function openHelp(){if(help)help.classList.add('open');if(live)live.textContent='Ready. Ask anything about Ankit's portfolio, or try an example.'}
  function closeHelp(){if(help)help.classList.remove('open')}
  fab.onclick=function(){if(!enabled())return;start()};
  if(helpBadge)helpBadge.onclick=openHelp;
