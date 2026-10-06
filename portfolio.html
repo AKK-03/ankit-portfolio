@@ -537,6 +537,69 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
 document.getElementById('pkclose').onclick=function(){d.close()};
 d.addEventListener('click',function(e){if(e.target===d)d.close()});
 })();
-\n\n/* ===== Portfolio CMS (Supabase) =====\n   Public visitors load saved content automatically.\n   Open portfolio.html?admin=1 to sign in and edit. */\n(function(){\n  var cfg=window.PORTFOLIO_CMS||{};\n  if(!cfg.url||!cfg.anonKey||cfg.url.indexOf('YOUR_')>=0){\n    if(new URLSearchParams(location.search).get('admin')==='1') console.warn('CMS not configured. Edit cms-config.js first.');\n    return;\n  }\n  var sb=window.supabase.createClient(cfg.url,cfg.anonKey);\n  var main=document.querySelector('main'), login=document.getElementById('cmsLogin'), bar=document.getElementById('cmsBar'), msg=document.getElementById('cmsMsg'), status=document.getElementById('cmsStatus');\n  var admin=new URLSearchParams(location.search).get('admin')==='1', selected=null;\n  function setStatus(t){status.textContent=t}\n  async function loadSaved(){\n    var r=await sb.from('portfolio_content').select('html').eq('id',1).maybeSingle();\n    if(r.data&&r.data.html){main.innerHTML=r.data.html; document.getElementById('year')&&(document.getElementById('year').textContent=new Date().getFullYear())}\n  }\n  function editable(on){\n    document.body.classList.toggle('cms-editing',on); bar.classList.toggle('open',on);\n    main.querySelectorAll('h1,h2,h3,p,li,strong,span,.tag,.client b,.node b').forEach(function(e){e.contentEditable=on?'true':'false'});\n    if(on){\n      main.addEventListener('click',pick,true);\n      main.querySelectorAll('img').forEach(function(i){i.title='Click to select image, then use Change selected image'});\n    }\n  }\n  function pick(e){\n    if(e.target.closest('a,button,input,textarea,dialog')) return;\n    e.preventDefault(); e.stopPropagation();\n    if(selected) selected.classList.remove('cms-selected');\n    selected=e.target.closest('.client,.card,.stat,.job,.project,img')||e.target;\n    selected.classList.add('cms-selected'); setStatus('Selected: '+selected.tagName.toLowerCase()+(selected.className?' · '+selected.className.replace('cms-selected','').trim():''));\n  }\n  async function boot(){\n    await loadSaved();\n    if(!admin) return;\n    var sess=(await sb.auth.getSession()).data.session;\n    if(sess) editable(true); else {login.classList.add('open');login.setAttribute('aria-hidden','false')}\n  }\n  document.getElementById('cmsSignIn').onclick=async function(){\n    msg.textContent='Signing in…'; var r=await sb.auth.signInWithPassword({email:document.getElementById('cmsEmail').value.trim(),password:document.getElementById('cmsPassword').value});\n    if(r.error){msg.textContent=r.error.message;return} login.classList.remove('open');editable(true);msg.textContent='';\n  };\n  document.getElementById('cmsSave').onclick=async function(){\n    if(selected) selected.classList.remove('cms-selected');\n    main.querySelectorAll('[contenteditable]').forEach(function(e){e.removeAttribute('contenteditable')});\n    var html=main.innerHTML; editable(true); if(selected) selected.classList.add('cms-selected');\n    setStatus('Saving…'); var r=await sb.from('portfolio_content').upsert({id:1,html:html,updated_at:new Date().toISOString()});\n    setStatus(r.error?'Save failed: '+r.error.message:'Saved successfully ✓');\n  };\n  document.getElementById('cmsDelete').onclick=function(){if(!selected)return setStatus('Select a block first'); if(confirm('Delete the selected block?')){var x=selected;selected=null;x.remove();setStatus('Deleted. Click Save changes.')}};\n  document.getElementById('cmsDuplicate').onclick=function(){if(!selected)return setStatus('Select a block first');var c=selected.cloneNode(true);c.classList.remove('cms-selected');selected.after(c);editable(true);setStatus('Duplicated. Edit it, then Save changes.')};\n  document.getElementById('cmsImage').onclick=function(){if(!selected)return setStatus('Select an image first');var img=selected.tagName==='IMG'?selected:selected.querySelector&&selected.querySelector('img');if(!img)return setStatus('Selected block has no image');document.getElementById('cmsFile').dataset.target='1';document.getElementById('cmsFile')._target=img;document.getElementById('cmsFile').click()};\n  document.getElementById('cmsFile').onchange=async function(){\n    var f=this.files[0],img=this._target;if(!f||!img)return;setStatus('Uploading image…');\n    var ext=(f.name.split('.').pop()||'jpg').toLowerCase(), path='images/'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;\n    var u=await sb.storage.from(cfg.bucket||'portfolio').upload(path,f,{upsert:false});if(u.error)return setStatus('Upload failed: '+u.error.message);\n    var pub=sb.storage.from(cfg.bucket||'portfolio').getPublicUrl(path);img.src=pub.data.publicUrl;setStatus('Image changed. Click Save changes.');this.value='';\n  };\n  document.getElementById('cmsLogout').onclick=async function(){await sb.auth.signOut();location.href=location.pathname};\n  boot();\n})();\n</script>
+
+
+/* ===== Portfolio CMS (Supabase) =====
+   Public visitors load saved content automatically.
+   Open portfolio.html?admin=1 to sign in and edit. */
+(function(){
+  var cfg=window.PORTFOLIO_CMS||{};
+  if(!cfg.url||!cfg.anonKey||cfg.url.indexOf('YOUR_')>=0){
+    if(new URLSearchParams(location.search).get('admin')==='1') console.warn('CMS not configured. Edit cms-config.js first.');
+    return;
+  }
+  var sb=window.supabase.createClient(cfg.url,cfg.anonKey);
+  var main=document.querySelector('main'), login=document.getElementById('cmsLogin'), bar=document.getElementById('cmsBar'), msg=document.getElementById('cmsMsg'), status=document.getElementById('cmsStatus');
+  var admin=new URLSearchParams(location.search).get('admin')==='1', selected=null;
+  function setStatus(t){status.textContent=t}
+  async function loadSaved(){
+    var r=await sb.from('portfolio_content').select('html').eq('id',1).maybeSingle();
+    if(r.data&&r.data.html){main.innerHTML=r.data.html; document.getElementById('year')&&(document.getElementById('year').textContent=new Date().getFullYear())}
+  }
+  function editable(on){
+    document.body.classList.toggle('cms-editing',on); bar.classList.toggle('open',on);
+    main.querySelectorAll('h1,h2,h3,p,li,strong,span,.tag,.client b,.node b').forEach(function(e){e.contentEditable=on?'true':'false'});
+    if(on){
+      main.addEventListener('click',pick,true);
+      main.querySelectorAll('img').forEach(function(i){i.title='Click to select image, then use Change selected image'});
+    }
+  }
+  function pick(e){
+    if(e.target.closest('a,button,input,textarea,dialog')) return;
+    e.preventDefault(); e.stopPropagation();
+    if(selected) selected.classList.remove('cms-selected');
+    selected=e.target.closest('.client,.card,.stat,.job,.project,img')||e.target;
+    selected.classList.add('cms-selected'); setStatus('Selected: '+selected.tagName.toLowerCase()+(selected.className?' · '+selected.className.replace('cms-selected','').trim():''));
+  }
+  async function boot(){
+    await loadSaved();
+    if(!admin) return;
+    var sess=(await sb.auth.getSession()).data.session;
+    if(sess) editable(true); else {login.classList.add('open');login.setAttribute('aria-hidden','false')}
+  }
+  document.getElementById('cmsSignIn').onclick=async function(){
+    msg.textContent='Signing in…'; var r=await sb.auth.signInWithPassword({email:document.getElementById('cmsEmail').value.trim(),password:document.getElementById('cmsPassword').value});
+    if(r.error){msg.textContent=r.error.message;return} login.classList.remove('open');editable(true);msg.textContent='';
+  };
+  document.getElementById('cmsSave').onclick=async function(){
+    if(selected) selected.classList.remove('cms-selected');
+    main.querySelectorAll('[contenteditable]').forEach(function(e){e.removeAttribute('contenteditable')});
+    var html=main.innerHTML; editable(true); if(selected) selected.classList.add('cms-selected');
+    setStatus('Saving…'); var r=await sb.from('portfolio_content').upsert({id:1,html:html,updated_at:new Date().toISOString()});
+    setStatus(r.error?'Save failed: '+r.error.message:'Saved successfully ✓');
+  };
+  document.getElementById('cmsDelete').onclick=function(){if(!selected)return setStatus('Select a block first'); if(confirm('Delete the selected block?')){var x=selected;selected=null;x.remove();setStatus('Deleted. Click Save changes.')}};
+  document.getElementById('cmsDuplicate').onclick=function(){if(!selected)return setStatus('Select a block first');var c=selected.cloneNode(true);c.classList.remove('cms-selected');selected.after(c);editable(true);setStatus('Duplicated. Edit it, then Save changes.')};
+  document.getElementById('cmsImage').onclick=function(){if(!selected)return setStatus('Select an image first');var img=selected.tagName==='IMG'?selected:selected.querySelector&&selected.querySelector('img');if(!img)return setStatus('Selected block has no image');document.getElementById('cmsFile').dataset.target='1';document.getElementById('cmsFile')._target=img;document.getElementById('cmsFile').click()};
+  document.getElementById('cmsFile').onchange=async function(){
+    var f=this.files[0],img=this._target;if(!f||!img)return;setStatus('Uploading image…');
+    var ext=(f.name.split('.').pop()||'jpg').toLowerCase(), path='images/'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+    var u=await sb.storage.from(cfg.bucket||'portfolio').upload(path,f,{upsert:false});if(u.error)return setStatus('Upload failed: '+u.error.message);
+    var pub=sb.storage.from(cfg.bucket||'portfolio').getPublicUrl(path);img.src=pub.data.publicUrl;setStatus('Image changed. Click Save changes.');this.value='';
+  };
+  document.getElementById('cmsLogout').onclick=async function(){await sb.auth.signOut();location.href=location.pathname};
+  boot();
+})();
+</script>
 </body>
 </html>
