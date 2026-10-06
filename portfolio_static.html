@@ -211,22 +211,7 @@ dialog#pick[open]{animation:rise .25s ease both}
 .pk .opts .wa{background:#25d366;border-color:#25d366;color:#04200f}
 .pk .opts .wa small{color:#0b3a1c}
 .pk .opts .wa:hover{border-color:#25d366}
-
-/* portfolio CMS admin mode */
-.cms-login,.cms-bar{position:fixed;z-index:1000;font-family:var(--body)}
-.cms-login{inset:0;background:rgba(5,12,19,.88);display:none;place-items:center;padding:20px}
-.cms-login.open{display:grid}.cms-box{width:min(420px,100%);background:#14293a;color:#fff;border:1px solid #27414f;border-radius:16px;padding:26px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
-.cms-box h2{margin-bottom:8px}.cms-box p{color:#a5b6c4;font-size:14px}.cms-box input{width:100%;margin:7px 0;padding:11px 13px;border:1px solid #3c5a6a;border-radius:8px;background:#0e1d2b;color:#fff;font:400 15px var(--body)}
-.cms-box button,.cms-bar button{border:0;border-radius:8px;padding:10px 14px;background:var(--mint);color:#06231f;font:700 13px var(--body);cursor:pointer}.cms-msg{min-height:20px;color:#f2a541!important;margin-top:8px!important}
-.cms-bar{left:16px;right:16px;bottom:16px;display:none;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;background:#0e1d2b;color:#fff;border:1px solid #27414f;border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.4)}
-.cms-bar.open{display:flex}.cms-bar span{font-size:13px;color:#a5b6c4;margin-right:auto}.cms-bar button.danger{background:#ef6b6b;color:#260707}.cms-bar button.secondary{background:#243b4c;color:#fff}
-.cms-editing main [contenteditable=true]{outline:1px dashed rgba(15,143,126,.45);outline-offset:2px}.cms-editing main [contenteditable=true]:focus{outline:2px solid var(--mint);background:color-mix(in srgb,var(--tint) 55%,transparent)}
-.cms-selected{outline:3px solid var(--amber)!important;outline-offset:3px!important}.cms-editing{padding-bottom:84px}
-.cms-hint{position:fixed;right:18px;top:88px;z-index:999;background:#0e1d2b;color:#fff;border:1px solid #27414f;border-radius:10px;padding:9px 12px;font-size:12px;display:none}.cms-editing .cms-hint{display:block}
-@media(max-width:760px){.cms-bar{left:8px;right:8px;bottom:8px}.cms-hint{display:none!important}}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="cms-config.js"></script>
 </head>
 <body>
 <header>
@@ -455,17 +440,6 @@ dialog#pick[open]{animation:rise .25s ease both}
  <div class="cb-chips" id="cbchips"></div>
  <form class="cb-in" id="cbform" autocomplete="off"><input id="cbtext" placeholder="Ask about Ankit’s experience…" aria-label="Type your message"><button type="submit">Send</button></form>
 </section>
-
-<div class="cms-login" id="cmsLogin" aria-hidden="true"><div class="cms-box">
-<h2>Portfolio Admin</h2><p>Sign in with the admin account created in Supabase.</p>
-<input id="cmsEmail" type="email" placeholder="Admin email" autocomplete="username">
-<input id="cmsPassword" type="password" placeholder="Password" autocomplete="current-password">
-<button id="cmsSignIn" type="button">Sign in</button><p class="cms-msg" id="cmsMsg"></p>
-</div></div>
-<div class="cms-hint">Admin mode: edit text directly · click a block to select it</div>
-<div class="cms-bar" id="cmsBar"><span id="cmsStatus">Admin editing enabled</span>
-<button id="cmsSave" type="button">Save changes</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button id="cmsLogout" type="button" class="secondary">Logout</button>
-<input id="cmsFile" type="file" accept="image/*" hidden></div>
 <script>
 document.getElementById('year').textContent=new Date().getFullYear();
 (function(){var f=document.getElementById('qform');
@@ -537,6 +511,6 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
 document.getElementById('pkclose').onclick=function(){d.close()};
 d.addEventListener('click',function(e){if(e.target===d)d.close()});
 })();
-\n\n/* ===== Portfolio CMS (Supabase) =====\n   Public visitors load saved content automatically.\n   Open portfolio.html?admin=1 to sign in and edit. */\n(function(){\n  var cfg=window.PORTFOLIO_CMS||{};\n  if(!cfg.url||!cfg.anonKey||cfg.url.indexOf('YOUR_')>=0){\n    if(new URLSearchParams(location.search).get('admin')==='1') console.warn('CMS not configured. Edit cms-config.js first.');\n    return;\n  }\n  var sb=window.supabase.createClient(cfg.url,cfg.anonKey);\n  var main=document.querySelector('main'), login=document.getElementById('cmsLogin'), bar=document.getElementById('cmsBar'), msg=document.getElementById('cmsMsg'), status=document.getElementById('cmsStatus');\n  var admin=new URLSearchParams(location.search).get('admin')==='1', selected=null;\n  function setStatus(t){status.textContent=t}\n  async function loadSaved(){\n    var r=await sb.from('portfolio_content').select('html').eq('id',1).maybeSingle();\n    if(r.data&&r.data.html){main.innerHTML=r.data.html; document.getElementById('year')&&(document.getElementById('year').textContent=new Date().getFullYear())}\n  }\n  function editable(on){\n    document.body.classList.toggle('cms-editing',on); bar.classList.toggle('open',on);\n    main.querySelectorAll('h1,h2,h3,p,li,strong,span,.tag,.client b,.node b').forEach(function(e){e.contentEditable=on?'true':'false'});\n    if(on){\n      main.addEventListener('click',pick,true);\n      main.querySelectorAll('img').forEach(function(i){i.title='Click to select image, then use Change selected image'});\n    }\n  }\n  function pick(e){\n    if(e.target.closest('a,button,input,textarea,dialog')) return;\n    e.preventDefault(); e.stopPropagation();\n    if(selected) selected.classList.remove('cms-selected');\n    selected=e.target.closest('.client,.card,.stat,.job,.project,img')||e.target;\n    selected.classList.add('cms-selected'); setStatus('Selected: '+selected.tagName.toLowerCase()+(selected.className?' · '+selected.className.replace('cms-selected','').trim():''));\n  }\n  async function boot(){\n    await loadSaved();\n    if(!admin) return;\n    var sess=(await sb.auth.getSession()).data.session;\n    if(sess) editable(true); else {login.classList.add('open');login.setAttribute('aria-hidden','false')}\n  }\n  document.getElementById('cmsSignIn').onclick=async function(){\n    msg.textContent='Signing in…'; var r=await sb.auth.signInWithPassword({email:document.getElementById('cmsEmail').value.trim(),password:document.getElementById('cmsPassword').value});\n    if(r.error){msg.textContent=r.error.message;return} login.classList.remove('open');editable(true);msg.textContent='';\n  };\n  document.getElementById('cmsSave').onclick=async function(){\n    if(selected) selected.classList.remove('cms-selected');\n    main.querySelectorAll('[contenteditable]').forEach(function(e){e.removeAttribute('contenteditable')});\n    var html=main.innerHTML; editable(true); if(selected) selected.classList.add('cms-selected');\n    setStatus('Saving…'); var r=await sb.from('portfolio_content').upsert({id:1,html:html,updated_at:new Date().toISOString()});\n    setStatus(r.error?'Save failed: '+r.error.message:'Saved successfully ✓');\n  };\n  document.getElementById('cmsDelete').onclick=function(){if(!selected)return setStatus('Select a block first'); if(confirm('Delete the selected block?')){var x=selected;selected=null;x.remove();setStatus('Deleted. Click Save changes.')}};\n  document.getElementById('cmsDuplicate').onclick=function(){if(!selected)return setStatus('Select a block first');var c=selected.cloneNode(true);c.classList.remove('cms-selected');selected.after(c);editable(true);setStatus('Duplicated. Edit it, then Save changes.')};\n  document.getElementById('cmsImage').onclick=function(){if(!selected)return setStatus('Select an image first');var img=selected.tagName==='IMG'?selected:selected.querySelector&&selected.querySelector('img');if(!img)return setStatus('Selected block has no image');document.getElementById('cmsFile').dataset.target='1';document.getElementById('cmsFile')._target=img;document.getElementById('cmsFile').click()};\n  document.getElementById('cmsFile').onchange=async function(){\n    var f=this.files[0],img=this._target;if(!f||!img)return;setStatus('Uploading image…');\n    var ext=(f.name.split('.').pop()||'jpg').toLowerCase(), path='images/'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;\n    var u=await sb.storage.from(cfg.bucket||'portfolio').upload(path,f,{upsert:false});if(u.error)return setStatus('Upload failed: '+u.error.message);\n    var pub=sb.storage.from(cfg.bucket||'portfolio').getPublicUrl(path);img.src=pub.data.publicUrl;setStatus('Image changed. Click Save changes.');this.value='';\n  };\n  document.getElementById('cmsLogout').onclick=async function(){await sb.auth.signOut();location.href=location.pathname};\n  boot();\n})();\n</script>
+</script>
 </body>
 </html>

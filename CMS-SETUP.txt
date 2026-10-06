@@ -1,0 +1,37 @@
+PORTFOLIO CMS SETUP
+===================
+
+Files to upload together:
+- portfolio.html
+- cms-config.js
+- ankit.jpg (your existing local profile image, optional after CMS image upload)
+
+One-time Supabase setup:
+1. Create a free Supabase project.
+2. Open SQL Editor and run supabase-setup.sql.
+3. Authentication -> Users -> Add user. Use your private admin email/password.
+4. Project Settings -> API. Copy Project URL and anon/public key.
+5. Put those values in cms-config.js.
+6. Upload portfolio.html and cms-config.js to the same folder on your host.
+
+USING THE ADMIN
+---------------
+Public site:
+  https://yourdomain.com/portfolio.html
+
+Private admin mode:
+  https://yourdomain.com/portfolio.html?admin=1
+
+After login:
+- Click text and type directly to edit it.
+- Click a client/card/stat/job/project to select it.
+- Duplicate selected: creates a copy you can edit (use this to add clients/cards/items).
+- Delete selected: removes it.
+- Change selected image: select an image or block containing an image, then upload.
+- Save changes: publishes the edits for all visitors.
+
+SECURITY
+--------
+The Supabase anon key is safe to expose in browser code when Row Level Security is enabled.
+Do NOT put your Supabase service-role key in cms-config.js.
+Only authenticated users can save content or upload images with the supplied policies.
