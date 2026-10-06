@@ -531,26 +531,6 @@ header{box-shadow:0 8px 30px -26px rgba(14,29,43,.5)}
 }
 @media print{.voice-help,.voice-help-badge{display:none!important}}
 
-
-/* ===== Admin Portfolio Compare & Transfer ===== */
-.cms-compare-modal{position:fixed;inset:0;z-index:1200;display:none;background:rgba(5,12,19,.92);padding:18px;font-family:var(--body)}
-.cms-compare-modal.open{display:block}
-.cms-compare-box{height:calc(100vh - 36px);max-width:1500px;margin:auto;display:flex;flex-direction:column;background:#102130;color:#fff;border:1px solid #27414f;border-radius:18px;overflow:hidden;box-shadow:0 28px 80px rgba(0,0,0,.55)}
-.cms-compare-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px;background:#0e1d2b;border-bottom:1px solid #27414f}
-.cms-compare-head h2{font-size:19px;margin-right:auto}.cms-compare-head button,.cms-compare-head select{border:1px solid #3c5a6a;border-radius:8px;padding:9px 12px;background:#14293a;color:#fff;font:600 12px var(--body);cursor:pointer}
-.cms-compare-head button.primary{background:var(--mint);color:#06231f;border-color:var(--mint)}.cms-compare-head button.danger{background:#ef6b6b;color:#260707;border-color:#ef6b6b}
-.cms-compare-note{padding:9px 18px;background:#14293a;border-bottom:1px solid #27414f;color:#a5b6c4;font-size:12px}
-.cms-compare-grid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 170px 1fr}
-.cms-side{min-width:0;display:flex;flex-direction:column}.cms-side-title{padding:11px 14px;border-bottom:1px solid #27414f;font:700 13px var(--body);color:var(--mint)}
-.cms-side-body{flex:1;overflow:auto;padding:14px;background:#09131d}.cms-side-body section,.cms-side-body .hero,.cms-side-body .contact{padding:18px!important;margin:0 0 12px!important;border:1px solid #27414f!important;border-radius:12px!important;background:#102130!important;color:#fff!important}
-.cms-side-body *{max-width:100%}.cms-side-body img{height:auto}.cms-side-body .flow,.cms-side-body .project,.cms-side-body .contact{grid-template-columns:1fr!important}
-.cms-transfer{display:flex;flex-direction:column;justify-content:center;gap:9px;padding:14px;border-left:1px solid #27414f;border-right:1px solid #27414f;background:#0e1d2b}
-.cms-transfer label{font-size:11px;color:#a5b6c4}.cms-transfer select,.cms-transfer button{width:100%;padding:9px;border:1px solid #3c5a6a;border-radius:8px;background:#14293a;color:#fff;font:600 12px var(--body)}
-.cms-transfer button{cursor:pointer}.cms-transfer button.primary{background:var(--mint);color:#06231f;border-color:var(--mint)}.cms-transfer button.swap{background:#f2a541;color:#342000;border-color:#f2a541}
-.cms-diff{font-size:11px;color:#a5b6c4;text-align:center;min-height:18px}
-.cms-compare-flash{outline:3px solid var(--amber)!important;outline-offset:2px}
-@media(max-width:900px){.cms-compare-grid{grid-template-columns:1fr}.cms-transfer{order:-1;border:0;border-bottom:1px solid #27414f;display:grid;grid-template-columns:1fr 1fr;align-items:end}.cms-transfer label,.cms-diff{grid-column:1/-1}.cms-compare-grid{overflow:auto}.cms-side{min-height:430px}}
-
 </style>
 <script>
 (function(){var r=document.documentElement,M={snow:'light',cream:'light',sky:'light',mint:'light',lavender:'light',slate:'dark',midnight:'dark',charcoal:'dark'},V=['--bg','--card','--line','--tint','--dark'];
@@ -883,8 +863,7 @@ r.classList.add('js')})();
 </div></div>
 <div class="cms-hint">Admin mode: edit text directly · click a block to select it</div>
 <div class="cms-bar" id="cmsBar"><span id="cmsStatus">Admin editing enabled</span>
-<button id="cmsSave" type="button">Save changes</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button type="button" class="secondary" id="cmsCompareBtn">⇄ Compare Portfolios</button>
-<button id="cmsLogout" type="button" class="secondary">Logout</button>
+<button id="cmsSave" type="button">Save changes</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button id="cmsLogout" type="button" class="secondary">Logout</button>
 <input id="cmsFile" type="file" accept="image/*" hidden></div>
 <script>
 document.getElementById('year').textContent=new Date().getFullYear();
@@ -1234,160 +1213,6 @@ var els=document.querySelectorAll('main .head,main .job,main .project,main .mach
 els.forEach(function(e){e.classList.add('rv')});
 if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)})}else els.forEach(function(e){e.classList.add('in')});
 setTimeout(function(){document.querySelectorAll('.rv:not(.in)').forEach(function(e){var r=e.getBoundingClientRect();if(r.top<innerHeight)e.classList.add('in')})},1800);
-})();
-</script>
-
-
-<div class="cms-compare-modal" id="cmsCompareModal" aria-hidden="true">
-  <div class="cms-compare-box">
-    <div class="cms-compare-head">
-      <h2>⇄ Portfolio Compare & Transfer</h2>
-      <label>Left <select id="cmsCompareLeft"></select></label>
-      <label>Right <select id="cmsCompareRight"></select></label>
-      <button type="button" id="cmsCompareReload">Refresh</button>
-      <button type="button" id="cmsCompareUndo">↶ Undo</button>
-      <button type="button" class="primary" id="cmsCompareApply">Apply to current portfolio</button>
-      <button type="button" class="danger" id="cmsCompareClose">Close</button>
-    </div>
-    <div class="cms-compare-note">Admin-only browser tool. Select a section, then copy it Left → Right, Right → Left, or Swap. Changes stay in this compare session until you apply them; use your normal CMS Save afterward to persist the current portfolio.</div>
-    <div class="cms-compare-grid">
-      <div class="cms-side"><div class="cms-side-title" id="cmsLeftTitle">Portfolio A</div><div class="cms-side-body" id="cmsLeftBody"></div></div>
-      <div class="cms-transfer">
-        <label>Section<select id="cmsCompareSection"></select></label>
-        <button type="button" class="primary" id="cmsCopyLR">A → B</button>
-        <button type="button" class="primary" id="cmsCopyRL">B → A</button>
-        <button type="button" class="swap" id="cmsSwapSection">⇄ Swap</button>
-        <div class="cms-diff" id="cmsCompareDiff"></div>
-      </div>
-      <div class="cms-side"><div class="cms-side-title" id="cmsRightTitle">Portfolio B</div><div class="cms-side-body" id="cmsRightBody"></div></div>
-    </div>
-  </div>
-</div>
-
-
-<script>
-/* ===== Admin Portfolio Compare & Transfer (browser-side) ===== */
-(function(){
-  var btn=document.getElementById('cmsCompareBtn'), modal=document.getElementById('cmsCompareModal');
-  if(!btn||!modal)return;
-  var leftSel=document.getElementById('cmsCompareLeft'),rightSel=document.getElementById('cmsCompareRight'),
-      leftBody=document.getElementById('cmsLeftBody'),rightBody=document.getElementById('cmsRightBody'),
-      sectionSel=document.getElementById('cmsCompareSection'),diff=document.getElementById('cmsCompareDiff'),
-      undo=[], working={};
-
-  function slug(){return new URLSearchParams(location.search).get('portfolio')||'main'}
-  function key(s){return 'portfolio_compare_snapshot_'+s}
-  function currentHTML(){var m=document.querySelector('main');return m?m.innerHTML:''}
-  function snapshotCurrent(){try{localStorage.setItem(key(slug()),currentHTML())}catch(e){}}
-  function getStored(s){
-    if(working[s]!=null)return working[s];
-    try{var v=localStorage.getItem(key(s));if(v)return v}catch(e){}
-    if(s===slug())return currentHTML();
-    return '';
-  }
-  function setStored(s,v){working[s]=v;try{localStorage.setItem(key(s),v)}catch(e){}}
-  function knownPortfolios(){
-    var a=[{slug:'main',name:'Main Portfolio'}], seen={main:1};
-    try{
-      for(var i=0;i<localStorage.length;i++){
-        var k=localStorage.key(i)||'';
-        if(k.indexOf('portfolio_compare_snapshot_')===0){
-          var s=k.replace('portfolio_compare_snapshot_','');
-          if(!seen[s]){seen[s]=1;a.push({slug:s,name:s.replace(/-/g,' ')})}
-        }
-      }
-      // Reuse resume/sub-portfolio metadata if the existing manager stores it locally.
-      Object.keys(localStorage).forEach(function(k){
-        if(!/resume|portfolio/i.test(k))return;
-        try{
-          var x=JSON.parse(localStorage.getItem(k)), list=Array.isArray(x)?x:(x&&Array.isArray(x.items)?x.items:[]);
-          list.forEach(function(it){
-            var s=(it.slug||it.portfolio||it.id||'').toString();
-            if(s&&!seen[s]){seen[s]=1;a.push({slug:s,name:it.name||it.title||s.replace(/-/g,' ')})}
-          })
-        }catch(e){}
-      })
-    }catch(e){}
-    if(!seen[slug()])a.push({slug:slug(),name:slug().replace(/-/g,' ')});
-    return a
-  }
-  function fill(){
-    var list=knownPortfolios(), oldL=leftSel.value||slug(), oldR=rightSel.value;
-    leftSel.innerHTML=rightSel.innerHTML='';
-    list.forEach(function(p){leftSel.add(new Option(p.name,p.slug));rightSel.add(new Option(p.name,p.slug))});
-    leftSel.value=list.some(x=>x.slug===oldL)?oldL:list[0].slug;
-    var alt=list.find(x=>x.slug!==leftSel.value);
-    rightSel.value=list.some(x=>x.slug===oldR)?oldR:(alt?alt.slug:leftSel.value)
-  }
-  function doc(html){var d=document.createElement('div');d.innerHTML=html;return d}
-  function sections(html){
-    var d=doc(html), arr=[], hero=d.querySelector('.hero');
-    if(hero)arr.push({id:'hero',name:'Hero / Profile',node:hero});
-    d.querySelectorAll('section').forEach(function(n,i){
-      var id=n.id||('section-'+i), h=n.querySelector('h2,h3'), name=h?h.textContent.trim():(n.id||('Section '+(i+1)));
-      arr.push({id:id,name:name,node:n})
-    });
-    var contact=d.querySelector('.contact');if(contact&&!arr.some(x=>x.node===contact))arr.push({id:'contact',name:'Contact',node:contact});
-    return arr
-  }
-  function render(){
-    var lh=getStored(leftSel.value), rh=getStored(rightSel.value);
-    leftBody.innerHTML=lh||'<p>No browser snapshot found for this portfolio. Open that sub-portfolio once in Admin mode, then return here.</p>';
-    rightBody.innerHTML=rh||'<p>No browser snapshot found for this portfolio. Open that sub-portfolio once in Admin mode, then return here.</p>';
-    document.getElementById('cmsLeftTitle').textContent=leftSel.options[leftSel.selectedIndex]?.text||'Portfolio A';
-    document.getElementById('cmsRightTitle').textContent=rightSel.options[rightSel.selectedIndex]?.text||'Portfolio B';
-    var map={}, ls=sections(lh), rs=sections(rh);
-    ls.concat(rs).forEach(x=>{if(!map[x.id])map[x.id]=x.name});
-    sectionSel.innerHTML='';
-    Object.keys(map).forEach(id=>sectionSel.add(new Option(map[id],id)));
-    updateDiff()
-  }
-  function findSection(html,id){return sections(html).find(x=>x.id===id)}
-  function replaceSection(html,id,newNode){
-    var d=doc(html), list=sections(d.innerHTML), target=list.find(x=>x.id===id);
-    if(target&&newNode)target.node.replaceWith(newNode.cloneNode(true));
-    else if(newNode)d.appendChild(newNode.cloneNode(true));
-    return d.innerHTML
-  }
-  function pushUndo(){undo.push({l:leftSel.value,r:rightSel.value,lh:getStored(leftSel.value),rh:getStored(rightSel.value)});if(undo.length>20)undo.shift()}
-  function transfer(dir){
-    var id=sectionSel.value, ls=leftSel.value,rs=rightSel.value, lh=getStored(ls),rh=getStored(rs),
-        a=findSection(lh,id),b=findSection(rh,id); pushUndo();
-    if(dir==='lr'&&a)setStored(rs,replaceSection(rh,id,a.node));
-    if(dir==='rl'&&b)setStored(ls,replaceSection(lh,id,b.node));
-    if(dir==='swap'&&a&&b){setStored(ls,replaceSection(lh,id,b.node));setStored(rs,replaceSection(rh,id,a.node))}
-    render()
-  }
-  function updateDiff(){
-    var id=sectionSel.value,a=findSection(getStored(leftSel.value),id),b=findSection(getStored(rightSel.value),id);
-    if(!id){diff.textContent='';return}
-    if(!a||!b){diff.textContent=!a?'Missing on A':'Missing on B';return}
-    var at=a.node.textContent.replace(/\s+/g,' ').trim(),bt=b.node.textContent.replace(/\s+/g,' ').trim();
-    diff.textContent=at===bt?'Sections match':'Sections differ'
-  }
-
-  btn.addEventListener('click',function(){
-    // Only useful from authenticated CMS/admin mode.
-    if(!document.body.classList.contains('cms-editing')){alert('Open Admin mode first to compare portfolios.');return}
-    snapshotCurrent();fill();render();modal.classList.add('open');modal.setAttribute('aria-hidden','false')
-  });
-  document.getElementById('cmsCompareClose').onclick=function(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true')};
-  document.getElementById('cmsCompareReload').onclick=function(){snapshotCurrent();fill();render()};
-  leftSel.onchange=render;rightSel.onchange=render;sectionSel.onchange=updateDiff;
-  document.getElementById('cmsCopyLR').onclick=function(){transfer('lr')};
-  document.getElementById('cmsCopyRL').onclick=function(){transfer('rl')};
-  document.getElementById('cmsSwapSection').onclick=function(){transfer('swap')};
-  document.getElementById('cmsCompareUndo').onclick=function(){var x=undo.pop();if(!x)return;setStored(x.l,x.lh);setStored(x.r,x.rh);render()};
-  document.getElementById('cmsCompareApply').onclick=function(){
-    var cur=slug(), h=(leftSel.value===cur?getStored(leftSel.value):(rightSel.value===cur?getStored(rightSel.value):null));
-    if(h==null){alert('Select the currently open portfolio on either side first.');return}
-    var main=document.querySelector('main');if(!main)return;
-    if(!confirm('Apply the compared sections to the currently open portfolio? You can still use the normal Admin Save button afterward.'))return;
-    main.innerHTML=h; snapshotCurrent(); modal.classList.remove('open');
-    alert('Applied to the current portfolio. Review it, then click the normal Admin Save button to persist your changes.')
-  };
-  // Keep a local browser snapshot for the current portfolio whenever Admin editing is active.
-  setTimeout(function(){if(document.body.classList.contains('cms-editing'))snapshotCurrent()},1200);
 })();
 </script>
 
