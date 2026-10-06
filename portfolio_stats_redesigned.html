@@ -229,144 +229,6 @@ dialog#pick[open]{animation:rise .25s ease both}
 .cms-selected{outline:3px solid var(--amber)!important;outline-offset:3px!important}.cms-editing{padding-bottom:84px}
 .cms-hint{position:fixed;right:18px;top:88px;z-index:999;background:#0e1d2b;color:#fff;border:1px solid #27414f;border-radius:10px;padding:9px 12px;font-size:12px;display:none}.cms-editing .cms-hint{display:block}
 @media(max-width:760px){.cms-bar{left:8px;right:8px;bottom:8px}.cms-hint{display:none!important}}
-
-/* ===== Premium achievement metrics V2 ===== */
-.stats{perspective:1200px}
-.stat{--mx:50%;--my:50%;isolation:isolate;cursor:default;transform-style:preserve-3d;box-shadow:0 12px 30px -28px rgba(15,143,126,.55)}
-.stat::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;background:radial-gradient(260px circle at var(--mx) var(--my),color-mix(in srgb,var(--mint) 22%,transparent),transparent 58%);opacity:0;transition:opacity .25s ease}
-.stat:hover::before{opacity:1}
-.stat::after{width:130px;height:130px;right:-54px;top:-58px;background:radial-gradient(circle,color-mix(in srgb,var(--mint) 34%,var(--tint)),transparent 70%)}
-.stat-top{position:relative}
-.stat-top::after{content:"";position:absolute;left:0;right:0;top:-24px;height:2px;background:linear-gradient(90deg,transparent,var(--mint),transparent);opacity:.38}
-.stat-icon{transition:transform .25s ease,box-shadow .25s ease;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--teal) 14%,transparent)}
-.stat:hover .stat-icon{transform:translateY(-2px) rotate(-3deg) scale(1.06);box-shadow:0 9px 22px -14px rgba(15,143,126,.75)}
-.stat strong{font-size:42px;text-shadow:0 10px 28px color-mix(in srgb,var(--teal) 14%,transparent)}
-.stat h3{font-size:17px}
-.stat span{max-width:220px}
-.stat-featured{border-color:color-mix(in srgb,var(--teal) 52%,var(--line));background:linear-gradient(145deg,color-mix(in srgb,var(--tint) 68%,var(--card)),var(--card));box-shadow:0 18px 42px -28px rgba(15,143,126,.9)}
-.stat-featured .stat-icon{background:var(--teal);color:#fff}
-.stat-badge{position:absolute;top:12px;right:12px;z-index:2;padding:4px 9px;border-radius:999px;background:var(--teal);color:#fff;font:700 10px var(--body);letter-spacing:.04em;text-transform:uppercase}
-.stat .count{display:inline-block;min-width:1.8ch}
-@media(prefers-reduced-motion:no-preference){.stat{will-change:transform}}
-@media(max-width:520px){.stats{grid-template-columns:1fr}.stat{min-height:150px}}
-
-
-/* ===== Laboratory machine brands ===== */
-.machine-brands{position:relative;overflow:hidden;padding:34px;background:var(--card);border:1px solid var(--line);border-radius:18px}
-.machine-brands::before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-110px;top:-130px;background:radial-gradient(circle,color-mix(in srgb,var(--mint) 24%,transparent),transparent 68%);pointer-events:none}
-.brand-intro{position:relative;z-index:1;display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:26px}
-.brand-intro p{max-width:720px;margin:0;color:var(--muted);font-size:15px}
-.brand-kicker{display:inline-flex;align-items:center;gap:8px;margin-bottom:9px;color:var(--teal);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.brand-kicker i{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 5px var(--tint)}
-.brand-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(5,1fr);gap:11px}
-.machine-brand{min-height:84px;display:flex;align-items:center;gap:12px;padding:15px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--bg) 44%,var(--card));transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
-.machine-brand:hover{transform:translateY(-3px);border-color:var(--teal);box-shadow:0 12px 26px -22px rgba(15,143,126,.85)}
-.machine-brand b{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:10px;background:var(--tint);color:var(--teal);font:800 13px var(--head)}
-.machine-brand strong{font:700 14px/1.25 var(--head)}
-.machine-brand.more{border-style:dashed;background:linear-gradient(135deg,var(--tint),var(--card))}
-.machine-brand.more b{background:var(--teal);color:#fff}
-@media(max-width:1000px){.brand-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:760px){.machine-brands{padding:24px}.brand-intro{align-items:start;flex-direction:column}.brand-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:460px){.brand-grid{grid-template-columns:1fr}.machine-brand{min-height:70px}}
-
-
-/* ===== Premium 3D UI Enhancement V4 — CSS only, no images ===== */
-:root{--depth-shadow:0 22px 55px -38px rgba(15,23,42,.48);--depth-teal:0 22px 48px -36px rgba(15,143,126,.65)}
-body{overflow-x:hidden}
-.hero,.about,.exp,.machine-brands,.card,.stat{transform-style:preserve-3d}
-.hero{perspective:1400px}
-.hero .avatar{
-  position:relative;
-  transform:translateZ(18px);
-  box-shadow:0 30px 60px -42px rgba(15,23,42,.7),0 14px 34px -26px rgba(15,143,126,.7);
-}
-.hero .avatar::before{
-  content:"";position:absolute;inset:-10px;border-radius:24px;z-index:-1;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--mint) 28%,transparent),transparent 55%);
-  transform:translateZ(-18px) rotate(-2deg);
-}
-.stats{perspective:1300px}
-.stat{
-  position:relative;
-  transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .28s ease;
-  box-shadow:var(--depth-shadow);
-}
-.stat:hover{box-shadow:var(--depth-teal)}
-.stat-icon{transform:translateZ(22px)}
-.stat strong,.stat h3{transform:translateZ(16px)}
-.stat span{transform:translateZ(10px)}
-.stat-featured{transform:translateZ(10px);box-shadow:0 26px 58px -38px rgba(15,143,126,.8)}
-.card,.about,.exp,.machine-brands{
-  position:relative;
-  box-shadow:var(--depth-shadow);
-  transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .28s ease;
-}
-.card:hover{transform:translateY(-5px) rotateX(1.5deg);box-shadow:var(--depth-teal);border-color:color-mix(in srgb,var(--teal) 45%,var(--line))}
-.machine-brands{perspective:1400px;box-shadow:0 28px 65px -48px rgba(15,23,42,.55)}
-.machine-brand{
-  position:relative;overflow:hidden;transform-style:preserve-3d;
-  transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s ease,border-color .25s ease;
-  box-shadow:0 12px 28px -26px rgba(15,23,42,.5);
-}
-.machine-brand::after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(120deg,transparent 18%,color-mix(in srgb,#fff 28%,transparent) 46%,transparent 72%);
-  transform:translateX(-130%);transition:transform .55s ease;
-}
-.machine-brand:hover::after{transform:translateX(130%)}
-.machine-brand:hover{transform:translateY(-5px) rotateX(4deg) rotateY(-3deg) scale(1.018);box-shadow:0 20px 38px -27px rgba(15,143,126,.72)}
-.machine-brand b{transform:translateZ(20px);box-shadow:0 10px 20px -16px rgba(15,143,126,.85)}
-.machine-brand strong{position:relative;z-index:1;transform:translateZ(12px)}
-.btn{position:relative;transform-style:preserve-3d;transition:transform .2s ease,box-shadow .2s ease}
-.btn:hover{transform:translateY(-3px) translateZ(8px);box-shadow:0 14px 28px -20px rgba(15,143,126,.75)}
-.tag{transition:transform .2s ease,box-shadow .2s ease}
-.tag:hover{transform:translateY(-2px);box-shadow:0 9px 18px -15px rgba(15,143,126,.7)}
-section>.head h2{position:relative}
-section>.head h2::after{
-  content:"";display:block;width:52px;height:3px;margin-top:9px;border-radius:999px;
-  background:linear-gradient(90deg,var(--teal),var(--mint));box-shadow:0 6px 16px -6px rgba(15,143,126,.8)
-}
-@media(prefers-reduced-motion:reduce){
-  .stat,.machine-brand,.card,.btn,.tag{transition:none!important;transform:none!important}
-}
-@media(max-width:760px){
-  .stat:hover,.machine-brand:hover,.card:hover{transform:translateY(-3px)}
-}
-
-
-/* ===== V5: Stronger achievement numbers ===== */
-.stat strong{
-  font-size:54px !important;
-  line-height:.95 !important;
-  font-weight:900 !important;
-  letter-spacing:-2.5px !important;
-  color:var(--teal) !important;
-  text-shadow:0 10px 26px color-mix(in srgb,var(--teal) 20%,transparent) !important;
-}
-.stat .count{
-  min-width:0 !important;
-  font-size:inherit !important;
-  font-weight:inherit !important;
-}
-.stat-top{
-  align-items:center !important;
-  margin-bottom:18px !important;
-}
-.stat-icon{
-  width:46px !important;
-  height:46px !important;
-}
-.stat h3{
-  font-size:17px !important;
-  margin-bottom:7px !important;
-}
-@media(max-width:900px){
-  .stat strong{font-size:48px !important}
-}
-@media(max-width:520px){
-  .stat strong{font-size:44px !important}
-}
-
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="cms-config.js"></script>
@@ -376,7 +238,7 @@ section>.head h2::after{
 <nav aria-label="Main navigation">
  <a class="brand" href="#home">Ankit Kanaujia<i></i></a>
  <div class="links">
-  <a class="opt" href="#about">What I do</a><a href="#experience">Experience</a><a class="opt" href="#clients">Clients</a><a class="opt" href="#machine-brands">Machines</a><a class="opt" href="#skills">Skills</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
+  <a class="opt" href="#about">What I do</a><a href="#experience">Experience</a><a class="opt" href="#clients">Clients</a><a class="opt" href="#skills">Skills</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
   <a class="cta" href="#quick" data-open-quick><i></i>Hiring? Connect fast</a>
   <button class="theme" id="theme" type="button" aria-label="Toggle dark mode">Dark</button>
  </div>
@@ -408,21 +270,20 @@ section>.head h2::after{
 
 <div class="stats" aria-label="Career highlights">
  <div class="stat">
-  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3v4M16 3v4M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg></div><strong><span class="count" data-target="5">0</span>+</strong></div>
+  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3v4M16 3v4M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg></div><strong>5+</strong></div>
   <h3>Years Experience</h3><span>Healthcare IT &amp; software engineering</span>
  </div>
  <div class="stat">
-  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 11h2M13 11h2M9 15h2M13 15h2"/></svg></div><strong><span class="count" data-target="100">0</span>+</strong></div>
+  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 11h2M13 11h2M9 15h2M13 15h2"/></svg></div><strong>100+</strong></div>
   <h3>Sites / Year</h3><span>Machine integration implementations</span>
  </div>
  <div class="stat">
-  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM17 8h4M19 6v4"/></svg></div><strong><span class="count" data-target="150">0</span>+</strong></div>
+  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM17 8h4M19 6v4"/></svg></div><strong>150+</strong></div>
   <h3>Clients at a Time</h3><span>Live &amp; ongoing technical support</span>
  </div>
- <div class="stat stat-featured">
-  <span class="stat-badge">Career highlight</span>
-  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h11l-3-3M17 17H6l3 3M18 7l-3 3M6 17l3-3"/></svg></div><strong><span class="count" data-target="600">0</span>+</strong></div>
-  <h3>Sites Delivered</h3><span>Machine integrations successfully implemented</span>
+ <div class="stat">
+  <div class="stat-top"><div class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h11l-3-3M17 17H6l3 3M18 7l-3 3M6 17l3-3"/></svg></div><strong>600+</strong></div>
+  <h3>Sites Delivered</h3><span>Machine integration implementations overall</span>
  </div>
 </div>
 
@@ -493,38 +354,6 @@ section>.head h2::after{
      <div class="client"><b>D</b><div><strong>CRL Diagnostic</strong><span>Active support</span></div></div>
  </div>
 </section>
-
-
-<section id="machine-brands">
- <div class="head">
-  <h2 class="t">Laboratory machines I interface</h2>
-  <p>Analyzer and diagnostic-system interfacing experience through my current role at Itdose Infosystems Pvt. Ltd.</p>
- </div>
- <div class="machine-brands">
-  <div class="brand-intro">
-   <div><div class="brand-kicker"><i></i>Machine integration ecosystem</div><h3>Leading diagnostic &amp; laboratory brands</h3></div>
-   <p>I work on integrating laboratory analyzers with LIMS/HIS workflows, including communication, result capture, deployment and production support across equipment from these manufacturers.</p>
-  </div>
-  <div class="brand-grid">
-   <div class="machine-brand"><b>ER</b><strong>Erba / Transasia Bio-Medicals</strong></div>
-   <div class="machine-brand"><b>RD</b><strong>Roche Diagnostics</strong></div>
-   <div class="machine-brand"><b>HM</b><strong>HORIBA Medical</strong></div>
-   <div class="machine-brand"><b>BR</b><strong>Bio-Rad Laboratories</strong></div>
-   <div class="machine-brand"><b>AD</b><strong>Abbott Diagnostics</strong></div>
-   <div class="machine-brand"><b>BC</b><strong>Beckman Coulter</strong></div>
-   <div class="machine-brand"><b>SH</b><strong>Siemens Healthineers</strong></div>
-   <div class="machine-brand"><b>SY</b><strong>Sysmex</strong></div>
-   <div class="machine-brand"><b>MI</b><strong>Mindray</strong></div>
-   <div class="machine-brand"><b>DS</b><strong>DiaSys Diagnostics</strong></div>
-   <div class="machine-brand"><b>BM</b><strong>bioMérieux</strong></div>
-   <div class="machine-brand"><b>TO</b><strong>Tosoh</strong></div>
-   <div class="machine-brand"><b>SN</b><strong>Snibe</strong></div>
-   <div class="machine-brand"><b>AR</b><strong>Arkray</strong></div>
-   <div class="machine-brand more"><b>+</b><strong>And many more</strong></div>
-  </div>
- </div>
-</section>
-
 
 <section id="skills">
  <div class="head">
@@ -789,55 +618,5 @@ d.addEventListener('click',function(e){if(e.target===d)d.close()});
   boot();
 })();
 </script>
-
-<script>
-(function(){
- var stats=document.querySelector('.stats'); if(!stats)return;
- var cards=stats.querySelectorAll('.stat'), counts=stats.querySelectorAll('.count');
- var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- function animateCount(el){
-  if(el.dataset.done)return; el.dataset.done='1';
-  var target=parseInt(el.dataset.target,10)||0;
-  if(reduce){el.textContent=target;return}
-  var start=null,duration=1100;
-  function tick(t){if(!start)start=t;var p=Math.min((t-start)/duration,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(target*e);if(p<1)requestAnimationFrame(tick)}
-  requestAnimationFrame(tick);
- }
- if('IntersectionObserver' in window){
-  var io=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){counts.forEach(animateCount);io.disconnect()}})},{threshold:.3});
-  io.observe(stats);
- } else counts.forEach(animateCount);
- if(!reduce)cards.forEach(function(card){
-  card.addEventListener('pointermove',function(e){
-   var r=card.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
-   card.style.setProperty('--mx',x+'px');card.style.setProperty('--my',y+'px');
-   var ry=((x/r.width)-.5)*3.5,rx=-((y/r.height)-.5)*3.5;
-   card.style.transform='translateY(-5px) rotateX('+rx+'deg) rotateY('+ry+'deg)';
-  });
-  card.addEventListener('pointerleave',function(){card.style.transform='';card.style.setProperty('--mx','50%');card.style.setProperty('--my','50%')});
- });
-})();
-</script>
-
-
-<script>
-/* Lightweight 3D tilt for portfolio cards — disabled on touch/reduced motion */
-(function(){
- const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- const fine=window.matchMedia&&window.matchMedia('(pointer:fine)').matches;
- if(reduce||!fine)return;
- function tilt(el,max){
-   el.addEventListener('pointermove',function(e){
-     const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
-     const ry=(x-.5)*max,rx=(.5-y)*max;
-     el.style.transform='translateY(-5px) rotateX('+rx+'deg) rotateY('+ry+'deg)';
-   });
-   el.addEventListener('pointerleave',function(){el.style.transform=''});
- }
- document.querySelectorAll('.machine-brand').forEach(el=>tilt(el,7));
- document.querySelectorAll('.grid4 .card').forEach(el=>tilt(el,4));
-})();
-</script>
-
 </body>
 </html>
