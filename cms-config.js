@@ -1,6 +1,6 @@
 /* Replace these two values from Supabase: Project Settings -> API */
 window.PORTFOLIO_CMS = {
-  url: 'YOUR_SUPABASE_PROJECT_URL',
-  anonKey: 'YOUR_SUPABASE_ANON_KEY',
+  url: 'https://ydeeqtusqjhdfedgxvmo.supabase.co/rest/v1/',
+  anonKey: 'sb_publishable_vztnU6vyB7q96TfQShhVKw_qNq4lTLm',
   bucket: 'portfolio'
 };
