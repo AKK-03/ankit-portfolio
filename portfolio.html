@@ -1306,7 +1306,10 @@ document.getElementById('qmail').onclick=function(){var m=msg();if(m)location.hr
 document.getElementById('qwa').onclick=function(){var m=msg();if(m)window.open('https://wa.me/918574518136?text='+encodeURIComponent(m),'_blank','noopener')};
 f.onsubmit=function(e){e.preventDefault()};
 var d=document.getElementById('quick');
-document.querySelectorAll('[data-open-quick]').forEach(function(el){el.addEventListener('click',function(e){e.preventDefault();d.showModal&&d.showModal();var n=document.getElementById('qn');n&&n.focus()})});
+function openQ(){if(!d.open){try{d.showModal()}catch(x){d.setAttribute('open','')}}var n=document.getElementById('qn');n&&n.focus()}
+window.pfOpenQuick=openQ;
+/* delegated: also works for buttons that are re-created when saved content is loaded */
+document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('[data-open-quick]');if(!t||document.body.classList.contains('cms-editing'))return;e.preventDefault();openQ()});
 document.getElementById('qclose').onclick=function(){d.close()};
 d.addEventListener('click',function(e){if(e.target===d)d.close()})})();
 (function(){var r=document.documentElement,b=document.getElementById('theme');
@@ -1322,10 +1325,10 @@ function say(t,who){var m=document.createElement('div');m.className='cb-m '+who;
 function actions(list){var d=document.createElement('div');d.className='cb-act';list.forEach(function(a){var e;if(a.href){e=document.createElement('a');e.href=a.href;if(/^https?:/.test(a.href)){e.target='_blank';e.rel='noopener noreferrer'}}else{e=document.createElement('button');e.type='button';e.onclick=a.fn}
 e.textContent=a.t;if(a.solid)e.className='solid';d.appendChild(e)});log.appendChild(d);log.scrollTop=log.scrollHeight}
 var chatAct={t:'Chat with Ankit on WhatsApp',href:wa('Hi Ankit, I am from a hiring team and would like to chat with you.'),solid:1};
-function openForm(){var d=document.getElementById('quick');close();d.showModal&&d.showModal();var n=document.getElementById('qn');n&&n.focus()}
+function openForm(){close();if(window.pfOpenQuick)window.pfOpenQuick();else{var d=document.getElementById('quick');d.showModal&&d.showModal()}}
 var A={
 chat:function(){say('Opening a direct chat is one tap. Ankit usually replies quickly on WhatsApp.','bot');actions([chatAct,{t:'Email instead',href:'mailto:'+MAIL},{t:'Call +91 8574518136',href:'tel:+918574518136'}])},
-job:function(){say('Happy to take the details. You can fill a short form, or send them straight to Ankit.','bot');actions([{t:'Share a job opening',fn:openForm},chatAct])},
+job:function(){say('Opening the quick form for you. If it doesn’t appear, use the buttons below.','bot');actions([{t:'Open the form',fn:openForm},chatAct]);openForm()},
 exp:function(){say('Ankit is a Senior Software Engineer with 5+ years in healthcare IT.\n\n• Itdose Infosystems (Apr 2022 – now): Sr. Functional Engineer, 100+ machine-integration implementation projects every year, 600+ implementations overall, with live and ongoing support for 150+ clients.\n• Kaizen IT Services (2021–22): Technical Support Engineer at Central Board of Direct Taxes.','bot');actions([{t:'See full experience',href:'#experience',fn:null}])},
 skills:function(){say('• Development: Java, Python, C++, Android\n• Healthcare: LIMS, HIS, machine interfacing, barcode design, workflow design\n• Infrastructure: server configuration, networking, deployment, backups\n• Tools: SQL, MySQL, Power BI, JIRA','bot');actions([{t:'See all skills',href:'#skills'}])},
 clients:function(){say('Ankit supports 150+ clients at a time, including Medanta, MAX, Apollo, Nanjappa, Diagnum, DRX Lab, National Path Lab (Nepal) and CRL Diagnostic.','bot')},
