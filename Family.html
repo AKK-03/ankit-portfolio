@@ -6,7 +6,7 @@
 .liveSuggestions[hidden]{display:none}.liveSuggestions button{display:block;width:100%;text-align:left;background:#fff;color:#17323e;border:0;border-radius:0;padding:10px 12px;font-weight:500}
 .liveSuggestions button:hover,.liveSuggestions button.active{background:#e7f5f2;color:#075f55}.suggestState{font-size:12px;color:#58707b;margin-top:5px}
 @media(max-width:650px){.g{grid-template-columns:1fr}.full{grid-column:auto}}
-</style></head><body data-cms-page="family"><div id="adminCms-top"></div><div class="w"><div class="hero"><h1>Family Job Reminder</h1><p>Add multiple roles, locations, times and repeat rules.</p></div><div class="card"><form id="f"><div class="g">
+</style></head><body data-cms-page="family"><div id="adminCms-top"></div><div class="w"><div class="hero"><h1>Family Job Reminder</h1><p>Add multiple roles, locations, times and repeat rules.</p></div><div class="card" data-admin-target="deliverySection"><h2 id="deliverySectionTitle">Delivery details</h2><form id="f"><div class="g">
 <label>Send by<select id="channel"><option value="email">Email</option><option value="whatsapp">WhatsApp / Mobile</option></select></label><label>Recipient<input id="address" required autocomplete="email" placeholder="name@example.com"></label>
 
 <div><div class="title">Job roles</div><div class="combo"><div class="suggestWrap"><input id="roleInput" autocomplete="off" placeholder="Start typing, e.g. Data Analyst" autocomplete="off"><div id="roleLive" class="liveSuggestions" role="listbox" hidden></div></div><div id="roleSuggestState" class="suggestState">Type at least 2 letters for live recommendations.</div><div id="roleSuggestions" class="suggestions"></div></div><div id="roleTags" class="chips"></div><span class="hint">Recommendations appear while typing. Tab adds the highlighted match or your custom text. Enter does not add.</span></div>
@@ -107,5 +107,19 @@ $('f').onsubmit=async e=>{e.preventDefault();let b=$('save');try{let s=settings(
   }catch(e){}
  }
  render(document.body.dataset.cmsPage);
+})();
+</script>
+<script>
+(async function(){
+ try{
+  const API='https://script.google.com/macros/s/AKfycbwo9grCwLGuzA9B4Q5xKA85rn3H539fShT-eOfsigahLYg_erPkZcgBE6Uv54alh_iy/exec';
+  const x=await (await fetch(API+'?action=page_manifest&page=family&ts='+Date.now(),{cache:'no-store'})).json();
+  if(!x.ok)return;
+  (x.builtins||[]).forEach((s,i)=>{
+    const card=document.querySelector('[data-admin-target="'+s.target+'"]');if(!card)return;
+    const h=card.querySelector('h2');if(h)h.textContent=s.title;
+    card.hidden=s.enabled===false;card.style.order=String(i+1);
+  });
+ }catch(e){}
 })();
 </script></body></html>
