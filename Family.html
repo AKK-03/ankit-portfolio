@@ -1,12 +1,16 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Family Job Reminder</title>
 <style>
 *{box-sizing:border-box}body{font:15px system-ui;margin:0;background:#f3f7fa;color:#17323e}.w{max-width:900px;margin:auto;padding:20px}.hero{background:linear-gradient(135deg,#087c6d,#155d75);color:white;padding:25px;border-radius:18px}.card{background:white;margin-top:16px;padding:22px;border-radius:16px;box-shadow:0 8px 25px #0001}.g{display:grid;grid-template-columns:1fr 1fr;gap:15px}label,.title{font-weight:650}input,select{width:100%;padding:12px;margin-top:6px;border:1px solid #b9cbd3;border-radius:10px;background:white}.full{grid-column:1/-1}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.chip{border:1px solid #b9cbd3;border-radius:99px;padding:8px 12px;font-weight:500;background:white;color:#17323e}.chip input{width:auto;margin:0 5px 0 0}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}button{padding:12px 18px;border:0;border-radius:10px;background:#087c6d;color:white;font-weight:700;cursor:pointer}.secondary{background:#155d75}button:disabled{opacity:.55}.hint{font-size:13px;color:#58707b}.msg{display:none;margin-top:15px;padding:12px;border-radius:10px;white-space:pre-wrap}.show{display:block}.ok{background:#e6f7ee;color:#12633e}.bad{background:#fdecec;color:#8a2424}.info{background:#eaf3fb;color:#245a7c}
-.combo{position:relative}.suggestions{display:none;position:absolute;z-index:10;left:0;right:0;background:white;border:1px solid #b9cbd3;border-radius:10px;box-shadow:0 8px 20px #0002;max-height:220px;overflow:auto}.suggestions.show{display:block}.suggestion{padding:10px 12px;cursor:pointer}.suggestion.active,.suggestion:hover{background:#eaf3fb}.inline{display:flex;gap:8px;align-items:end}.inline>*:first-child{flex:1}.custom{display:none;margin-top:8px}.custom.show{display:block}@media(max-width:650px){.g{grid-template-columns:1fr}.full{grid-column:auto}}
+.combo{position:relative}.suggestions{display:none;position:absolute;z-index:10;left:0;right:0;background:white;border:1px solid #b9cbd3;border-radius:10px;box-shadow:0 8px 20px #0002;max-height:220px;overflow:auto}.suggestions.show{display:block}.suggestion{padding:10px 12px;cursor:pointer}.suggestion.active,.suggestion:hover{background:#eaf3fb}.inline{display:flex;gap:8px;align-items:end}.inline>*:first-child{flex:1}.custom{display:none;margin-top:8px}.custom.show{display:block}
+.suggestWrap{position:relative}.liveSuggestions{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid #b9cbd3;border-radius:10px;box-shadow:0 10px 25px #0002;max-height:230px;overflow:auto;margin-top:4px}
+.liveSuggestions[hidden]{display:none}.liveSuggestions button{display:block;width:100%;text-align:left;background:#fff;color:#17323e;border:0;border-radius:0;padding:10px 12px;font-weight:500}
+.liveSuggestions button:hover,.liveSuggestions button.active{background:#e7f5f2;color:#075f55}.suggestState{font-size:12px;color:#58707b;margin-top:5px}
+@media(max-width:650px){.g{grid-template-columns:1fr}.full{grid-column:auto}}
 </style></head><body data-cms-page="family"><div id="adminCms-top"></div><div class="w"><div class="hero"><h1>Family Job Reminder</h1><p>Add multiple roles, locations, times and repeat rules.</p></div><div class="card"><form id="f"><div class="g">
 <label>Send by<select id="channel"><option value="email">Email</option><option value="whatsapp">WhatsApp / Mobile</option></select></label><label>Recipient<input id="address" required autocomplete="email" placeholder="name@example.com"></label>
 
-<div><div class="title">Job roles</div><div class="combo"><input id="roleInput" autocomplete="off" placeholder="Start typing, e.g. Data Analyst"><div id="roleSuggestions" class="suggestions"></div></div><div id="roleTags" class="chips"></div><span class="hint">Recommendations appear while typing. Tab adds the highlighted match or your custom text. Enter does not add.</span></div>
-<div><div class="title">Locations</div><div class="combo"><input id="locationInput" autocomplete="off" placeholder="Start typing, e.g. Gurugram"><div id="locationSuggestions" class="suggestions"></div></div><div id="locationTags" class="chips"></div><span class="hint">Recommendations appear while typing. Tab adds the highlighted match or your custom text.</span></div>
+<div><div class="title">Job roles</div><div class="combo"><div class="suggestWrap"><input id="roleInput" autocomplete="off" placeholder="Start typing, e.g. Data Analyst" autocomplete="off"><div id="roleLive" class="liveSuggestions" role="listbox" hidden></div></div><div id="roleSuggestState" class="suggestState">Type at least 2 letters for live recommendations.</div><div id="roleSuggestions" class="suggestions"></div></div><div id="roleTags" class="chips"></div><span class="hint">Recommendations appear while typing. Tab adds the highlighted match or your custom text. Enter does not add.</span></div>
+<div><div class="title">Locations</div><div class="combo"><div class="suggestWrap"><input id="locationInput" autocomplete="off" placeholder="Start typing, e.g. Gurugram" autocomplete="off"><div id="locationLive" class="liveSuggestions" role="listbox" hidden></div></div><div id="locationSuggestState" class="suggestState">Type at least 2 letters for live recommendations.</div><div id="locationSuggestions" class="suggestions"></div></div><div id="locationTags" class="chips"></div><span class="hint">Recommendations appear while typing. Tab adds the highlighted match or your custom text.</span></div>
 
 <div><div class="title">Reminder times — multiple</div><div class="inline"><label>Time<input id="timeInput" type="time" value="09:00"></label><button type="button" id="addTime">Add</button></div><div id="timeTags" class="chips"></div></div>
 <div><div class="title">Repeat — multiple / custom</div><div id="repeat" class="chips"><label class="chip"><input type="checkbox" value="daily">Every day</label><label class="chip"><input type="checkbox" value="weekdays" checked>Weekdays</label><label class="chip"><input type="checkbox" value="weekends">Weekends</label><label class="chip"><input type="checkbox" value="custom">Custom</label></div><div id="customRepeat" class="custom chips"><label class="chip"><input type="checkbox" value="1">Mon</label><label class="chip"><input type="checkbox" value="2">Tue</label><label class="chip"><input type="checkbox" value="3">Wed</label><label class="chip"><input type="checkbox" value="4">Thu</label><label class="chip"><input type="checkbox" value="5">Fri</label><label class="chip"><input type="checkbox" value="6">Sat</label><label class="chip"><input type="checkbox" value="0">Sun</label></div></div>
@@ -27,7 +31,53 @@ function hide(kind){$(kind+'Suggestions').classList.remove('show');active[kind]=
 function add(kind,v){v=(v||'').trim();if(!v)return;if(!vals[kind].some(x=>x.toLowerCase()===v.toLowerCase()))vals[kind].push(v);$(kind+'Input').value='';hide(kind);render(kind)}
 function showSuggestions(kind,a){let box=$(kind+'Suggestions');box.replaceChildren();a.slice(0,8).forEach((v,i)=>{let d=document.createElement('div');d.className='suggestion'+(i===0?' active':'');d.textContent=v;d.onclick=()=>add(kind,v);box.appendChild(d)});active[kind]=a.length?0:-1;box.classList.toggle('show',!!a.length)}
 async function suggest(kind,q){q=q.trim();if(q.length<2)return hide(kind);try{let r=await fetch(FAMILY_SENDER_URL+'?action=family_suggest&kind='+encodeURIComponent(kind)+'&q='+encodeURIComponent(q)+'&ts='+Date.now(),{cache:'no-store'});let x=await r.json();showSuggestions(kind,x.suggestions||[])}catch(e){hide(kind)}}
-['role','location'].forEach(kind=>{let inp=$(kind+'Input');inp.oninput=()=>{clearTimeout(timers[kind]);timers[kind]=setTimeout(()=>suggest(kind,inp.value),300)};inp.onkeydown=e=>{let box=$(kind+'Suggestions'),items=[...box.children];if(e.key==='ArrowDown'&&items.length){e.preventDefault();active[kind]=(active[kind]+1)%items.length}else if(e.key==='ArrowUp'&&items.length){e.preventDefault();active[kind]=(active[kind]-1+items.length)%items.length}else if(e.key==='Tab'&&inp.value.trim()){e.preventDefault();add(kind,items[active[kind]]?.textContent||inp.value);return}else return;items.forEach((x,i)=>x.classList.toggle('active',i===active[kind]))};inp.onblur=()=>setTimeout(()=>hide(kind),180)});
+
+const suggestTimers={role:null,location:null},suggestItems={role:[],location:[]},suggestActive={role:-1,location:-1};
+function hideSuggestions(kind){const box=$(kind+'Live');if(box){box.hidden=true;box.replaceChildren()}suggestActive[kind]=-1}
+function chooseSuggestion(kind,value){
+  const input=$(kind==='role'?'roleInput':'locationInput'),arr=kind==='role'?roles:locations;
+  if(value&&!arr.some(x=>x.toLowerCase()===value.toLowerCase()))arr.push(value);
+  input.value='';renderTags(kind);hideSuggestions(kind);input.focus();
+}
+function paintSuggestions(kind,items){
+  const box=$(kind+'Live'),state=$(kind+'SuggestState');box.replaceChildren();suggestItems[kind]=items;suggestActive[kind]=-1;
+  if(!items.length){box.hidden=true;state.textContent='No matching recommendation. You can keep your own text and press Tab to add it.';return}
+  items.forEach((v,i)=>{const b=document.createElement('button');b.type='button';b.textContent=v;b.setAttribute('role','option');b.onmousedown=e=>e.preventDefault();b.onclick=()=>chooseSuggestion(kind,v);box.appendChild(b)});
+  box.hidden=false;state.textContent='Tab adds the first match. ↑/↓ selects another match. Enter remains available for a new line.';
+}
+async function requestSuggestions(kind){
+  const input=$(kind==='role'?'roleInput':'locationInput'),q=input.value.split(/
+/).pop().trim(),state=$(kind+'SuggestState');
+  if(q.length<2){hideSuggestions(kind);state.textContent='Type at least 2 letters for live recommendations.';return}
+  state.textContent='Finding matching '+(kind==='role'?'roles':'locations')+'…';
+  try{
+    const r=await fetch(FAMILY_SENDER_URL+'?action=family_suggest&kind='+encodeURIComponent(kind)+'&q='+encodeURIComponent(q)+'&ts='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw Error('HTTP '+r.status);const x=await r.json();if(!x.ok)throw Error(x.error||'Suggestion service unavailable');
+    paintSuggestions(kind,Array.isArray(x.suggestions)?x.suggestions:[]);
+  }catch(e){hideSuggestions(kind);state.textContent='Recommendations unavailable: '+e.message}
+}
+['role','location'].forEach(kind=>{
+  const input=$(kind==='role'?'roleInput':'locationInput');
+  input.addEventListener('input',()=>{clearTimeout(suggestTimers[kind]);suggestTimers[kind]=setTimeout(()=>requestSuggestions(kind),320)});
+  input.addEventListener('keydown',e=>{
+    const box=$(kind+'Live'),items=suggestItems[kind];
+    if(e.key==='Tab'&&!e.shiftKey){
+      const q=input.value.split(/
+/).pop().trim();
+      if(items.length){e.preventDefault();chooseSuggestion(kind,items[suggestActive[kind]>=0?suggestActive[kind]:0]);}
+      else if(q){e.preventDefault();addTag(kind);}
+      return;
+    }
+    if(!box.hidden&&(e.key==='ArrowDown'||e.key==='ArrowUp')){
+      e.preventDefault();suggestActive[kind]=(suggestActive[kind]+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;
+      [...box.children].forEach((b,i)=>b.classList.toggle('active',i===suggestActive[kind]));return;
+    }
+    if(e.key==='Escape')hideSuggestions(kind);
+    // Enter is intentionally untouched: it creates a new line.
+  });
+  input.addEventListener('blur',()=>setTimeout(()=>hideSuggestions(kind),180));
+});
+
 function renderTimes(){let b=$('timeTags');b.replaceChildren();times.forEach((v,i)=>{let x=document.createElement('button');x.type='button';x.className='chip';x.textContent=v+' ×';x.onclick=()=>{times.splice(i,1);renderTimes()};b.appendChild(x)})}
 function addTime(){let v=$('timeInput').value;if(v&&!times.includes(v)){times.push(v);times.sort();renderTimes()}}$('addTime').onclick=addTime;addTime();
 $('repeat').onchange=()=>$('customRepeat').classList.toggle('show',ck('repeat').includes('custom'));
