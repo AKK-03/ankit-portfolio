@@ -631,6 +631,12 @@ body:not(.cms-editing) [data-admin-disabled="1"]{display:none!important}
 
 /* ===== Hide voice controls while the chat panel is open (they overlapped the Send button) ===== */
 body.chat-open .voice-fab,body.chat-open .voice-help-badge,body.chat-open .voice-help,body.chat-open .voice-status{display:none!important}
+
+/* ===== Chat: keep scrolling inside the panel ===== */
+.cb-panel,.cb-log{overscroll-behavior:contain}
+.cb-log{-webkit-overflow-scrolling:touch}
+.cb-chips{overscroll-behavior-x:contain;touch-action:pan-x}
+@media(max-width:760px){body.chat-open{overflow:hidden}}
 </style>
 <script>
 (function(){var r=document.documentElement,M={snow:'light',cream:'light',sky:'light',mint:'light',lavender:'light',slate:'dark',midnight:'dark',charcoal:'dark'},V=['--bg','--card','--line','--tint','--dark'];
@@ -1095,6 +1101,15 @@ function sync(){document.body.classList.toggle('chat-open',p.classList.contains(
 new MutationObserver(sync).observe(p,{attributes:true,attributeFilter:['class']});sync()})();
 </script>
 <script>
+/* chat panel: never let wheel / touch scrolling leak to the page behind it */
+(function(){var p=document.getElementById('cbpanel');if(!p)return;var ty=0;
+function edge(el,dy){return(dy<0&&el.scrollTop<=0)||(dy>0&&el.scrollTop+el.clientHeight>=el.scrollHeight-1)}
+p.addEventListener('wheel',function(e){if(Math.abs(e.deltaX)>Math.abs(e.deltaY))return;var el=e.target.closest('#cblog');if(!el||edge(el,e.deltaY))e.preventDefault()},{passive:false});
+p.addEventListener('touchstart',function(e){ty=e.touches[0].clientY},{passive:true});
+p.addEventListener('touchmove',function(e){var y=e.touches[0].clientY,d=ty-y;ty=y;if(e.target.closest('#cbchips'))return;var el=e.target.closest('#cblog');if(!el||edge(el,d))e.preventDefault()},{passive:false});
+})();
+</script>
+<script>
 /* ===== Block print / save-as for visitors ===== */
 (function(){
 function admin(){return document.body.classList.contains('cms-editing')}
@@ -1314,7 +1329,11 @@ job:function(){say('Happy to take the details. You can fill a short form, or sen
 exp:function(){say('Ankit is a Senior Software Engineer with 5+ years in healthcare IT.\n\n• Itdose Infosystems (Apr 2022 – now): Sr. Functional Engineer, 100+ machine-integration implementation projects every year, 600+ implementations overall, with live and ongoing support for 150+ clients.\n• Kaizen IT Services (2021–22): Technical Support Engineer at Central Board of Direct Taxes.','bot');actions([{t:'See full experience',href:'#experience',fn:null}])},
 skills:function(){say('• Development: Java, Python, C++, Android\n• Healthcare: LIMS, HIS, machine interfacing, barcode design, workflow design\n• Infrastructure: server configuration, networking, deployment, backups\n• Tools: SQL, MySQL, Power BI, JIRA','bot');actions([{t:'See all skills',href:'#skills'}])},
 clients:function(){say('Ankit supports 150+ clients at a time, including Medanta, MAX, Apollo, Nanjappa, Diagnum, DRX Lab, National Path Lab (Nepal) and CRL Diagnostic.','bot')},
-cv:function(){var R=window.pfResume;if(R.downloadAllowed()){say('You can view or download Ankit’s résumé here.','bot');actions([{t:'View résumé',fn:R.view},{t:'Download résumé',fn:R.download}])}else{say('Ankit’s résumé download is currently turned off. You can still read his experience here, or ask him to send it to you directly.','bot');var l=[];if(R.viewAllowed())l.push({t:'View résumé online',fn:R.view});l.push(chatAct,{t:'Email Ankit',href:'mailto:'+MAIL});actions(l)}},
+cv:function(){var R=window.pfResume,l=[];
+if(R.downloadAllowed()){say('Here’s Ankit’s résumé. You can download it or view it online.','bot');l.push({t:'Download résumé',fn:R.download});if(R.viewAllowed())l.push({t:'View résumé',fn:R.view})}
+else if(R.viewAllowed()){say('You can view Ankit’s résumé online here.','bot');l.push({t:'View résumé',fn:R.view})}
+else{say('Ankit’s résumé isn’t available online right now. Message him directly and he’ll share it.','bot');l.push(chatAct,{t:'Email Ankit',href:'mailto:'+MAIL})}
+actions(l)},
 loc:function(){say('Ankit is based in New Delhi, India, and works on-site and remote.','bot');actions([chatAct])},
 contact:function(){say('Reach Ankit any of these ways:','bot');actions([chatAct,{t:'Email',href:'mailto:'+MAIL},{t:'Call',href:'tel:+918574518136'},{t:'LinkedIn',href:'https://www.linkedin.com/in/ankit-8986a3196'}])}};
 var chipList=[['Chat with Ankit','chat'],['Share a job opening','job'],['Experience','exp'],['Skills','skills'],['Clients','clients'],['Résumé','cv'],['Contact','contact']];
