@@ -38,7 +38,7 @@ button.m{background:var(--mint);color:#06231f}.btns{display:flex;gap:10px;flex-w
 .historyList{display:grid;gap:8px;max-height:400px;overflow:auto;margin-top:12px}.historyEntry{display:block;text-align:left;width:100%;padding:9px 12px;background:var(--field);border:1px solid var(--border);color:var(--ink)}.historyEntry strong,.historyEntry small{display:block;overflow-wrap:anywhere}.historyEntry small{font-weight:400;font-size:12px;color:var(--muted);margin-top:3px}.historyEntry:hover{border-color:var(--mint)}
 .quickFillControls{display:flex;align-items:center;gap:8px;min-width:0}.quickFillControls select{width:300px;max-width:42vw;margin:0;padding:6px 8px;font-size:12px}.quickFillControls button{white-space:nowrap}@media(max-width:620px){.appHeading{flex-wrap:wrap}.quickFillControls{width:100%}.quickFillControls select{flex:1;max-width:none;min-width:0}}
 .quickFillMenu{position:relative;min-width:200px;margin:0}.quickFillMenu summary{font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:var(--field);cursor:pointer;list-style:none}.quickFillEntries{position:absolute;right:0;top:100%;width:min(580px,88vw);max-height:330px;overflow:auto;z-index:10;background:var(--card);padding:8px;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 20px #0003}.quickFillEntry{display:flex;align-items:center;gap:6px;margin:4px 0}.quickFillControls .quickFillLoad{white-space:normal;flex:1;text-align:left;color:var(--ink);border-color:var(--line);padding:7px}.quickFillEntry>button:last-child{color:var(--amber);border-color:var(--amber);flex:none}
-#checkDropdown .dropdownPanel{position:static;box-shadow:none;margin-top:6px;min-width:0}#searchCheckRows .crow{padding:6px 0;border-bottom:1px solid var(--line)}#searchCheckRows .crow:last-child{border-bottom:0}#searchCheckRows label{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:500;white-space:normal}#searchCheckRows .hint{margin:2px 0 0 20px;font-size:12px}.jump{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;white-space:nowrap;padding:8px 0;margin:0 0 12px;background:var(--bg);-webkit-overflow-scrolling:touch}.jump button{flex:0 0 auto;padding:5px 11px;font-size:12px;border-radius:16px}.jump button[aria-current="true"]{background:var(--mint);color:var(--bg)}[id^="sec"],#detailsPanel{scroll-margin-top:60px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;flex:none;filter:drop-shadow(0 4px 10px #65e2ce40)}h1 .g{background:linear-gradient(90deg,var(--mint),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}.tag{font-size:13px;color:var(--muted);letter-spacing:.2px;margin-top:-2px}.appHeading{padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:10px}@media(max-width:480px){h1{font-size:28px}.logo{width:40px;height:40px}}#msg{top:64px;z-index:50}</style></head><body data-cms-page="jobs"><div id="adminCms-top"></div>
+#checkDropdown .dropdownPanel{position:static;box-shadow:none;margin-top:6px;min-width:0}#searchCheckRows .crow{padding:6px 0;border-bottom:1px solid var(--line)}#searchCheckRows .crow:last-child{border-bottom:0}#searchCheckRows label{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:500;white-space:normal}#searchCheckRows .hint{margin:2px 0 0 20px;font-size:12px}.jump{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;white-space:nowrap;padding:8px 0;margin:0 0 12px;background:var(--bg);-webkit-overflow-scrolling:touch}.jump button{flex:0 0 auto;padding:5px 11px;font-size:12px;border-radius:16px}.jump button[aria-current="true"]{background:var(--mint);color:var(--bg)}[id^="sec"],#detailsPanel{scroll-margin-top:60px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;flex:none;filter:drop-shadow(0 4px 10px #65e2ce40)}h1 .g{background:linear-gradient(90deg,var(--mint),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}.tag{font-size:13px;color:var(--muted);letter-spacing:.2px;margin-top:-2px}.appHeading{padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:10px}@media(max-width:480px){h1{font-size:28px}.logo{width:40px;height:40px}}#msg{top:64px;z-index:50}</style></head><body>
 <div class="toolbar"><button id="theme" type="button" aria-label="Switch color theme">Light mode</button></div>
 <div id="msg" role="status"></div>
 <div id="lock" class="card"><h2 id="lt">Enter PIN</h2><input id="pin" type="password" inputmode="numeric" autocomplete="off" aria-label="PIN"><div class="btns"><button class="m" id="go">Unlock</button></div><p id="msg0" class="hint" style="color:var(--amber)"></p></div>
@@ -66,7 +66,7 @@ button.m{background:var(--mint);color:#06231f}.btns{display:flex;gap:10px;flex-w
 <h2 style="margin-top:20px;font-size:15px">Portals</h2><div class="ch" id="ptog"></div>
 <div class="row"><label>Add a portal: name<input id="cn" placeholder="Portal name"></label><label>Search link with {keyword} {location}<input id="cu" placeholder="https://site.com/jobs?q={keyword}&l={location}"></label></div>
 <div class="btns"><button id="cadd">Add portal</button></div></div>
-<div class="card"><h2 id="secConn">Reminder connection</h2><label>Apps Script web app URL<input id="url" placeholder="https://script.google.com/macros/s/AKfycbyozKPO88sPi_bPuoHVQjuy5ZFris-6h6QOYybXlhKJCd8csXVj1k7rjuHx7TXiTiLB/exec"></label><label>Secret token<input id="tok" type="password" autocomplete="off"></label>
+<div class="card"><h2 id="secConn">Reminder connection</h2><label>Apps Script web app URL<input id="url" placeholder="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"></label><label>Secret token<input id="tok" type="password" autocomplete="off"></label>
 <div class="btns"><button id="conn" class="m">Connect &amp; load settings</button><button id="test">Send test now</button><button id="lk">Change PIN</button></div></div>
 </section><section id="detailsPanel" role="tabpanel" aria-labelledby="detailsTab" hidden><div class="card"><h2>Saved reminder details</h2><p id="detailStatus" class="hint"></p><div class="row"><label>Recipient type<select id="detailChannel"><option value="email">Email</option><option value="whatsapp">Mobile</option><option value="whatsapp_group">WhatsApp group</option></select></label><label>Select recipient<select id="detailRecipient"></select></label></div><div class="tablewrap"><table><thead><tr><th>Channel</th><th>Recipient</th><th>Jobs / status</th><th>Reminder times</th><th>Repeat / time zone</th><th>Action</th></tr></thead><tbody id="detailRows"></tbody></table></div><p id="detailSearch" class="hint"></p><div class="btns"><button id="editDetails">Edit settings</button></div></div></section><dialog id="entryDialog" class="card" style="color:var(--ink);max-width:650px;width:90vw"><h2>Reminder entry details</h2><div id="entryInfo"></div><div class="btns"><button id="entryClose">Close</button></div></dialog></main>
 <script>
@@ -243,25 +243,4 @@ $('jumpNav').onclick=function(e){var b=e.target.closest('button');if(b)jumpTo(b.
 window.onscroll=jumpSpy;jumpSpy();
 $('test').onclick=function(){say('Sending test…');api('test').then(function(j){say('Test done: '+j.sent+' openings found.'+(j.err?' Problem: '+j.err:(j.sent===0?' No jobs matched your filters (try more days, fewer job types, no location).':' Check your inbox and Spam.')))}).catch(function(){})};
 if(conn())api('status').then(status).catch(function(){})}
-</script><div id="adminCms-bottom"></div>
-<script>
-(function(){
- const API='https://script.google.com/macros/s/AKfycbwo9grCwLGuzA9B4Q5xKA85rn3H539fShT-eOfsigahLYg_erPkZcgBE6Uv54alh_iy/exec';
- async function render(page){
-  try{
-   const r=await fetch(API+'?action=page_config&page='+encodeURIComponent(page)+'&ts='+Date.now(),{cache:'no-store'});
-   const x=await r.json(); if(!x.ok||!Array.isArray(x.sections))return;
-   ['top','bottom'].forEach(pos=>{
-    const host=document.getElementById('adminCms-'+pos); if(!host)return;
-    host.replaceChildren();
-    x.sections.filter(s=>(s.position||'top')===pos).forEach(s=>{
-      const d=document.createElement('section'); d.className='card adminCmsSection';
-      if(s.title){const h=document.createElement('h2');h.textContent=s.title;d.appendChild(h)}
-      const p=document.createElement('div');p.style.whiteSpace='pre-wrap';p.textContent=s.body||'';d.appendChild(p);host.appendChild(d);
-    });
-   });
-  }catch(e){}
- }
- render(document.body.dataset.cmsPage);
-})();
 </script></body></html>
