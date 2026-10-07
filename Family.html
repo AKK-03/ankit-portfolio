@@ -84,35 +84,49 @@ $('repeat').onchange=()=>$('customRepeat').classList.toggle('show',ck('repeat').
 $('days').onchange=()=>$('customDaysWrap').classList.toggle('show',$('days').value==='custom');
 $('timezone').value=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
 $('channel').onchange=()=>{$('address').type=$('channel').value==='email'?'email':'tel';$('address').placeholder=$('channel').value==='email'?'name@example.com':'+91 98765 43210'};
+
+async function familyDbCheck(){
+  const client=db();
+  const {data,error}=await client.from('family_reminders').select('id,enabled').limit(1);
+  if(error)throw Error('Supabase Family database: '+error.message);
+  return true;
+}
 function settings(){if($('roleInput').value.trim())add('role',$('roleInput').value);if($('locationInput').value.trim())add('location',$('locationInput').value);if(!vals.role.length)throw Error('Add at least one job role.');if(!vals.location.length)throw Error('Add at least one location.');if(!times.length)throw Error('Add at least one reminder time.');let repeats=ck('repeat');if(!repeats.length)throw Error('Select at least one repeat option.');let repeatDays=ck('customRepeat');if(repeats.includes('custom')&&!repeatDays.length)throw Error('Choose custom repeat days.');let days=$('days').value==='custom'?+$('customDays').value:+$('days').value;if(!days||days<1)throw Error('Enter valid Jobs from days.');return{channel:$('channel').value,address:$('address').value.trim(),mode:'specific',roles:vals.role.slice(),locations:vals.location.slice(),times:times.slice(),repeat:repeats.length===1?repeats[0]:'multiple',repeats,repeatDays,timezone:$('timezone').value.trim()||Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',days,workModes:ck('work'),shifts:ck('shift')}}
 $('check').onclick=async()=>{
- let b=$('check');b.disabled=true;msg('Checking Family service…');
+ let b=$('check');b.disabled=true;msg('Checking Family database and sender…');
+ let lines=[];
+ try{
+   await familyDbCheck();lines.push('✓ Family database connection');
+ }catch(e){
+   lines.push('✕ '+e.message);
+ }
  try{
    let ping=await fetch(FAMILY_SENDER_URL+'?action=family_ping&ts='+Date.now(),{cache:'no-store'});
    if(!ping.ok)throw Error('Apps Script HTTP '+ping.status);
    let px=await ping.json();
-   if(!px.ok)throw Error(px.error||'Apps Script did not answer the Family health check.');
+   if(!px.ok)throw Error(px.error||'Family sender did not answer.');
+   lines.push('✓ Family sender API');
    let r=await fetch(FAMILY_SENDER_URL+'?action=family_status&ts='+Date.now(),{cache:'no-store'});
-   if(!r.ok)throw Error('Family status HTTP '+r.status);
    let x=await r.json();
-   if(x.error==='Wrong token')throw Error('The Apps Script deployment is still using the old token-gated router. Deploy the v5 Code.gs as a NEW version.');
-   let lines=[
-     '✓ Family API connection',
-     (x.supabaseConnected?'✓':'✕')+' Supabase connection',
-     (x.adzunaConfigured?'✓':'✕')+' Jobs / Adzuna connection',
-     (x.triggerActive?'✓':'✕')+' Automatic Family scheduler',
-     'Enabled Family reminders: '+(x.enabledReminders==null?'unknown':x.enabledReminders)
-   ];
-   if(x.error)lines.push('Error: '+x.error);
-   msg(lines.join('
-'),x.ok?'ok':'bad');
+   if(x.error==='Wrong token')throw Error('Family sender is reaching an older token-gated Apps Script deployment.');
+   lines.push((x.supabaseConnected?'✓':'✕')+' Sender → Supabase');
+   lines.push((x.adzunaConfigured?'✓':'✕')+' Jobs / Adzuna');
+   lines.push((x.triggerActive?'✓':'✕')+' Automatic Family scheduler');
+   lines.push('Enabled Family reminders: '+(x.enabledReminders==null?'unknown':x.enabledReminders));
+   if(x.error)lines.push('Sender error: '+x.error);
  }catch(e){
-   msg('✕ Family service check failed.
-'+e.message+'
-Deploy Code_FAMILY_test_connection_fix_v5.gs as a new Apps Script version.','bad');
- }finally{b.disabled=false}
+   lines.push('✕ Family sender: '+e.message);
+ }
+ const good=!lines.some(x=>x.startsWith('✕'));
+ msg(lines.join('\n'),good?'ok':'bad');b.disabled=false;
 };
-$('f').onsubmit=async e=>{e.preventDefault();let b=$('save');try{let s=settings();if(!s.address)throw Error('Enter the recipient.');b.disabled=true;msg('Connecting and saving…');let {data,error}=await db().rpc('create_family_reminder',{p_settings:s});if(error)throw error;msg('✓ Reminder saved successfully.\nReference: '+data,'ok')}catch(x){msg('✕ '+x.message,'bad')}finally{b.disabled=false}};
+$('f').onsubmit=async e=>{e.preventDefault();let b=$('save');try{let s=settings();if(!s.address)throw Error('Enter the recipient.');b.disabled=true;msg('Connecting and saving…');let client=db(),{data,error}=await client.rpc('create_family_reminder',{p_settings:s});
+if(error){
+  let ins=await client.from('family_reminders').insert({enabled:true,settings:s}).select('id').single();
+  if(ins.error)throw Error('Could not save Family reminder: '+error.message+'; fallback: '+ins.error.message);
+  data=ins.data.id;
+}
+msg('✓ Reminder saved successfully.\nReference: '+data,'ok')}catch(x){msg('✕ '+x.message,'bad')}finally{b.disabled=false}};
 </script><div id="adminCms-bottom"></div>
 <script>
 (function(){
