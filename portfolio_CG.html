@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Ankit | Senior Software Engineer &amp; Healthcare IT Specialist</title>
 <meta name="description" content="Ankit — Senior Software Engineer with 5+ years of experience in LIMS, healthcare IT, laboratory machine integration and software deployment."/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23102130'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-size='23' font-weight='bold' fill='%2365e2ce'%3EA%3C/text%3E%3C/svg%3E"/>
@@ -157,7 +157,7 @@ footer{display:flex;justify-content:space-between;gap:20px;padding:30px 0;font-s
 .reveal{animation:rise .8s ease both}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}}
 @media(max-width:900px){.grid4,.clients{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){nav{padding:14px 20px}main{padding:0 20px}
+@media(max-width:760px){nav{padding:14px 20px}.links{gap:12px;font-size:12px}.links a:not(.cta){display:none}.links a.cta{padding:8px 14px;font-size:13px}main{padding:0 20px}
 .hero{grid-template-columns:1fr;gap:36px;padding:46px 0 36px}h1{letter-spacing:-2px}.stats{grid-template-columns:1fr 1fr;gap:12px}.stat{min-height:164px;padding:20px}
 .skills,.project,.contact,.edu,.grid4,.clients,.qgrid{grid-template-columns:1fr}.quick{padding:22px}.project,.contact{padding:24px}section{padding-top:56px}footer{flex-direction:column;gap:4px}.timeline{padding-left:26px}.job::before{left:-26px}.job{padding:22px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important}.button:hover{transform:none}}
@@ -551,45 +551,6 @@ header{box-shadow:0 8px 30px -26px rgba(14,29,43,.5)}
 .cms-compare-flash{outline:3px solid var(--amber)!important;outline-offset:2px}
 @media(max-width:900px){.cms-compare-grid{grid-template-columns:1fr}.cms-transfer{order:-1;border:0;border-bottom:1px solid #27414f;display:grid;grid-template-columns:1fr 1fr;align-items:end}.cms-transfer label,.cms-diff{grid-column:1/-1}.cms-compare-grid{overflow:auto}.cms-side{min-height:430px}}
 
-
-/* ===== Responsive nav (hamburger) + mobile hardening ===== */
-.navlinks{display:flex;align-items:center;gap:26px}
-.navtools{display:flex;align-items:center;gap:10px}
-.menu-btn{display:none;position:relative;width:40px;height:36px;flex:none;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer}
-.menu-btn span,.menu-btn span::before,.menu-btn span::after{position:absolute;left:10px;width:18px;height:2px;border-radius:2px;background:var(--ink);transition:transform .2s,top .2s,opacity .2s}
-.menu-btn span{top:16px}.menu-btn span::before{content:"";left:0;top:-6px}.menu-btn span::after{content:"";left:0;top:6px}
-.menu-btn[aria-expanded=true] span{background:transparent}
-.menu-btn[aria-expanded=true] span::before{top:0;transform:rotate(45deg)}
-.menu-btn[aria-expanded=true] span::after{top:0;transform:rotate(-45deg)}
-@media(max-width:1100px){
- .menu-btn{display:block}
- .navlinks{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;padding:6px 20px 18px;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 22px 36px -24px rgba(0,0,0,.5);max-height:calc(100vh - 64px);max-height:calc(100dvh - 64px);overflow-y:auto}
- .navlinks.open{display:flex}
- .navlinks a{padding:14px 4px;border-bottom:1px solid var(--line);font-size:16px}
- .navlinks a.cta{margin-top:14px;justify-content:center;border:0;padding:13px 18px}
-}
-@media(max-width:420px){.brand{font-size:17px}.navtools{gap:6px}nav{gap:8px}}
-img,svg{max-width:100%}
-.cb-panel{height:min(600px,calc(100vh - 120px));height:min(600px,calc(100dvh - 120px))}
-.quick{max-height:90vh;max-height:90dvh}
-.cms-compare-box{height:calc(100vh - 36px);height:calc(100dvh - 36px)}
-@media(max-width:760px){.cms-bar{max-height:38vh;overflow-y:auto}.cms-editing{padding-bottom:40vh}}
-@media print{.menu-btn,.navtools{display:none}}
-
-/* ===== Résumé access control ===== */
-body:not(.cms-editing) [data-admin-disabled="1"]{display:none!important}
-#resumeViewer{position:fixed;inset:0;z-index:2000;display:none;flex-direction:column;background:rgba(5,12,19,.96);color:#fff;-webkit-user-select:none;user-select:none}
-#resumeViewer.open{display:flex}
-#resumeViewer .rvh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));border-bottom:1px solid #27414f;font:600 15px var(--body)}
-#resumeViewer .rvh button{border:0;border-radius:8px;padding:9px 16px;background:var(--mint);color:#06231f;font:700 14px var(--body);cursor:pointer}
-#resumeViewer .rvb{flex:1;overflow:auto;padding:14px 12px 28px;-webkit-overflow-scrolling:touch}
-#resumeViewer canvas{display:block;margin:0 auto 14px;max-width:100%;background:#fff;border-radius:4px}
-#resumeViewer .rvm{margin:40px auto;max-width:420px;text-align:center;color:#a5b6c4}
-.pf-toast{position:fixed;left:50%;bottom:92px;z-index:2100;transform:translate(-50%,10px);max-width:calc(100vw - 32px);padding:11px 16px;border-radius:12px;background:#0e1d2b;color:#fff;border:1px solid #27414f;font:500 13px var(--body);text-align:center;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
-.pf-toast.on{opacity:1;transform:translate(-50%,0)}
-@media print{#resumeViewer,.pf-toast{display:none!important}}
-.ats-prev{margin:14px 0 0;padding:14px;max-height:42vh;overflow:auto;white-space:pre-wrap;word-break:break-word;background:#0e1d2b;border:1px solid #27414f;border-radius:10px;color:#dbe7ee;font:12px/1.55 ui-monospace,Menlo,monospace}
-.ats-tips{margin:10px 0 0;padding-left:18px;font-size:12.5px;color:#a5b6c4}
 </style>
 <script>
 (function(){var r=document.documentElement,M={snow:'light',cream:'light',sky:'light',mint:'light',lavender:'light',slate:'dark',midnight:'dark',charcoal:'dark'},V=['--bg','--card','--line','--tint','--dark'];
@@ -615,17 +576,14 @@ r.classList.add('js')})();
 <header>
 <nav aria-label="Main navigation">
  <a class="brand" href="#home">Ankit Kanaujia<i></i></a>
- <div class="links navlinks" id="navlinks">
-  <a href="#about">What I do</a><a href="#experience">Experience</a><a href="#clients">Clients</a><a href="#machine-brands">Machines</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#education">Education</a><a href="#contact">Contact</a>
+ <div class="links">
+  <a class="opt" href="#about">What I do</a><a href="#experience">Experience</a><a class="opt" href="#clients">Clients</a><a class="opt" href="#machine-brands">Machines</a><a class="opt" href="#skills">Skills</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
   <a class="cta" href="#quick" data-open-quick><i></i>Hiring? Connect fast</a>
- </div>
- <div class="navtools">
-  <div class="bgwrap">
+    <div class="bgwrap">
    <button type="button" class="bgbtn" id="bgbtn" aria-expanded="false" aria-controls="bgpop" aria-label="Change background colour"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-3.9-4-7.2-9-7.2z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg><span>Background</span></button>
    <div class="bgpop" id="bgpop" role="dialog" aria-label="Background colour"><h4>Choose background</h4><div class="sw-grid" id="swgrid"></div><label class="cust">Custom colour<input type="color" id="bgcustom" value="#f3f6f8" aria-label="Pick a custom background colour"></label><p class="bgnote">Preview only. Resets to the original background when you refresh.</p><div class="bgsave"><button type="button" id="bgsave">Save for all visitors</button><p id="bgmsg">Admin only. Preview first, then save.</p></div></div>
   </div>
   <button class="theme" id="theme" type="button" aria-label="Toggle dark mode">Dark</button>
-  <button type="button" class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="navlinks"><span></span></button>
  </div>
 </nav>
 </header>
@@ -923,133 +881,11 @@ r.classList.add('js')})();
 <div class="cms-resume-row"><input id="cmsResumeTitle" placeholder="Portfolio name (defaults to resume filename)"><button id="cmsResumePick" type="button">Choose resume</button><input class="cms-resume-file" id="cmsResumeFile" type="file" accept=".pdf,.doc,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
 <p class="cms-resume-note" id="cmsResumeMsg">Generated URL example: <b>senior-software-engineer.html</b></p><div id="cmsResumeList"></div>
 </div></div>
-<div class="cms-resume-modal" id="atsModal"><div class="cms-resume-box">
-<button class="cms-resume-close" id="atsClose" type="button">Close</button><h2>ATS-friendly résumé</h2>
-<p>Built live from the content currently shown in this portfolio (including unsaved edits). Download it as PDF or Word, or review the plain-text version below.</p>
-<div class="cms-resume-row"><button id="atsPdf" type="button">Download PDF</button><button id="atsDocx" type="button">Download Word (.docx)</button></div>
-<p class="cms-resume-note" id="atsMsg"></p>
-<ul class="ats-tips"><li>Single column, no tables, icons or images</li><li>Standard headings and a real text layer (selectable, parseable)</li><li>Plain bullets, simple dates, one font</li></ul>
-<pre class="ats-prev" id="atsPrev"></pre>
-</div></div>
 <div class="cms-hint">Admin mode: edit text directly · click a block to select it</div>
 <div class="cms-bar" id="cmsBar"><span id="cmsStatus">Admin editing enabled</span>
-<button id="cmsSave" type="button">Save changes</button><button id="cmsResumeDl" type="button" class="secondary">Résumé download: <span id="cmsResumeDlState" class="cms-voice-state">…</span></button><button id="cmsAts" type="button" class="secondary">Generate ATS résumé</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button type="button" class="secondary" id="cmsCompareBtn">⇄ Compare Portfolios</button>
+<button id="cmsSave" type="button">Save changes</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button type="button" class="secondary" id="cmsCompareBtn">⇄ Compare Portfolios</button>
 <button id="cmsLogout" type="button" class="secondary">Logout</button>
 <input id="cmsFile" type="file" accept="image/*" hidden></div>
-<script>
-/* ===== Mobile menu · résumé access control · ATS résumé generator ===== */
-(function(){
-var DL='[data-admin-button="download-resume"]',VW='[data-admin-button="view-resume"]',$=function(s){return document.querySelector(s)};
-/* ---- mobile menu ---- */
-var mb=document.getElementById('menuBtn'),nl=document.getElementById('navlinks');
-function setMenu(o){nl.classList.toggle('open',o);mb.setAttribute('aria-expanded',o);mb.setAttribute('aria-label',o?'Close menu':'Open menu')}
-mb.onclick=function(e){e.stopPropagation();setMenu(!nl.classList.contains('open'))};
-nl.addEventListener('click',function(e){if(e.target.closest('a'))setMenu(false)});
-document.addEventListener('click',function(e){if(!e.target.closest('header'))setMenu(false)});
-addEventListener('keydown',function(e){if(e.key==='Escape')setMenu(false)});
-addEventListener('resize',function(){if(innerWidth>1100)setMenu(false)});
-
-/* ---- résumé access control: ONE switch governs every download path ---- */
-function off(s){var a=$(s);return !!(a&&a.dataset.adminDisabled==='1')}
-function dlOK(){return !off(DL)}
-function vwOK(){return !off(VW)}
-function url(){var a=$(VW)||$(DL);return(a&&a.getAttribute('href'))||'Ankit-Resume.pdf'}
-function sync(){var s=document.getElementById('cmsResumeDlState');if(s){s.textContent=dlOK()?'Enabled':'Disabled';s.className='cms-voice-state '+(dlOK()?'enabled':'disabled')}}
-var tt;function toast(t){var e=document.getElementById('pfToast');if(!e){e=document.createElement('div');e.id='pfToast';e.className='pf-toast';e.setAttribute('role','status');document.body.appendChild(e)}e.textContent=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){e.classList.remove('on')},3200)}
-function download(){if(!dlOK())return toast('Résumé download is currently turned off.');var a=document.createElement('a');a.href=url();a.download='';document.body.appendChild(a);a.click();a.remove()}
-function lib(src,ok){return new Promise(function(res,rej){if(ok())return res();var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=function(){rej(new Error('could not load '+src.split('/').pop()))};document.head.appendChild(s)})}
-var V,PJ='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf';
-function closeV(){if(V)V.classList.remove('open');document.documentElement.style.overflow=''}
-function viewer(){if(V)return V;V=document.createElement('div');V.id='resumeViewer';V.setAttribute('role','dialog');V.setAttribute('aria-label','Résumé (view only)');V.innerHTML='<div class="rvh"><strong>Résumé · view only</strong><button type="button">Close</button></div><div class="rvb"></div>';V.querySelector('button').onclick=closeV;['contextmenu','dragstart','copy','cut'].forEach(function(t){V.addEventListener(t,function(e){e.preventDefault()})});document.body.appendChild(V);return V}
-addEventListener('keydown',function(e){if(!V||!V.classList.contains('open'))return;var k=(e.key||'').toLowerCase();if(e.key==='Escape')closeV();if((e.ctrlKey||e.metaKey)&&(k==='s'||k==='p'||k==='u'))e.preventDefault()});
-/* view-only mode: pdf.js paints the pages on canvases inside this page, so there is no Chrome PDF toolbar / download icon */
-async function show(){var v=viewer(),b=v.querySelector('.rvb');b.innerHTML='<p class="rvm">Loading résumé…</p>';v.classList.add('open');document.documentElement.style.overflow='hidden';
- try{var r=await fetch(url(),{cache:'no-store'});if(!r.ok)throw 0;var buf=await r.arrayBuffer();await lib(PJ+'.min.js',function(){return window.pdfjsLib});pdfjsLib.GlobalWorkerOptions.workerSrc=PJ+'.worker.min.js';
-  var doc=await pdfjsLib.getDocument({data:buf}).promise,w=Math.min(b.clientWidth-24,860),d=Math.min(window.devicePixelRatio||1,2);b.innerHTML='';
-  for(var i=1;i<=doc.numPages;i++){var p=await doc.getPage(i),vp=p.getViewport({scale:w/p.getViewport({scale:1}).width*d}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;c.style.width=w+'px';c.style.height=vp.height/d+'px';b.appendChild(c);await p.render({canvasContext:c.getContext('2d'),viewport:vp}).promise}
- }catch(e){b.innerHTML='<p class="rvm">The résumé preview could not be loaded. Please contact Ankit directly and he will share it.</p>'}}
-function view(){if(!vwOK())return toast('Résumé viewing is currently turned off.');if(dlOK())window.open(url(),'_blank','noopener');else show()}
-/* capture-phase guard: any link to the résumé PDF (hero, chat, anywhere) obeys the switch */
-document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a||dlOK()||document.body.classList.contains('cms-editing')||a.closest('#resumeViewer'))return;
- if(!(a.matches(DL+','+VW)||/\.pdf([?#]|$)/i.test(a.getAttribute('href'))))return;
- e.preventDefault();e.stopPropagation();(a.matches(DL)||a.hasAttribute('download'))?toast('Résumé download is currently turned off.'):show()},true);
-window.pfResume={downloadAllowed:dlOK,viewAllowed:vwOK,view:view,download:download,toast:toast,sync:sync,url:url};
-document.addEventListener('pf-content',sync);sync();
-var rt=document.getElementById('cmsResumeDl');
-if(rt)rt.onclick=function(){var a=$(DL),st=document.getElementById('cmsStatus');if(!a){if(st)st.textContent='Download button not found in the hero section.';return}
- if(dlOK()){a.dataset.adminDisabled='1';a.style.opacity='.42';a.style.display='inline-flex'}else{delete a.dataset.adminDisabled;a.style.opacity='';a.style.display=''}
- sync();if(st)st.textContent='Résumé download '+(dlOK()?'ENABLED':'DISABLED')+' everywhere (button, chat, voice, new-tab viewer). Click Save changes to publish.'};
-var tb=document.getElementById('cmsToggleButton');if(tb)tb.addEventListener('click',function(){setTimeout(sync,0)});
-
-/* ---- ATS résumé: model built from the portfolio DOM ---- */
-function clean(s){return String(s==null?'':s).replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/[\u2013\u2014]/g,'-').replace(/\u2026/g,'...').replace(/\s*\u00B7\s*/g,' | ').replace(/\s+/g,' ').replace(/[^\x20-\x7E\u00C0-\u00FF\u2022]/g,'').trim()}
-function model(){
- var m=$('main'),Q=function(s,r){return(r||m).querySelector(s)},QA=function(s,r){return[].slice.call((r||m).querySelectorAll(s))},T=function(e){return e?clean(e.textContent):''},
- tags=function(r){return QA('.tag',r).map(T).filter(Boolean)},S=[],
- hl=T(Q('.identity-line span')).split(' | '),em=Q('#contact a[href^="mailto:"]'),ph=Q('#contact a[href^="tel:"]'),li=Q('#contact a[href*="linkedin"]'),cp=QA('#contact > div:first-child p'),
- loc=T(cp[cp.length-1]).replace(/\s*\|\s*/g,', ');
- var M={name:T(Q('.identity-line strong'))||T($('.brand')),title:hl.slice(0,2).join(' | '),
-  contact:[loc,ph&&ph.getAttribute('href').replace(/^tel:/,'').replace(/^(\+\d{2})(\d{10})$/,'$1 $2'),em&&em.getAttribute('href').replace(/^mailto:/,''),li&&li.getAttribute('href')].filter(Boolean)};
- var ab=T(Q('#about .head p'));if(ab)S.push({h:'Professional Summary',items:[{p:ab}]});
- var hi=QA('.stat').map(function(s){var c=Q('.count',s),n=c?(c.dataset.target||T(c)):'',sp=[].slice.call(s.children).filter(function(x){return x.tagName==='SPAN'&&!/stat-badge/.test(x.className)})[0];return n?{b:n+'+ '+T(Q('h3',s))+(sp?' - '+T(sp):'')}:null}).filter(Boolean);
- if(hi.length)S.push({h:'Career Highlights',items:hi});
- var sk=QA('#skills .card').map(function(c){return{kv:[T(Q('h3',c)),tags(c).join(', ')]}});
- var mc=QA('.machine-brand strong').map(T).filter(function(t){return t&&!/many more/i.test(t)});if(mc.length)sk.push({kv:['Laboratory Analyzers (Brands)',mc.join(', ')]});
- var pr=QA('.hero-proof span').map(T).filter(Boolean);if(pr.length)sk.unshift({kv:['Integration & Protocols',pr.join(', ')]});
- if(sk.length)S.push({h:'Technical Skills',items:sk});
- var jb=[];QA('#experience .job').forEach(function(j){jb.push({row:[T(Q('h3',j)),T(Q('.when',j))]},{sub:T(Q('.org',j))});QA('li',j).forEach(function(l){jb.push({b:T(l)})});var t=tags(j);if(t.length)jb.push({kv:['Keywords',t.join(', ')]})});
- if(jb.length)S.push({h:'Professional Experience',items:jb});
- var pj=[];QA('#projects .project').forEach(function(p){pj.push({row:[T(Q('h3',p)),'']});var d=T(Q('p',p));if(d)pj.push({p:d});QA('li',p).forEach(function(l){pj.push({b:T(l)})});var t=tags(p);if(t.length)pj.push({kv:['Technologies',t.join(', ')]})});
- if(pj.length)S.push({h:'Projects',items:pj});
- var ed=[],ce=[];QA('#education .card').forEach(function(c){var y=T(Q('.yr',c)),h=T(Q('h3',c)),t=tags(c);
-  if(/certif/i.test(y))ce.push({b:h+(t.length?' ('+t.join(', ')+')':'')});
-  else{ed.push({row:[h,y]});QA('p',c).forEach(function(p){var x=T(p);if(x)ed.push({sub:(p.classList.contains('big')?'Score: ':'')+x})})}});
- if(ed.length)S.push({h:'Education',items:ed});if(ce.length)S.push({h:'Certifications',items:ce});
- var cl=QA('.client strong').map(T).filter(Boolean);if(cl.length)S.push({h:'Key Clients Supported',items:[{p:cl.join(', ')}]});
- M.sec=S;return M}
-function plain(M){var o=[M.name,M.title,M.contact.join(' | ')];M.sec.forEach(function(s){o.push('',s.h.toUpperCase());s.items.forEach(function(i){o.push(i.p||(i.b?'\u2022 '+i.b:i.kv?(i.kv[1]?i.kv[0]+': '+i.kv[1]:''):i.row?i.row[0]+(i.row[1]?'  |  '+i.row[1]:''):i.sub))})});return o.join('\n')}
-
-/* PDF: jsPDF with the built-in Helvetica => a real, selectable text layer that ATS parsers read */
-function mkPdf(M){var D=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),W=210,H=297,g=16,w=W-2*g,y=g-2;D.setProperties({title:M.name+' - Resume',author:M.name});
- function put(t,x,s,st,o){D.setFont('helvetica',st);D.setFontSize(s);var h=s*.3528*1.35;if(y+h>H-g){D.addPage();y=g-2}y+=h;D.text(t,x,y,o)}
- function wrap(t,x,wd,s,st,gap){D.setFont('helvetica',st);D.setFontSize(s);D.splitTextToSize(t,wd).forEach(function(l){put(l,x,s,st)});y+=gap||0}
- put(M.name,W/2,18,'bold',{align:'center'});if(M.title)put(M.title,W/2,11,'normal',{align:'center'});
- if(M.contact.length){D.setFontSize(9.5);D.splitTextToSize(M.contact.join(' | '),w).forEach(function(l){put(l,W/2,9.5,'normal',{align:'center'})})}
- M.sec.forEach(function(s){y+=3.5;if(y+14>H-g){D.addPage();y=g-2}put(s.h.toUpperCase(),g,11,'bold');D.setLineWidth(.3);D.line(g,y+1.3,W-g,y+1.3);y+=2;
-  s.items.forEach(function(i){
-   if(i.p)wrap(i.p,g,w,10,'normal',1);
-   else if(i.b){D.setFont('helvetica','normal');D.setFontSize(10);D.splitTextToSize(i.b,w-6).forEach(function(l,k){put(l,g+6,10,'normal');if(!k)D.text('\u2022',g+1.5,y)});y+=.8}
-   else if(i.kv){if(!i.kv[1])return;var lb=i.kv[0]+': ';D.setFont('helvetica','bold');D.setFontSize(10);var lw=D.getTextWidth(lb);D.setFont('helvetica','normal');var f=D.splitTextToSize(i.kv[1],w-lw)[0]||'',rest=i.kv[1].slice(f.length).trim();put(lb,g,10,'bold');D.setFont('helvetica','normal');D.text(f,g+lw,y);if(rest)wrap(rest,g,w,10,'normal');y+=.8}
-   else if(i.row){y+=1.8;var r=i.row[1]||'',rw=0;if(r){D.setFont('helvetica','normal');D.setFontSize(10);rw=D.getTextWidth(r)+4}D.setFont('helvetica','bold');D.setFontSize(10.5);D.splitTextToSize(i.row[0],w-rw).forEach(function(l,k){put(l,g,10.5,'bold');if(!k&&r){D.setFont('helvetica','normal');D.setFontSize(10);D.text(r,W-g,y,{align:'right'})}})}
-   else if(i.sub)wrap(i.sub,g,w,10,'italic',.8)})});
- return D}
-/* DOCX: hand-built WordprocessingML (Heading 1 styles, tab-aligned dates, no tables) zipped with JSZip */
-function mkDocx(M,type){var X=function(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')},
- R=function(t,o){o=o||{};return'<w:r><w:rPr>'+(o.b?'<w:b/>':'')+(o.i?'<w:i/>':'')+'<w:sz w:val="'+(o.s||20)+'"/></w:rPr><w:t xml:space="preserve">'+X(t)+'</w:t></w:r>'},TAB='<w:r><w:tab/></w:r>',
- P=function(r,o){o=o||{};return'<w:p><w:pPr>'+(o.st?'<w:pStyle w:val="'+o.st+'"/>':'')+(o.tab?'<w:tabs><w:tab w:val="right" w:pos="10204"/></w:tabs>':'')+(o.sp!=null?'<w:spacing w:before="'+(o.bf||0)+'" w:after="'+o.sp+'"/>':'')+(o.ind?'<w:ind w:left="284" w:hanging="284"/>':'')+(o.c?'<w:jc w:val="center"/>':'')+'</w:pPr>'+r+'</w:p>'},
- B=[P(R(M.name,{b:1,s:36}),{c:1,sp:20}),M.title?P(R(M.title,{s:22}),{c:1,sp:20}):'',M.contact.length?P(R(M.contact.join(' | '),{s:19}),{c:1,sp:60}):''];
- M.sec.forEach(function(s){B.push(P(R(s.h),{st:'Heading1'}));s.items.forEach(function(i){B.push(i.p?P(R(i.p),{sp:40}):i.b?P(R('\u2022')+TAB+R(i.b),{sp:30,ind:1}):i.kv?(i.kv[1]?P(R(i.kv[0]+': ',{b:1})+R(i.kv[1]),{sp:40}):''):i.row?P(R(i.row[0],{b:1,s:21})+(i.row[1]?TAB+R(i.row[1]):''),{tab:1,bf:90,sp:10}):i.sub?P(R(i.sub,{i:1}),{sp:40}):'')})});
- var NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"',H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',z=new window.JSZip();
- z.file('[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>');
- z.file('_rels/.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
- z.file('word/_rels/document.xml.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>');
- z.file('word/styles.xml',H+'<w:styles '+NS+'><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="20"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:pPr><w:keepNext/><w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="000000"/></w:pBdr><w:spacing w:before="200" w:after="80"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:b/><w:caps/><w:sz w:val="22"/></w:rPr></w:style></w:styles>');
- z.file('word/document.xml',H+'<w:document '+NS+'><w:body>'+B.join('')+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="851" w:right="851" w:bottom="851" w:left="851" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr></w:body></w:document>');
- return z.generateAsync({type:type||'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'})}
-window.pfAts={model:model,plain:plain,pdf:mkPdf,docx:mkDocx,clean:clean};
-
-/* ---- admin UI ---- */
-var JSPDF='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',JSZ='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
- am=document.getElementById('atsModal'),amsg=document.getElementById('atsMsg');
-function fname(M,x){return(M.name||'Resume').replace(/[^A-Za-z0-9]+/g,'_')+'_ATS_Resume.'+x}
-function save(b,n){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},2000)}
-var ab=document.getElementById('cmsAts');
-if(ab){ab.onclick=function(){document.getElementById('atsPrev').textContent=plain(model());amsg.textContent='';am.classList.add('open')};
- document.getElementById('atsClose').onclick=function(){am.classList.remove('open')};
- document.getElementById('atsPdf').onclick=async function(){amsg.textContent='Building PDF…';try{var M=model();await lib(JSPDF,function(){return window.jspdf});save(new Blob([mkPdf(M).output('arraybuffer')],{type:'application/pdf'}),fname(M,'pdf'));amsg.textContent='PDF downloaded.'}catch(e){amsg.textContent='Could not build the PDF: '+e.message}};
- document.getElementById('atsDocx').onclick=async function(){amsg.textContent='Building Word file…';try{var M=model();await lib(JSZ,function(){return window.JSZip});save(await mkDocx(M),fname(M,'docx'));amsg.textContent='Word file downloaded.'}catch(e){amsg.textContent='Could not build the Word file: '+e.message}}}
-})();
-</script>
 <script>
 document.getElementById('year').textContent=new Date().getFullYear();
 (function(){var f=document.getElementById('qform');
@@ -1084,7 +920,7 @@ job:function(){say('Happy to take the details. You can fill a short form, or sen
 exp:function(){say('Ankit is a Senior Software Engineer with 5+ years in healthcare IT.\n\n• Itdose Infosystems (Apr 2022 – now): Sr. Functional Engineer, 100+ machine-integration implementation projects every year, 600+ implementations overall, with live and ongoing support for 150+ clients.\n• Kaizen IT Services (2021–22): Technical Support Engineer at Central Board of Direct Taxes.','bot');actions([{t:'See full experience',href:'#experience',fn:null}])},
 skills:function(){say('• Development: Java, Python, C++, Android\n• Healthcare: LIMS, HIS, machine interfacing, barcode design, workflow design\n• Infrastructure: server configuration, networking, deployment, backups\n• Tools: SQL, MySQL, Power BI, JIRA','bot');actions([{t:'See all skills',href:'#skills'}])},
 clients:function(){say('Ankit supports 150+ clients at a time, including Medanta, MAX, Apollo, Nanjappa, Diagnum, DRX Lab, National Path Lab (Nepal) and CRL Diagnostic.','bot')},
-cv:function(){var R=window.pfResume;if(R.downloadAllowed()){say('You can view or download Ankit’s résumé here.','bot');actions([{t:'View résumé',fn:R.view},{t:'Download résumé',fn:R.download}])}else{say('Ankit’s résumé download is currently turned off. You can still read his experience here, or ask him to send it to you directly.','bot');var l=[];if(R.viewAllowed())l.push({t:'View résumé online',fn:R.view});l.push(chatAct,{t:'Email Ankit',href:'mailto:'+MAIL});actions(l)}},
+cv:function(){say('You can download Ankit’s résumé here.','bot');actions([{t:'Download résumé',href:'Ankit-Resume.pdf'}])},
 loc:function(){say('Ankit is based in New Delhi, India, and works on-site and remote.','bot');actions([chatAct])},
 contact:function(){say('Reach Ankit any of these ways:','bot');actions([chatAct,{t:'Email',href:'mailto:'+MAIL},{t:'Call',href:'tel:+918574518136'},{t:'LinkedIn',href:'https://www.linkedin.com/in/ankit-8986a3196'}])}};
 var chipList=[['Chat with Ankit','chat'],['Share a job opening','job'],['Experience','exp'],['Skills','skills'],['Clients','clients'],['Résumé','cv'],['Contact','contact']];
@@ -1211,8 +1047,8 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   function section(id,label){var el=document.getElementById(id);if(!el)return false;note('Answering about '+label+'…');speak(cleanVoice(el).slice(0,1800));el.scrollIntoView({behavior:'smooth',block:'start'});return true}
   if(has(['stop','be quiet','stop talking','stop reading','cancel speech'])){stop();return note('Stopped.')}
   if(has(['help','what can i say','what can i ask','how do i use','commands'])){if(help)help.classList.add('open');speak("You can ask me naturally about Ankit\'s experience, skills, projects, education, clients, current work, contact details, laboratory machines, or resume. You can also ask me to open WhatsApp, email, chat, view the resume, or download it.");return note('Voice help opened. Ask naturally or try an example.')}
-  if(has(['download','save','get'])&&has(['resume','résumé','cv'])){var R=window.pfResume;if(R&&!R.downloadAllowed()){speak('Résumé download is currently turned off.');return note('Résumé download is currently turned off by the owner.')}R&&R.download();note('Downloading résumé…');return}
-  if(has(['resume','résumé','cv'])&&has(['view','show','open','see','read'])){note('Opening résumé…');window.pfResume&&window.pfResume.view();return}
+  if(has(['download','save','get'])&&has(['resume','résumé','cv'])){var a=document.querySelector('[data-admin-button="download-resume"]');if(a){note('Downloading résumé…');a.click();return}}
+  if(has(['resume','résumé','cv'])&&has(['view','show','open','see','read'])){var a=document.querySelector('[data-admin-button="view-resume"]');if(a){note('Opening résumé…');window.open(a.href,'_blank','noopener');return}}
   if(has(['whatsapp','what s app','message him','message ankit'])){var a=document.querySelector('a[href*="wa.me"],a[href*="whatsapp"]');if(a){note('Opening WhatsApp…');window.open(a.href,'_blank','noopener');return}}
   if(has(['email','e mail','mail him','send mail','send an email'])){var a=document.querySelector('a[href^="mailto:"]');if(a){note('Opening email…');location.href=a.href;return}}
   if(has(['chat','chatbot','talk to ankit','talk with ankit'])){var b=document.getElementById('cbFab');if(b){note('Opening chat…');b.click();return}}
@@ -1269,7 +1105,7 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   async function loadSubPortfolio(){
     if(!pageSlug)return false;
     var r=await sb.from('resume_portfolios').select('html,title,resume_url').eq('slug',pageSlug).maybeSingle();
-    if(r.data&&r.data.html){main.innerHTML=r.data.html;document.dispatchEvent(new Event('pf-content'));document.title=(r.data.title||pageSlug)+' | Portfolio';return true} return false;
+    if(r.data&&r.data.html){main.innerHTML=r.data.html;document.title=(r.data.title||pageSlug)+' | Portfolio';return true} return false;
   }
   async function listResumePortfolios(){
     var box=document.getElementById('cmsResumeList');box.innerHTML='Loading…';
@@ -1278,11 +1114,6 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
     box.innerHTML='';(r.data||[]).forEach(function(x){var row=document.createElement('div');row.className='cms-resume-item';var info=document.createElement('div');info.innerHTML='<strong></strong><small></small>';info.querySelector('strong').textContent=x.title;info.querySelector('small').textContent=x.slug+'.html';var act=document.createElement('div');act.className='cms-resume-actions';var view=document.createElement('a');view.textContent='View';view.target='_blank';view.rel='noopener';view.href=location.pathname+'?portfolio='+encodeURIComponent(x.slug);var del=document.createElement('button');del.className='danger';del.textContent='Delete';del.onclick=async function(){if(!confirm('Delete '+x.title+' and its uploaded resume?'))return; if(x.storage_path)await sb.storage.from(cfg.resumeBucket||'resumes').remove([x.storage_path]);var d=await sb.from('resume_portfolios').delete().eq('id',x.id);document.getElementById('cmsResumeMsg').textContent=d.error?'Delete failed: '+d.error.message:'Deleted '+x.title;listResumePortfolios()};act.append(view,del);row.append(info,act);box.append(row)});if(!(r.data||[]).length)box.textContent='No resume portfolios yet.';
   }
 
-  window.pfClean=function(root){var c=root.cloneNode(true);
-   c.querySelectorAll('.rv,.in,.cms-selected').forEach(function(e){e.classList.remove('rv','in','cms-selected')});
-   c.querySelectorAll('[style]').forEach(function(e){e.style.removeProperty('transform');e.style.removeProperty('--mx');e.style.removeProperty('--my');if(!e.getAttribute('style').trim())e.removeAttribute('style')});
-   c.querySelectorAll('.count').forEach(function(e){var n=parseInt(e.textContent,10);if(n>0)e.dataset.target=n;e.removeAttribute('data-done')});
-   return c.innerHTML};
   function setStatus(t){status.textContent=t}
   var voiceToggle=document.getElementById('cmsVoiceToggle'),voiceState=document.getElementById('cmsVoiceState');
   function syncVoiceAdmin(){if(!voiceState)return;var on=window.portfolioVoice?window.portfolioVoice.enabled():true;voiceState.textContent=on?'Enabled':'Disabled';voiceState.className='cms-voice-state '+(on?'enabled':'disabled')}
@@ -1294,7 +1125,7 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   }
   async function loadSaved(){
     var r=await sb.from('portfolio_content').select('html').eq('id',1).maybeSingle();
-    if(r.data&&r.data.html){main.innerHTML=r.data.html;document.dispatchEvent(new Event('pf-content')); document.getElementById('year')&&(document.getElementById('year').textContent=new Date().getFullYear())}
+    if(r.data&&r.data.html){main.innerHTML=r.data.html; document.getElementById('year')&&(document.getElementById('year').textContent=new Date().getFullYear())}
   }
   function editable(on){
     document.body.classList.toggle('cms-editing',on); bar.classList.toggle('open',on);
@@ -1343,7 +1174,7 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
     if(selected) selected.classList.remove('cms-selected');
     main.querySelectorAll('[contenteditable]').forEach(function(e){e.removeAttribute('contenteditable')});
     main.querySelectorAll('[data-admin-button]').forEach(function(b){b.style.opacity='';if(b.dataset.adminDisabled==='1')b.style.display='none'});
-    var html=window.pfClean(main); editable(true); if(selected) selected.classList.add('cms-selected');
+    var html=main.innerHTML; editable(true); if(selected) selected.classList.add('cms-selected');
     setStatus('Saving…'); var r=pageSlug?await sb.from('resume_portfolios').update({html:html,updated_at:new Date().toISOString()}).eq('slug',pageSlug):await sb.from('portfolio_content').upsert({id:1,html:html,updated_at:new Date().toISOString()});
     setStatus(r.error?'Save failed: '+r.error.message:'Saved successfully ✓');
   };
@@ -1375,7 +1206,6 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
 
 <script>
 (function(){
-function pfStats(){
  var stats=document.querySelector('.stats'); if(!stats)return;
  var cards=stats.querySelectorAll('.stat'), counts=stats.querySelectorAll('.count');
  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1400,8 +1230,6 @@ function pfStats(){
   });
   card.addEventListener('pointerleave',function(){card.style.transform='';card.style.setProperty('--mx','50%');card.style.setProperty('--my','50%')});
  });
-}
-pfStats();document.addEventListener('pf-content',pfStats);
 })();
 </script>
 
@@ -1444,13 +1272,10 @@ mark();document.addEventListener('pf-theme',mark);
 var bar=document.createElement('div');bar.id='progress';document.body.appendChild(bar);
 function prog(){var h=document.documentElement.scrollHeight-innerHeight;bar.style.width=(h>0?scrollY/h*100:0)+'%'}
 addEventListener('scroll',prog,{passive:true});prog();
-var SEL='main .head,main .job,main .project,main .machine-brands,main .grid4,main .skills,main .edu,main .clients,main .stats';
-function pfReveal(){var els=document.querySelectorAll(SEL);els.forEach(function(e){e.classList.add('rv')});
-if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return}
-var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:0,rootMargin:'0px 0px -6% 0px'});
-els.forEach(function(e){if(!e.classList.contains('in'))io.observe(e)});
-setTimeout(function(){document.querySelectorAll('.rv:not(.in)').forEach(function(e){if(e.getBoundingClientRect().top<innerHeight*1.1)e.classList.add('in')})},1800)}
-pfReveal();document.addEventListener('pf-content',pfReveal);
+var els=document.querySelectorAll('main .head,main .job,main .project,main .machine-brands,main .grid4,main .skills,main .edu,main .clients,main .stats');
+els.forEach(function(e){e.classList.add('rv')});
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)})}else els.forEach(function(e){e.classList.add('in')});
+setTimeout(function(){document.querySelectorAll('.rv:not(.in)').forEach(function(e){var r=e.getBoundingClientRect();if(r.top<innerHeight)e.classList.add('in')})},1800);
 })();
 </script>
 
