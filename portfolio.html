@@ -598,6 +598,39 @@ body:not(.cms-editing) [data-admin-disabled="1"]{display:none!important}
  body:not(.cms-editing)::after{content:"Printing is disabled for this portfolio. Please contact Ankit directly for a copy of his résumé.";display:block!important;padding:60px 30px;font:600 18px Arial,sans-serif;text-align:center;color:#000}
  html,body:not(.cms-editing){background:#fff!important}
 }
+
+/* ===== Rich editor section + formatting toolbar ===== */
+#rteBar{position:fixed;z-index:1050;left:50%;top:70px;transform:translateX(-50%);display:none;flex-wrap:wrap;align-items:center;gap:5px;max-width:min(980px,calc(100vw - 16px));padding:8px;background:#0e1d2b;border:1px solid #27414f;border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.45);color:#fff;font:13px var(--body)}
+#rteBar.on{display:flex}
+#rteBar button,#rteBar select,#rteBar label{height:32px;border:1px solid #3c5a6a;border-radius:7px;background:#14293a;color:#fff;font:600 13px var(--body);cursor:pointer;padding:0 9px;display:inline-flex;align-items:center;gap:4px}
+#rteBar label input{width:22px;height:22px;padding:0;border:0;background:none;cursor:pointer}
+#rteBar button:hover,#rteBar select:hover,#rteBar label:hover{border-color:var(--mint)}
+@media(max-width:760px){#rteBar{top:64px;left:8px;right:8px;transform:none;max-width:none;flex-wrap:nowrap;overflow-x:auto}#rteBar>*{flex:none}}
+.rte{display:flow-root;min-height:90px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;font-size:17px;line-height:1.7;overflow-wrap:anywhere}
+.rte h2{font-size:34px;letter-spacing:-.8px;margin:0 0 12px}.rte h3{font-size:25px;margin:0 0 10px}.rte h4{font:700 19px var(--head);margin:0 0 8px}
+.rte ul,.rte ol{padding-left:24px;margin:0 0 16px}.rte hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.rte img{max-width:100%;height:auto;border-radius:10px}.rte img.al-left{float:left;margin:4px 20px 12px 0}.rte img.al-right{float:right;margin:4px 0 12px 20px}.rte img.al-center{display:block;margin:12px auto}
+.rte a{color:var(--teal);text-decoration:underline}
+.cms-editing main .rte *[contenteditable]{outline:none}.cms-editing main .rte:focus{outline:2px solid var(--mint)}
+@media(max-width:760px){.rte{padding:20px}.rte img.al-left,.rte img.al-right{float:none;display:block;margin:12px auto}}
+@media print{#rteBar{display:none!important}}
+
+/* ===== Résumé builder ===== */
+.ats-grid{display:grid;grid-template-columns:310px minmax(0,1fr);gap:18px;margin-top:14px}
+@media(max-width:820px){.ats-grid{grid-template-columns:1fr}}
+.ats-ctl label{display:block;font-size:12px;color:#a5b6c4;margin:8px 0 0}
+.ats-ctl select,.ats-ctl input[type=text],.ats-ctl input[type=file]{width:100%;margin-top:4px;padding:8px;border:1px solid #3c5a6a;border-radius:8px;background:#0e1d2b;color:#fff;font:14px var(--body)}
+.ats-ctl input[type=color]{width:100%;height:34px;margin-top:4px;padding:0;border:1px solid #3c5a6a;border-radius:8px;background:none}
+.ats-ctl fieldset{margin:10px 0 0;padding:6px 10px;border:1px solid #27414f;border-radius:8px}.ats-ctl legend{font-size:12px;color:#a5b6c4}
+.ats-ctl fieldset label{display:flex;gap:8px;align-items:center;margin:4px 0;color:#e8eff4;font-size:13px}.ats-ctl fieldset input{width:auto;margin:0}
+.ats-ctl button{margin:8px 6px 0 0;padding:9px 12px;border:0;border-radius:8px;background:var(--mint);color:#06231f;font:700 13px var(--body);cursor:pointer}
+.ats-ctl button.secondary{background:#243b4c;color:#fff}.ats-ctl button:disabled{opacity:.4;cursor:not-allowed}
+.ats-ctl hr{border:0;border-top:1px solid #27414f;margin:14px 0 4px}
+.ats-ctl small{display:block;margin-top:8px;color:#a5b6c4;font-size:11.5px;line-height:1.5;overflow-wrap:anywhere}
+.ats-paper{background:#fff;color:#111;padding:26px;border-radius:6px;max-height:68vh;overflow:auto}
+
+/* ===== Hide voice controls while the chat panel is open (they overlapped the Send button) ===== */
+body.chat-open .voice-fab,body.chat-open .voice-help-badge,body.chat-open .voice-help,body.chat-open .voice-status{display:none!important}
 </style>
 <script>
 (function(){var r=document.documentElement,M={snow:'light',cream:'light',sky:'light',mint:'light',lavender:'light',slate:'dark',midnight:'dark',charcoal:'dark'},V=['--bg','--card','--line','--tint','--dark'];
@@ -931,19 +964,136 @@ r.classList.add('js')})();
 <div class="cms-resume-row"><input id="cmsResumeTitle" placeholder="Portfolio name (defaults to resume filename)"><button id="cmsResumePick" type="button">Choose resume</button><input class="cms-resume-file" id="cmsResumeFile" type="file" accept=".pdf,.doc,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
 <p class="cms-resume-note" id="cmsResumeMsg">Generated URL example: <b>senior-software-engineer.html</b></p><div id="cmsResumeList"></div>
 </div></div>
-<div class="cms-resume-modal" id="atsModal"><div class="cms-resume-box">
-<button class="cms-resume-close" id="atsClose" type="button">Close</button><h2>ATS-friendly résumé</h2>
-<p>Built live from the content currently shown in this portfolio (including unsaved edits). Download it as PDF or Word, or review the plain-text version below.</p>
-<div class="cms-resume-row"><button id="atsPdf" type="button">Download PDF</button><button id="atsDocx" type="button">Download Word (.docx)</button></div>
+<div class="cms-resume-modal" id="atsModal"><div class="cms-resume-box" style="width:min(1020px,100%)">
+<button class="cms-resume-close" id="atsClose" type="button">Close</button><h2>Résumé builder</h2>
+<p>Built live from this portfolio (including unsaved edits). Choose a design and adjust it, or fill your own Word template.</p>
+<div class="ats-grid"><div class="ats-ctl">
+<label>Design<select id="atsTpl"></select></label>
+<label>Font<select id="atsFont"><option>Helvetica</option><option>Times</option><option>Courier</option></select></label>
+<label>Text size<select id="atsSize"><option value="9">Small (9)</option><option value="10">Normal (10)</option><option value="10.5">Medium (10.5)</option><option value="11">Large (11)</option></select></label>
+<label>Accent colour<input type="color" id="atsAccent" value="#000000"></label>
+<label>Header<select id="atsAlign"><option value="center">Centred</option><option value="left">Left</option></select></label>
+<label>Section headings<select id="atsHead"><option value="rule">Underlined</option><option value="plain">Plain bold</option><option value="bar">Colour bar</option></select></label>
+<label>Spacing<select id="atsGap"><option value="0.85">Compact</option><option value="1">Normal</option><option value="1.2">Relaxed</option></select></label>
+<fieldset id="atsSecs"></fieldset>
+<button id="atsPdf" type="button">Download PDF</button><button id="atsDocx" type="button">Download Word</button>
+<hr>
+<label>Use my own format (Word .docx with placeholders)</label>
+<input type="file" id="atsTplFile" accept=".docx"><label>…or from a website (direct .docx link)</label>
+<input type="text" id="atsTplUrl" placeholder="https://example.com/template.docx">
+<button id="atsTplLoad" type="button" class="secondary">Load from link</button><button id="atsTplSample" type="button" class="secondary">Sample template</button>
+<small id="atsTplInfo"></small>
+<button id="atsTplFill" type="button" disabled>Fill my template</button><button id="atsTplClear" type="button" class="secondary" disabled>Remove</button>
+<small>Placeholders: {{name}} {{title}} {{contact}} {{email}} {{phone}} {{location}} {{linkedin}} {{summary}} {{highlights}} {{skills}} {{experience}} {{projects}} {{education}} {{certifications}} {{clients}} {{all}}. Put each block placeholder alone in its own paragraph.</small>
+</div><div><div class="ats-paper" id="atsPrev"></div></div></div>
 <p class="cms-resume-note" id="atsMsg"></p>
-<ul class="ats-tips"><li>Single column, no tables, icons or images</li><li>Standard headings and a real text layer (selectable, parseable)</li><li>Plain bullets, simple dates, one font</li></ul>
-<pre class="ats-prev" id="atsPrev"></pre>
+</div></div>
+<div class="cms-resume-modal" id="secModal"><div class="cms-resume-box">
+<button class="cms-resume-close" id="secClose" type="button">Close</button><h2>Add a new section</h2>
+<p>Pick a layout, name it and choose where it goes. You can edit all text directly on the page afterwards, then press Save changes.</p>
+<div class="cms-resume-row"><input id="secTitle" placeholder="Section title, e.g. Certifications"></div>
+<div class="cms-resume-row">
+<select id="secType" style="flex:1;min-width:220px;padding:10px;border:1px solid #3c5a6a;border-radius:8px;background:#0e1d2b;color:#fff"><option value="rich">Rich editor (full formatting: font size, colours, images…)</option><option value="text">Text block (heading + paragraph)</option><option value="cards">Cards grid (icon, title, description)</option><option value="timeline">Timeline entry (role, dates, bullets)</option><option value="skills">Skill groups (tags)</option></select>
+<select id="secPos" style="flex:1;min-width:220px;padding:10px;border:1px solid #3c5a6a;border-radius:8px;background:#0e1d2b;color:#fff"></select></div>
+<label style="display:flex;gap:8px;align-items:center;font-size:14px;color:#a5b6c4"><input type="checkbox" id="secNav" checked> Also add a link in the top menu</label>
+<div class="cms-resume-row"><button id="secAdd" type="button">Add section</button></div>
+<p class="cms-resume-note" id="secMsg"></p>
 </div></div>
 <div class="cms-hint">Admin mode: edit text directly · click a block to select it</div>
 <div class="cms-bar" id="cmsBar"><span id="cmsStatus">Admin editing enabled</span>
-<button id="cmsSave" type="button">Save changes</button><button id="cmsResumeDl" type="button" class="secondary">Résumé download: <span id="cmsResumeDlState" class="cms-voice-state">…</span></button><button id="cmsAts" type="button" class="secondary">Generate ATS résumé</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button type="button" class="secondary" id="cmsCompareBtn">⇄ Compare Portfolios</button>
+<button id="cmsSave" type="button">Save changes</button><button id="cmsResumeDl" type="button" class="secondary">Résumé download: <span id="cmsResumeDlState" class="cms-voice-state">…</span></button><button id="cmsAts" type="button" class="secondary">Generate ATS résumé</button><button id="cmsAddSection" type="button">+ Add section</button><button id="cmsMoveUp" type="button" class="secondary">↑ Move up</button><button id="cmsMoveDown" type="button" class="secondary">↓ Move down</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button type="button" class="secondary" id="cmsCompareBtn">⇄ Compare Portfolios</button>
 <button id="cmsLogout" type="button" class="secondary">Logout</button>
 <input id="cmsFile" type="file" accept="image/*" hidden></div>
+<script>
+/* ===== Rich editor sections: full formatting toolbar ===== */
+(function(){
+var bar=document.createElement('div'),cur=null,range=null,$=function(s){return document.querySelector(s)};
+var fonts=['Arial','Georgia','Times New Roman','Courier New','Verdana','Trebuchet MS','IBM Plex Sans','Bricolage Grotesque'],sizes=[12,14,16,18,20,24,28,32,40,48,64];
+bar.id='rteBar';bar.setAttribute('role','toolbar');bar.setAttribute('aria-label','Text formatting');
+bar.innerHTML='<select data-k="block" title="Paragraph style"><option value="">Style</option><option value="p">Paragraph</option><option value="h2">Heading 1</option><option value="h3">Heading 2</option><option value="h4">Heading 3</option></select>'
++'<select data-k="font" title="Font"><option value="">Font</option>'+fonts.map(function(f){return'<option>'+f+'</option>'}).join('')+'</select>'
++'<select data-k="size" title="Font size (px)"><option value="">Size</option>'+sizes.map(function(n){return'<option value="'+n+'">'+n+' px</option>'}).join('')+'</select>'
++'<button type="button" data-c="bold" title="Bold"><b>B</b></button><button type="button" data-c="italic" title="Italic"><i>I</i></button><button type="button" data-c="underline" title="Underline"><u>U</u></button>'
++'<label title="Text colour">A<input type="color" data-k="fore" value="#0e1d2b"></label><label title="Highlight">▮<input type="color" data-k="hilite" value="#ffe58a"></label>'
++'<button type="button" data-c="justifyLeft" title="Align left">L</button><button type="button" data-c="justifyCenter" title="Centre">C</button><button type="button" data-c="justifyRight" title="Align right">R</button><button type="button" data-c="justifyFull" title="Justify">J</button>'
++'<button type="button" data-c="insertUnorderedList" title="Bulleted list">• List</button><button type="button" data-c="insertOrderedList" title="Numbered list">1. List</button>'
++'<button type="button" data-k="link">Link</button><button type="button" data-c="unlink">Unlink</button>'
++'<button type="button" data-k="img" title="Upload an image">🖼 Image</button><button type="button" data-k="imgurl" title="Image from a web address">Image URL</button>'
++'<select data-k="isize" title="Selected image size"><option value="">Img size</option><option>25%</option><option>50%</option><option>75%</option><option>100%</option></select>'
++'<select data-k="ialign" title="Selected image position"><option value="">Img position</option><option value="al-left">Left (text wraps)</option><option value="al-center">Centre</option><option value="al-right">Right (text wraps)</option><option value="">Inline</option></select>'
++'<button type="button" data-c="insertHorizontalRule" title="Divider line">―</button><button type="button" data-c="removeFormat">Clear</button><input type="file" accept="image/*" hidden id="rteFile">';
+document.body.appendChild(bar);
+function admin(){return document.body.classList.contains('cms-editing')}
+function st(t){var e=$('#cmsStatus');if(e)e.textContent=t}
+function rteOf(n){var e=n&&(n.nodeType===1?n:n.parentElement);return e&&e.closest?e.closest('.rte'):null}
+document.addEventListener('selectionchange',function(){if(!admin())return;var s=getSelection();if(!s.rangeCount)return;var r=rteOf(s.anchorNode);if(r){cur=r;range=s.getRangeAt(0).cloneRange();bar.classList.add('on')}});
+document.addEventListener('click',function(e){var r=e.target.closest&&e.target.closest('.rte');if(r&&admin()){cur=r;bar.classList.add('on')}},true);
+document.addEventListener('mousedown',function(e){if(!e.target.closest('#rteBar')&&!e.target.closest('.rte'))bar.classList.remove('on')});
+function restore(){if(!cur)return false;cur.focus();if(range){var s=getSelection();s.removeAllRanges();s.addRange(range)}return true}
+function cmd(c,v,css){if(!restore())return;document.execCommand('styleWithCSS',false,css!==false);document.execCommand(c,false,v==null?null:v)}
+function setSize(px){if(!restore())return;document.execCommand('styleWithCSS',false,false);document.execCommand('fontSize',false,'7');cur.querySelectorAll('font[size="7"]').forEach(function(f){var s=document.createElement('span');s.style.fontSize=px+'px';while(f.firstChild)s.appendChild(f.firstChild);f.replaceWith(s)})}
+function selImg(){return cur&&cur.querySelector('img.cms-selected')}
+async function upload(f){if(window.pfUpload){try{return await window.pfUpload(f)}catch(e){}}
+ if(f.size>1.5e6)throw new Error('Image is over 1.5 MB and storage upload is unavailable');
+ return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=rej;r.readAsDataURL(f)})}
+function addImg(url){cmd('insertImage',url);var im=[].slice.call(cur.querySelectorAll('img')).filter(function(i){return i.getAttribute('src')===url}).pop();if(im)im.style.width='50%'}
+async function doFile(f){if(!f||!/^image\//.test(f.type))return;st('Uploading image…');try{addImg(await upload(f));st('Image added. Click it to resize or move it, then Save changes.')}catch(e){st('Image failed: '+e.message)}}
+bar.addEventListener('mousedown',function(e){if(!e.target.closest('select,input'))e.preventDefault()});
+bar.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.dataset.c)return cmd(b.dataset.c);
+ var k=b.dataset.k;if(k==='link'){restore();var u=prompt('Link address (https://…)');if(u)cmd('createLink',u)}
+ else if(k==='img'){$('#rteFile').click()}
+ else if(k==='imgurl'){restore();var u2=prompt('Image address (https://…)');if(u2)addImg(u2)}});
+bar.addEventListener('change',function(e){var t=e.target,k=t.dataset.k,v=t.value;
+ if(t.id==='rteFile'){doFile(t.files[0]);t.value='';return}
+ if(k==='fore'||k==='hilite')cmd(k==='fore'?'foreColor':'hiliteColor',v);
+ else if(k==='block'&&v)cmd('formatBlock','<'+v+'>',false);
+ else if(k==='font'&&v)cmd('fontName',v);
+ else if(k==='size'&&v)setSize(v);
+ else if(k==='isize'||k==='ialign'){var im=selImg();if(!im){st('Click an image inside the section first.')}else if(k==='isize'&&v)im.style.width=v;else if(k==='ialign'){im.classList.remove('al-left','al-right','al-center');if(v)im.classList.add(v)}}
+ if(t.tagName==='SELECT')t.selectedIndex=0});
+bar.addEventListener('input',function(e){var k=e.target.dataset.k;if(k==='fore'||k==='hilite')cmd(k==='fore'?'foreColor':'hiliteColor',e.target.value)});
+document.addEventListener('paste',function(e){if(!admin()||!rteOf(e.target))return;var d=e.clipboardData;if(!d)return;var f=[].slice.call(d.files||[]).filter(function(x){return/^image\//.test(x.type)})[0];e.preventDefault();cur=rteOf(e.target);
+ if(f)doFile(f);else{var t=d.getData('text/plain');if(t)document.execCommand('insertText',false,t)}},true);
+})();
+</script>
+<script>
+/* ===== Admin: add / move sections from the front end ===== */
+(function(){
+var $=function(s){return document.querySelector(s)},esc=function(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
+/* menu links for custom sections live on the section itself (data-nav), so they persist with the saved page */
+function pfNav(){var n=document.getElementById('navlinks');if(!n)return;n.querySelectorAll('.nav-dyn').forEach(function(e){e.remove()});var at=n.querySelector('a[href="#contact"]')||n.querySelector('.cta');
+ document.querySelectorAll('main section[data-nav]').forEach(function(s){var a=document.createElement('a');a.className='nav-dyn';a.href='#'+s.id;a.textContent=s.dataset.nav;n.insertBefore(a,at)})}
+window.pfNav=pfNav;pfNav();document.addEventListener('pf-content',pfNav);
+var card='<div class="card"><div class="ic">★</div><h3>Card title</h3><p>Describe this item in a sentence or two.</p></div>',
+ grp='<article class="card"><h3>Group name</h3><div class="tags plain"><span class="tag">Skill</span><span class="tag">Skill</span><span class="tag">Skill</span></div></article>',
+ body={rich:'<div class="rte"><h3>Your heading</h3><p>Start typing here. Select any text to change its font, size or colour, and use the toolbar to add images, lists and links.</p></div>',text:'',cards:'<div class="grid4">'+card+card+card+card+'</div>',
+  timeline:'<div class="timeline"><article class="job"><div class="job-top"><h3>Role or title</h3><span class="when">2024 – Present</span></div><p class="org"><strong>Organisation</strong> · Location</p><ul><li>Key point one.</li><li>Key point two.</li></ul><div class="tags"><span class="tag">Keyword</span><span class="tag">Keyword</span></div></article></div>',
+  skills:'<div class="skills">'+grp+grp+'</div>'};
+var modal=$('#secModal'),pos=$('#secPos'),msg=$('#secMsg'),st=function(t){var e=$('#cmsStatus');if(e)e.textContent=t};
+function fill(){pos.innerHTML='';var list=[].slice.call(document.querySelectorAll('main > section'));
+ list.forEach(function(s,i){var h=s.querySelector('h2'),o=new Option('After: '+((h&&h.textContent.trim())||s.id),String(i));pos.add(o)});
+ pos.add(new Option('At the very end','end'));var ed=list.findIndex(function(s){return s.id==='education'});pos.value=ed>=0?String(ed):'end'}
+$('#cmsAddSection').onclick=function(){fill();msg.textContent='';$('#secTitle').value='';modal.classList.add('open');$('#secTitle').focus()};
+$('#secClose').onclick=function(){modal.classList.remove('open')};
+$('#secAdd').onclick=function(){var t=$('#secTitle').value.trim();if(!t){msg.textContent='Please enter a section title.';$('#secTitle').focus();return}
+ var base=t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'section',id=base,n=2;while(document.getElementById(id))id=base+'-'+n++;
+ var sec=document.createElement('section');sec.id=id;sec.setAttribute('data-custom','1');if($('#secNav').checked)sec.dataset.nav=t;
+ sec.innerHTML='<div class="head"><h2 class="t">'+esc(t)+'</h2><p>Write a short introduction for this section here.</p></div>'+body[$('#secType').value];
+ var list=[].slice.call(document.querySelectorAll('main > section')),main=$('main'),v=pos.value;
+ if(v==='end'||!list[+v])main.insertBefore(sec,$('main > footer')||null);else list[+v].after(sec);
+ document.dispatchEvent(new Event('pf-content'));window.pfEditable&&window.pfEditable(true);
+ modal.classList.remove('open');sec.scrollIntoView({behavior:'smooth',block:'start'});st('Section “'+t+'” added. Edit the text on the page, then click Save changes.')};
+function move(d){var el=document.querySelector('.cms-selected');if(!el)return st('Click a block (section, card, entry) first, then move it.');
+ var sib=d<0?el.previousElementSibling:el.nextElementSibling;if(!sib||(sib.tagName==='FOOTER'))return st('Already at the end.');
+ d<0?sib.before(el):sib.after(el);el.scrollIntoView({block:'center',behavior:'smooth'});pfNav();st('Moved. Click Save changes to keep the new order.')}
+$('#cmsMoveUp').onclick=function(){move(-1)};$('#cmsMoveDown').onclick=function(){move(1)};
+})();
+</script>
+<script>
+(function(){var p=document.getElementById('cbpanel');if(!p)return;
+function sync(){document.body.classList.toggle('chat-open',p.classList.contains('open'))}
+new MutationObserver(sync).observe(p,{attributes:true,attributeFilter:['class']});sync()})();
+</script>
 <script>
 /* ===== Block print / save-as for visitors ===== */
 (function(){
@@ -1026,48 +1176,108 @@ function model(){
   else{ed.push({row:[h,y]});QA('p',c).forEach(function(p){var x=T(p);if(x)ed.push({sub:(p.classList.contains('big')?'Score: ':'')+x})})}});
  if(ed.length)S.push({h:'Education',items:ed});if(ce.length)S.push({h:'Certifications',items:ce});
  var cl=QA('.client strong').map(T).filter(Boolean);if(cl.length)S.push({h:'Key Clients Supported',items:[{p:cl.join(', ')}]});
+ QA('section[data-custom]').forEach(function(c){var it=[],d=T(Q('.head p',c));if(d)it.push({p:d});QA('.job',c).forEach(function(j){it.push({row:[T(Q('h3',j)),T(Q('.when',j))]},{sub:T(Q('.org',j))});QA('li',j).forEach(function(l){it.push({b:T(l)})})});QA('.card',c).forEach(function(k){var t=tags(k).join(', ');it.push(t?{kv:[T(Q('h3',k)),t]}:{p:T(Q('h3',k))+(Q('p',k)?': '+T(Q('p',k)):'')})});QA('.rte',c).forEach(function(r){QA('h2,h3,h4,p,li',r).forEach(function(x){var t=T(x);if(t)it.push(x.tagName==='LI'?{b:t}:{p:t})})});if(it.length)S.push({h:T(Q('h2',c)),items:it})});
+ M.email=em?em.getAttribute('href').replace(/^mailto:/,''):'';M.phone=ph?ph.getAttribute('href').replace(/^tel:/,'').replace(/^(\+\d{2})(\d{10})$/,'$1 $2'):'';M.loc=loc;M.linkedin=li?li.getAttribute('href'):'';
  M.sec=S;return M}
 function plain(M){var o=[M.name,M.title,M.contact.join(' | ')];M.sec.forEach(function(s){o.push('',s.h.toUpperCase());s.items.forEach(function(i){o.push(i.p||(i.b?'\u2022 '+i.b:i.kv?(i.kv[1]?i.kv[0]+': '+i.kv[1]:''):i.row?i.row[0]+(i.row[1]?'  |  '+i.row[1]:''):i.sub))})});return o.join('\n')}
 
-/* PDF: jsPDF with the built-in Helvetica => a real, selectable text layer that ATS parsers read */
-function mkPdf(M){var D=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),W=210,H=297,g=16,w=W-2*g,y=g-2;D.setProperties({title:M.name+' - Resume',author:M.name});
- function put(t,x,s,st,o){D.setFont('helvetica',st);D.setFontSize(s);var h=s*.3528*1.35;if(y+h>H-g){D.addPage();y=g-2}y+=h;D.text(t,x,y,o)}
- function wrap(t,x,wd,s,st,gap){D.setFont('helvetica',st);D.setFontSize(s);D.splitTextToSize(t,wd).forEach(function(l){put(l,x,s,st)});y+=gap||0}
- put(M.name,W/2,18,'bold',{align:'center'});if(M.title)put(M.title,W/2,11,'normal',{align:'center'});
- if(M.contact.length){D.setFontSize(9.5);D.splitTextToSize(M.contact.join(' | '),w).forEach(function(l){put(l,W/2,9.5,'normal',{align:'center'})})}
- M.sec.forEach(function(s){y+=3.5;if(y+14>H-g){D.addPage();y=g-2}put(s.h.toUpperCase(),g,11,'bold');D.setLineWidth(.3);D.line(g,y+1.3,W-g,y+1.3);y+=2;
+/* ---- résumé designs ---- */
+var TPL={classic:{label:'Classic ATS (black, centred)',font:'Helvetica',size:10,accent:'#000000',align:'center',head:'rule',gap:1},
+ modern:{label:'Modern teal accent',font:'Helvetica',size:10,accent:'#0f8f7e',align:'left',head:'rule',gap:1},
+ compact:{label:'Compact (smaller text, tight spacing)',font:'Helvetica',size:9,accent:'#000000',align:'left',head:'rule',gap:.85},
+ executive:{label:'Executive serif',font:'Times',size:10.5,accent:'#1f2a44',align:'center',head:'plain',gap:1.1},
+ bar:{label:'Colour-bar headings',font:'Helvetica',size:10,accent:'#0e4f66',align:'left',head:'bar',gap:1},
+ minimal:{label:'Minimal, relaxed',font:'Helvetica',size:10,accent:'#444444',align:'left',head:'plain',gap:1.2}};
+var MIME='application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function rgb(h){var n=parseInt(String(h).replace('#',''),16)||0;return[n>>16&255,n>>8&255,n&255]}
+/* PDF: jsPDF built-in fonts => real selectable text layer that ATS parsers read */
+function mkPdf(M,S){S=S||TPL.classic;var F={Helvetica:'helvetica',Times:'times',Courier:'courier'}[S.font]||'helvetica',k=S.size/10,gp=S.gap,lf=gp<1?1.28:1.35,D=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),W=210,H=297,g=16,w=W-2*g,y=g-2,ac=rgb(S.accent),ctr=S.align==='center',al=ctr?W/2:g,ao=ctr?{align:'center'}:{};
+ D.setProperties({title:M.name+' - Resume',author:M.name});
+ function col(c){D.setTextColor(c[0],c[1],c[2])}
+ function put(t,x,s,st,o){D.setFont(F,st);D.setFontSize(s*k);var h=s*k*.3528*lf;if(y+h>H-g){D.addPage();y=g-2}y+=h;D.text(t,x,y,o)}
+ function wrap(t,x,wd,s,st,gap){D.setFont(F,st);D.setFontSize(s*k);D.splitTextToSize(t,wd).forEach(function(l){put(l,x,s,st)});y+=(gap||0)*gp}
+ col(ac);put(M.name,al,18,'bold',ao);col([0,0,0]);if(M.title)put(M.title,al,11,'normal',ao);
+ if(M.contact.length){D.setFont(F,'normal');D.setFontSize(9.5*k);D.splitTextToSize(M.contact.join(' | '),w).forEach(function(l){put(l,al,9.5,'normal',ao)})}
+ M.sec.forEach(function(s){y+=3.5*gp;if(y+14>H-g){D.addPage();y=g-2}
+  if(S.head==='bar'){var hh=11*k*.3528*lf+1.2;D.setFillColor(ac[0],ac[1],ac[2]);D.rect(g,y+.4,w,hh,'F');col([255,255,255]);put(s.h.toUpperCase(),g+1.5,11,'bold');y+=1.2}
+  else{col(ac);put(s.h.toUpperCase(),g,11,'bold');if(S.head==='rule'){D.setDrawColor(ac[0],ac[1],ac[2]);D.setLineWidth(.3);D.line(g,y+1.3,W-g,y+1.3)}y+=2}
+  col([0,0,0]);
   s.items.forEach(function(i){
    if(i.p)wrap(i.p,g,w,10,'normal',1);
-   else if(i.b){D.setFont('helvetica','normal');D.setFontSize(10);D.splitTextToSize(i.b,w-6).forEach(function(l,k){put(l,g+6,10,'normal');if(!k)D.text('\u2022',g+1.5,y)});y+=.8}
-   else if(i.kv){if(!i.kv[1])return;var lb=i.kv[0]+': ';D.setFont('helvetica','bold');D.setFontSize(10);var lw=D.getTextWidth(lb);D.setFont('helvetica','normal');var f=D.splitTextToSize(i.kv[1],w-lw)[0]||'',rest=i.kv[1].slice(f.length).trim();put(lb,g,10,'bold');D.setFont('helvetica','normal');D.text(f,g+lw,y);if(rest)wrap(rest,g,w,10,'normal');y+=.8}
-   else if(i.row){y+=1.8;var r=i.row[1]||'',rw=0;if(r){D.setFont('helvetica','normal');D.setFontSize(10);rw=D.getTextWidth(r)+4}D.setFont('helvetica','bold');D.setFontSize(10.5);D.splitTextToSize(i.row[0],w-rw).forEach(function(l,k){put(l,g,10.5,'bold');if(!k&&r){D.setFont('helvetica','normal');D.setFontSize(10);D.text(r,W-g,y,{align:'right'})}})}
+   else if(i.b){D.setFont(F,'normal');D.setFontSize(10*k);D.splitTextToSize(i.b,w-6).forEach(function(l,n){put(l,g+6,10,'normal');if(!n)D.text('\u2022',g+1.5,y)});y+=.8*gp}
+   else if(i.kv){if(!i.kv[1])return;var lb=i.kv[0]+': ';D.setFont(F,'bold');D.setFontSize(10*k);var lw=D.getTextWidth(lb);D.setFont(F,'normal');var f=D.splitTextToSize(i.kv[1],w-lw)[0]||'',rest=i.kv[1].slice(f.length).trim();put(lb,g,10,'bold');D.setFont(F,'normal');D.text(f,g+lw,y);if(rest)wrap(rest,g,w,10,'normal');y+=.8*gp}
+   else if(i.row){y+=1.8*gp;var r=i.row[1]||'',rw=0;if(r){D.setFont(F,'normal');D.setFontSize(10*k);rw=D.getTextWidth(r)+4}D.setFont(F,'bold');D.setFontSize(10.5*k);D.splitTextToSize(i.row[0],w-rw).forEach(function(l,n){put(l,g,10.5,'bold');if(!n&&r){D.setFont(F,'normal');D.setFontSize(10*k);D.text(r,W-g,y,{align:'right'})}})}
    else if(i.sub)wrap(i.sub,g,w,10,'italic',.8)})});
  return D}
-/* DOCX: hand-built WordprocessingML (Heading 1 styles, tab-aligned dates, no tables) zipped with JSZip */
-function mkDocx(M,type){var X=function(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')},
- R=function(t,o){o=o||{};return'<w:r><w:rPr>'+(o.b?'<w:b/>':'')+(o.i?'<w:i/>':'')+'<w:sz w:val="'+(o.s||20)+'"/></w:rPr><w:t xml:space="preserve">'+X(t)+'</w:t></w:r>'},TAB='<w:r><w:tab/></w:r>',
- P=function(r,o){o=o||{};return'<w:p><w:pPr>'+(o.st?'<w:pStyle w:val="'+o.st+'"/>':'')+(o.tab?'<w:tabs><w:tab w:val="right" w:pos="10204"/></w:tabs>':'')+(o.sp!=null?'<w:spacing w:before="'+(o.bf||0)+'" w:after="'+o.sp+'"/>':'')+(o.ind?'<w:ind w:left="284" w:hanging="284"/>':'')+(o.c?'<w:jc w:val="center"/>':'')+'</w:pPr>'+r+'</w:p>'},
- B=[P(R(M.name,{b:1,s:36}),{c:1,sp:20}),M.title?P(R(M.title,{s:22}),{c:1,sp:20}):'',M.contact.length?P(R(M.contact.join(' | '),{s:19}),{c:1,sp:60}):''];
+/* DOCX: hand-built WordprocessingML (Heading 1 style, tab-aligned dates, no tables) */
+function mkDocx(M,S,type){S=S||TPL.classic;var k=S.size/10,gp=S.gap,hc=S.accent.replace('#','').toUpperCase(),FN={Helvetica:'Arial',Times:'Times New Roman',Courier:'Courier New'}[S.font]||'Arial',ctr=S.align==='center',
+ X=esc,sz=function(n){return Math.round(n*k)},
+ R=function(t,o){o=o||{};return'<w:r><w:rPr>'+(o.b?'<w:b/>':'')+(o.i?'<w:i/>':'')+(o.col?'<w:color w:val="'+o.col+'"/>':'')+'<w:sz w:val="'+sz(o.s||20)+'"/></w:rPr><w:t xml:space="preserve">'+X(t)+'</w:t></w:r>'},TAB='<w:r><w:tab/></w:r>',
+ P=function(r,o){o=o||{};return'<w:p><w:pPr>'+(o.st?'<w:pStyle w:val="'+o.st+'"/>':'')+(o.tab?'<w:tabs><w:tab w:val="right" w:pos="10204"/></w:tabs>':'')+(o.sp!=null?'<w:spacing w:before="'+Math.round((o.bf||0)*gp)+'" w:after="'+Math.round(o.sp*gp)+'"/>':'')+(o.ind?'<w:ind w:left="284" w:hanging="284"/>':'')+(o.c&&ctr?'<w:jc w:val="center"/>':'')+'</w:pPr>'+r+'</w:p>'},
+ B=[P(R(M.name,{b:1,s:36,col:hc}),{c:1,sp:20}),M.title?P(R(M.title,{s:22}),{c:1,sp:20}):'',M.contact.length?P(R(M.contact.join(' | '),{s:19}),{c:1,sp:60}):''];
  M.sec.forEach(function(s){B.push(P(R(s.h),{st:'Heading1'}));s.items.forEach(function(i){B.push(i.p?P(R(i.p),{sp:40}):i.b?P(R('\u2022')+TAB+R(i.b),{sp:30,ind:1}):i.kv?(i.kv[1]?P(R(i.kv[0]+': ',{b:1})+R(i.kv[1]),{sp:40}):''):i.row?P(R(i.row[0],{b:1,s:21})+(i.row[1]?TAB+R(i.row[1]):''),{tab:1,bf:90,sp:10}):i.sub?P(R(i.sub,{i:1}),{sp:40}):'')})});
- var NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"',H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',z=new window.JSZip();
+ var NS='xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"',H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',z=new window.JSZip(),
+ hp='<w:keepNext/>'+(S.head==='rule'?'<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="'+hc+'"/></w:pBdr>':'')+(S.head==='bar'?'<w:shd w:val="clear" w:color="auto" w:fill="'+hc+'"/>':'')+'<w:spacing w:before="'+Math.round(200*gp)+'" w:after="'+Math.round(80*gp)+'"/><w:outlineLvl w:val="0"/>',
+ hr='<w:b/><w:caps/><w:color w:val="'+(S.head==='bar'?'FFFFFF':hc)+'"/><w:sz w:val="'+sz(22)+'"/>';
  z.file('[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>');
  z.file('_rels/.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
  z.file('word/_rels/document.xml.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>');
- z.file('word/styles.xml',H+'<w:styles '+NS+'><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="20"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:pPr><w:keepNext/><w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="000000"/></w:pBdr><w:spacing w:before="200" w:after="80"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:b/><w:caps/><w:sz w:val="22"/></w:rPr></w:style></w:styles>');
+ z.file('word/styles.xml',H+'<w:styles '+NS+'><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="'+FN+'" w:hAnsi="'+FN+'" w:cs="'+FN+'"/><w:sz w:val="'+sz(20)+'"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:pPr>'+hp+'</w:pPr><w:rPr>'+hr+'</w:rPr></w:style></w:styles>');
  z.file('word/document.xml',H+'<w:document '+NS+'><w:body>'+B.join('')+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="851" w:right="851" w:bottom="851" w:left="851" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr></w:body></w:document>');
- return z.generateAsync({type:type||'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'})}
-window.pfAts={model:model,plain:plain,pdf:mkPdf,docx:mkDocx,clean:clean};
+ return z.generateAsync({type:type||'blob',mimeType:MIME})}
+/* HTML preview that mirrors the chosen design */
+function preview(M,S){var f={Helvetica:'Arial,Helvetica,sans-serif',Times:'"Times New Roman",Times,serif',Courier:'"Courier New",monospace'}[S.font],c=S.align==='center'?'center':'left',
+ h='<div style="font-family:'+f+';font-size:'+(S.size*1.25)+'px;line-height:'+(S.gap<1?1.3:1.4)+';color:#111"><div style="text-align:'+c+'"><div style="font-size:1.8em;font-weight:700;color:'+S.accent+'">'+esc(M.name)+'</div><div style="font-size:1.1em">'+esc(M.title)+'</div><div style="font-size:.95em">'+esc(M.contact.join(' | '))+'</div></div>';
+ M.sec.forEach(function(s){var hs=S.head==='bar'?'background:'+S.accent+';color:#fff;padding:2px 6px':'color:'+S.accent+(S.head==='rule'?';border-bottom:1.5px solid '+S.accent:'');
+  h+='<div style="margin-top:'+(14*S.gap)+'px;font-weight:700;text-transform:uppercase;'+hs+'">'+esc(s.h)+'</div>';
+  s.items.forEach(function(i){h+=i.p?'<div style="margin:'+(3*S.gap)+'px 0">'+esc(i.p)+'</div>':i.b?'<div style="padding-left:14px;text-indent:-10px;margin:2px 0">\u2022 '+esc(i.b)+'</div>':i.kv?(i.kv[1]?'<div style="margin:2px 0"><b>'+esc(i.kv[0])+':</b> '+esc(i.kv[1])+'</div>':''):i.row?'<div style="display:flex;justify-content:space-between;gap:10px;margin-top:'+(7*S.gap)+'px;font-weight:700"><span>'+esc(i.row[0])+'</span><span style="font-weight:400;white-space:nowrap">'+esc(i.row[1])+'</span></div>':i.sub?'<div style="font-style:italic;margin:1px 0">'+esc(i.sub)+'</div>':''})});
+ return h+'</div>'}
+/* ---- custom Word template: fill {{placeholders}} ---- */
+var KEY={'Professional Summary':'summary','Career Highlights':'highlights','Technical Skills':'skills','Professional Experience':'experience','Projects':'projects','Education':'education','Certifications':'certifications','Key Clients Supported':'clients'},
+ KNOWN={};'name title contact email phone location linkedin all summary highlights skills experience projects education certifications clients'.split(' ').forEach(function(x){KNOWN[x]=1});
+function lines(items){var o=[];items.forEach(function(i){if(i.p)o.push(i.p);else if(i.b)o.push('\u2022 '+i.b);else if(i.kv){if(i.kv[1])o.push(i.kv[0]+': '+i.kv[1])}else if(i.row)o.push(i.row[0]+(i.row[1]?' | '+i.row[1]:''));else if(i.sub)o.push(i.sub)});return o}
+function blocks(M){var v={name:[M.name],title:[M.title],contact:[M.contact.join(' | ')],email:[M.email||''],phone:[M.phone||''],location:[M.loc||''],linkedin:[M.linkedin||''],all:[]};M.sec.forEach(function(s){var L=lines(s.items);v[KEY[s.h]||s.h.toLowerCase().replace(/[^a-z0-9]+/g,'_')]=L;v.all.push(s.h.toUpperCase());v.all=v.all.concat(L)});return v}
+async function fillTpl(buf,M){var z=await window.JSZip.loadAsync(buf),v=blocks(M),W='http://schemas.openxmlformats.org/wordprocessingml/2006/main',XN='http://www.w3.org/XML/1998/namespace',
+ names=Object.keys(z.files).filter(function(n){return/^word\/(document|header\d*|footer\d*)\.xml$/.test(n)});
+ if(!names.length)throw new Error('this is not a valid .docx file');
+ function setText(p,s){var t=[].slice.call(p.getElementsByTagNameNS(W,'t'));if(!t.length)return;t[0].textContent=s;t[0].setAttributeNS(XN,'xml:space','preserve');for(var i=1;i<t.length;i++)t[i].textContent=''}
+ for(var q=0;q<names.length;q++){var n=names[q],doc=new DOMParser().parseFromString(await z.file(n).async('string'),'application/xml');
+  [].slice.call(doc.getElementsByTagNameNS(W,'p')).forEach(function(p){var txt=[].slice.call(p.getElementsByTagNameNS(W,'t')).map(function(t){return t.textContent}).join('');if(txt.indexOf('{{')<0)return;
+   var m=txt.trim().match(/^\{\{\s*(\w+)\s*\}\}$/),key=m&&m[1].toLowerCase();
+   if(m&&(v[key]||KNOWN[key])){(v[key]||[]).forEach(function(line){var c=p.cloneNode(true);setText(c,line);p.parentNode.insertBefore(c,p)});p.parentNode.removeChild(p);return}
+   setText(p,txt.replace(/\{\{\s*(\w+)\s*\}\}/g,function(a,kk){kk=kk.toLowerCase();return v[kk]?v[kk].join(' | '):(KNOWN[kk]?'':a)}))});
+  z.file(n,new XMLSerializer().serializeToString(doc))}
+ return z.generateAsync({type:'blob',mimeType:MIME})}
+async function tplHolders(buf){var z=await window.JSZip.loadAsync(buf),f=z.file('word/document.xml');if(!f)throw new Error('this is not a valid .docx file');var x=(await f.async('string')).replace(/<[^>]+>/g,''),r=x.match(/\{\{\s*\w+\s*\}\}/g)||[];return r.filter(function(a,i){return r.indexOf(a)===i})}
+window.pfAts={model:model,plain:plain,pdf:mkPdf,docx:mkDocx,fill:fillTpl,clean:clean,TPL:TPL};
 
 /* ---- admin UI ---- */
 var JSPDF='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',JSZ='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
- am=document.getElementById('atsModal'),amsg=document.getElementById('atsMsg');
-function fname(M,x){return(M.name||'Resume').replace(/[^A-Za-z0-9]+/g,'_')+'_ATS_Resume.'+x}
+ am=document.getElementById('atsModal'),amsg=document.getElementById('atsMsg'),G=function(i){return document.getElementById(i)},
+ S=Object.assign({},TPL.classic),skip={},tpl=null,tplName='';
+function fname(M,x,t){return(M.name||'Resume').replace(/[^A-Za-z0-9]+/g,'_')+(t||'_ATS_Resume')+'.'+x}
 function save(b,n){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},2000)}
-var ab=document.getElementById('cmsAts');
-if(ab){ab.onclick=function(){document.getElementById('atsPrev').textContent=plain(model());amsg.textContent='';am.classList.add('open')};
- document.getElementById('atsClose').onclick=function(){am.classList.remove('open')};
- document.getElementById('atsPdf').onclick=async function(){amsg.textContent='Building PDF…';try{var M=model();await lib(JSPDF,function(){return window.jspdf});save(new Blob([mkPdf(M).output('arraybuffer')],{type:'application/pdf'}),fname(M,'pdf'));amsg.textContent='PDF downloaded.'}catch(e){amsg.textContent='Could not build the PDF: '+e.message}};
- document.getElementById('atsDocx').onclick=async function(){amsg.textContent='Building Word file…';try{var M=model();await lib(JSZ,function(){return window.JSZip});save(await mkDocx(M),fname(M,'docx'));amsg.textContent='Word file downloaded.'}catch(e){amsg.textContent='Could not build the Word file: '+e.message}}}
+function cur(){var M=model();M.sec=M.sec.filter(function(s){return!skip[s.h]});return M}
+function refresh(){G('atsPrev').innerHTML=preview(cur(),S)}
+function setUI(){G('atsFont').value=S.font;G('atsSize').value=String(S.size);G('atsAccent').value=S.accent;G('atsAlign').value=S.align;G('atsHead').value=S.head;G('atsGap').value=String(S.gap)}
+function say(t){amsg.textContent=t}
+function info(){G('atsTplInfo').textContent=tpl?'Template: '+tplName+' (kept until you close this page).':'No custom template loaded.';G('atsTplFill').disabled=!tpl;G('atsTplClear').disabled=!tpl}
+async function setTpl(buf,name){await lib(JSZ,function(){return window.JSZip});var h=await tplHolders(buf);tpl=buf;tplName=name;info();say(h.length?'Template loaded. Placeholders found: '+h.join(' '):'Template loaded, but no {{placeholders}} were found, so it would be returned unchanged. Download the sample template to see the format.')}
+if(G('cmsAts')){
+ G('atsTpl').innerHTML=Object.keys(TPL).map(function(k){return'<option value="'+k+'">'+TPL[k].label+'</option>'}).join('');
+ G('cmsAts').onclick=function(){var M=model();skip={};G('atsSecs').innerHTML='<legend>Include sections</legend>';M.sec.forEach(function(s){var l=document.createElement('label'),c=document.createElement('input');c.type='checkbox';c.checked=true;c.onchange=function(){skip[s.h]=!c.checked;refresh()};l.appendChild(c);l.appendChild(document.createTextNode(s.h));G('atsSecs').appendChild(l)});G('atsTpl').value='classic';S=Object.assign({},TPL.classic);setUI();info();say('');refresh();am.classList.add('open')};
+ G('atsClose').onclick=function(){am.classList.remove('open')};
+ G('atsTpl').onchange=function(){S=Object.assign({},TPL[G('atsTpl').value]);setUI();refresh()};
+ [['atsFont','font'],['atsSize','size',1],['atsAccent','accent'],['atsAlign','align'],['atsHead','head'],['atsGap','gap',1]].forEach(function(a){G(a[0]).onchange=G(a[0]).oninput=function(){S[a[1]]=a[2]?parseFloat(G(a[0]).value):G(a[0]).value;refresh()}});
+ G('atsPdf').onclick=async function(){say('Building PDF…');try{var M=cur();await lib(JSPDF,function(){return window.jspdf});save(new Blob([mkPdf(M,S).output('arraybuffer')],{type:'application/pdf'}),fname(M,'pdf'));say('PDF downloaded.')}catch(e){say('Could not build the PDF: '+e.message)}};
+ G('atsDocx').onclick=async function(){say('Building Word file…');try{var M=cur();await lib(JSZ,function(){return window.JSZip});save(await mkDocx(M,S),fname(M,'docx'));say('Word file downloaded.')}catch(e){say('Could not build the Word file: '+e.message)}};
+ G('atsTplFile').onchange=async function(e){var f=e.target.files[0];if(!f)return;try{await setTpl(await f.arrayBuffer(),f.name)}catch(x){say('Could not read that file: '+x.message)}e.target.value=''};
+ G('atsTplLoad').onclick=async function(){var u=G('atsTplUrl').value.trim();if(!u)return say('Paste a direct link to a .docx file first.');say('Fetching template…');try{var r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);await setTpl(await r.arrayBuffer(),u.split('/').pop().split('?')[0]||'template.docx')}catch(x){say('That website does not allow downloading its file from another site (or the link is not a direct .docx link). Download it to your computer and use “Upload from computer” instead.')}};
+ G('atsTplSample').onclick=async function(){try{await lib(JSZ,function(){return window.JSZip});var sec=function(h,k){return{h:h,items:[{p:'{{'+k+'}}'}]}};save(await mkDocx({name:'{{name}}',title:'{{title}}',contact:['{{contact}}'],sec:[sec('Professional Summary','summary'),sec('Career Highlights','highlights'),sec('Technical Skills','skills'),sec('Professional Experience','experience'),sec('Projects','projects'),sec('Education','education'),sec('Certifications','certifications'),sec('Key Clients Supported','clients')]},TPL.classic),'Resume_Template_Sample.docx');say('Sample saved. Open it in Word, change fonts, colours and layout freely (keep the {{placeholders}}), then upload it here.')}catch(e){say('Could not build the sample: '+e.message)}};
+ G('atsTplFill').onclick=async function(){if(!tpl)return;say('Filling template…');try{var M=cur();save(await fillTpl(tpl,M),fname(M,'docx','_Custom_Resume'));say('Resume built from your template and downloaded.')}catch(e){say('Could not fill the template: '+e.message)}};
+ G('atsTplClear').onclick=function(){tpl=null;tplName='';info();say('Template removed.')};
+}
 })();
 </script>
 <script>
@@ -1302,6 +1512,7 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
    c.querySelectorAll('.rv,.in,.cms-selected').forEach(function(e){e.classList.remove('rv','in','cms-selected')});
    c.querySelectorAll('[style]').forEach(function(e){e.style.removeProperty('transform');e.style.removeProperty('--mx');e.style.removeProperty('--my');if(!e.getAttribute('style').trim())e.removeAttribute('style')});
    c.querySelectorAll('.count').forEach(function(e){var n=parseInt(e.textContent,10);if(n>0)e.dataset.target=n;e.removeAttribute('data-done')});
+   c.querySelectorAll('section[data-nav]').forEach(function(x){var h=x.querySelector('h2');if(h&&h.textContent.trim())x.dataset.nav=h.textContent.trim()});
    return c.innerHTML};
   function setStatus(t){status.textContent=t}
   var voiceToggle=document.getElementById('cmsVoiceToggle'),voiceState=document.getElementById('cmsVoiceState');
@@ -1323,17 +1534,19 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
       else if(b.dataset.adminDisabled==='1'){b.style.display='none'}
       else{b.style.display='';b.style.opacity='';}
     });
-    main.querySelectorAll('h1,h2,h3,p,li,strong,span,.tag,.client b,.node b').forEach(function(e){e.contentEditable=on?'true':'false'});
+    main.querySelectorAll('h1,h2,h3,p,li,strong,span,.tag,.client b,.node b').forEach(function(e){if(e.closest('.rte'))return;e.contentEditable=on?'true':'false'});main.querySelectorAll('.rte').forEach(function(e){e.contentEditable=on?'true':'false';e.spellcheck=true});
     if(on){
       main.addEventListener('click',pick,true);
       main.querySelectorAll('img').forEach(function(i){i.title='Click to select image, then use Change selected image'});
     }
   }
+  window.pfEditable=editable;
+  window.pfUpload=async function(f){var ext=((f.name||'').split('.').pop()||'png').toLowerCase().replace(/[^a-z0-9]/g,''),path='sections/'+Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.'+ext,bk=cfg.bucket||'portfolio',u=await sb.storage.from(bk).upload(path,f,{upsert:false,contentType:f.type});if(u.error)throw u.error;return sb.storage.from(bk).getPublicUrl(path).data.publicUrl};
   function pick(e){
     if(e.target.closest('input,textarea,dialog')) return;
     e.preventDefault(); e.stopPropagation();
     if(selected) selected.classList.remove('cms-selected');
-    selected=e.target.closest('[data-admin-button],.client,.card,.stat,.job,.project,img')||e.target;
+    selected=e.target.closest('[data-admin-button],.client,.card,.stat,.job,.project,img,section[data-custom]')||e.target;
     selected.classList.add('cms-selected'); setStatus('Selected: '+selected.tagName.toLowerCase()+(selected.className?' · '+selected.className.replace('cms-selected','').trim():''));
   }
   async function boot(){
@@ -1373,6 +1586,7 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
     if(disabled){delete selected.dataset.adminDisabled;selected.style.display='';setStatus('Button enabled. Click Save changes.')}
     else{selected.dataset.adminDisabled='1';selected.style.display='none';setStatus('Button disabled. Click Save changes. Use Save changes to publish.')}
   };
+  document.getElementById('cmsDelete').addEventListener('click',function(){setTimeout(function(){window.pfNav&&window.pfNav()},50)});
   document.getElementById('cmsDelete').onclick=function(){if(!selected)return setStatus('Select a block first'); if(confirm('Delete the selected block?')){var x=selected;selected=null;x.remove();setStatus('Deleted. Click Save changes.')}};
   document.getElementById('cmsDuplicate').onclick=function(){if(!selected)return setStatus('Select a block first');var c=selected.cloneNode(true);c.classList.remove('cms-selected');selected.after(c);editable(true);setStatus('Duplicated. Edit it, then Save changes.')};
   document.getElementById('cmsImage').onclick=function(){if(!selected)return setStatus('Select an image first');var img=selected.tagName==='IMG'?selected:selected.querySelector&&selected.querySelector('img');if(!img)return setStatus('Selected block has no image');document.getElementById('cmsFile').dataset.target='1';document.getElementById('cmsFile')._target=img;document.getElementById('cmsFile').click()};
