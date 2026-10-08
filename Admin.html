@@ -1,6 +1,24 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CareerPulse Admin</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f3f7fa;color:#17323e;font:15px system-ui,-apple-system,Segoe UI,sans-serif}.wrap{max-width:1120px;margin:auto;padding:20px}.hero{padding:28px;border-radius:22px;background:linear-gradient(135deg,#087c6d,#155d75);color:#fff}.hero h1{margin:0 0 8px}.card{background:#fff;border-radius:17px;padding:20px;margin-top:16px;box-shadow:0 8px 28px #17323e12}.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center}.dashboard{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.dashCard{border:1px solid #dce7eb;background:#fff;color:#17323e;text-align:left;padding:18px;border-radius:16px;min-height:128px;cursor:pointer}.dashCard:hover{box-shadow:0 8px 22px #17323e18;transform:translateY(-1px)}.dashCard b{display:block;font-size:17px;margin:8px 0}.icon{font-size:25px}.small{font-size:12px;color:#607782}.statusGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.status{padding:13px;border:1px solid #e0e9ec;border-radius:12px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;background:#999}.green{background:#15966f}.red{background:#c94a4a}.yellow{background:#d49a22}.view{display:none}.view.active{display:block}.back{background:#526b76}.primary,button{border:0;border-radius:10px;padding:10px 14px;background:#087c6d;color:white;font-weight:700;cursor:pointer;margin:3px}.secondary{background:#526b76}.danger{background:#a63333}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;padding:10px;border:1px solid #bdd0d7;border-radius:9px;margin:5px 0 10px}.item,.editor{border:1px solid #dce7eb;border-radius:12px;padding:13px;margin:10px 0}.msg{padding:11px;border-radius:10px;background:#eaf3fb;margin:10px 0;white-space:pre-wrap}.ok{background:#e8f7ef;color:#176340}.bad{background:#fdecec;color:#8b2828}.pick{width:auto}.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.badge{font-size:11px;padding:4px 8px;background:#e6f0f3;border-radius:99px}.advanced{display:none}.advanced.show{display:block}.editorBody{display:none}.editor.open .editorBody{display:block}.preview{border:2px dashed #b9ccd3;border-radius:13px;padding:15px;margin-top:12px;background:#fbfdfe}.preview section{padding:12px;border-bottom:1px solid #e3ebee}.preview section:last-child{border:0}@media(max-width:850px){.dashboard{grid-template-columns:1fr 1fr}.statusGrid{grid-template-columns:1fr 1fr}}@media(max-width:600px){.dashboard,.statusGrid,.grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}}
+
+.panel{border:1px solid #dce7eb;border-radius:16px;padding:18px;margin:14px 0;background:linear-gradient(180deg,#fff,#f8fbfc)}
+.panelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}.panelHead h3{margin:0}
+.pill{font-size:12px;font-weight:700;padding:5px 11px;border-radius:99px}.pill.on{background:#e3f6ee;color:#0b7a55}.pill.off{background:#fdecec;color:#a63333}
+.lbl{font-size:12px;font-weight:700;color:#607782;text-transform:uppercase;letter-spacing:.04em;margin:12px 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{font-size:12.5px;padding:5px 11px;border-radius:99px;background:#e2f3f0;color:#0a5f55;border:1px solid #c7e6e0}
+.chip.loc{background:#e8eef9;color:#2b4a85;border-color:#d1dcf2}.chip.sum{background:#f1f5f7;color:#3d5560;border-color:#e0e9ec;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat{padding:12px;border:1px solid #e0e9ec;border-radius:12px;background:#fff}.stat span{display:block;margin-bottom:3px}.stat b{font-size:14px;word-break:break-word}.stat.bad{background:#fdf0f0;border-color:#f0caca}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0 4px;padding:10px 12px;background:#f1f6f8;border-radius:12px;position:sticky;top:0;z-index:2}
+.toolbar input[type=search],.toolbar select{width:auto;margin:0;flex:1 1 150px;min-width:130px}.toolbar .danger{margin:0}.toolbar .danger:disabled{opacity:.4;cursor:not-allowed}
+.chk{display:flex;align-items:center;gap:7px;font-weight:600;cursor:pointer;margin:0}.chk input,.rec input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#087c6d;cursor:pointer}
+.rec{border:1px solid #dce7eb;border-radius:14px;padding:13px 14px;margin:10px 0;background:#fff;transition:.15s}.rec:hover{box-shadow:0 6px 18px #17323e14}.rec.picked{border-color:#087c6d;background:#f1faf8}
+.recTop{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.recInfo{flex:1 1 160px;min-width:0}.recInfo b{display:block;word-break:break-word}
+.recActions{display:flex;gap:4px}.sm{padding:6px 11px;font-size:12.5px;margin:0}
+.badge.qf{background:#fff1d6;color:#8a5a00}.badge.fl{background:#e1ecfb;color:#24508f}
+.rec .chips{margin-top:10px}.raw{white-space:pre-wrap;max-height:260px;overflow:auto;background:#f6f9fa;border:1px solid #e0e9ec;border-radius:10px;padding:10px;margin:10px 0 0;font-size:12px}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
 </style></head><body><div class="wrap"><div class="hero"><h1>CareerPulse Admin</h1><div>Simple control center for Jobs, Family, job sources and page content.</div></div>
 <div id="login" class="card"><h2>Admin sign in</h2><label>Email<input id="email" type="email"></label><label>Password<input id="password" type="password"></label><button id="signin">Sign in</button><div id="loginMsg" class="msg">Use your Supabase Authentication admin account.</div></div>
 <div id="app" hidden>
@@ -32,18 +50,47 @@ function db(){if(client)return client;if(!window.PORTFOLIO_CMS||!window.PORTFOLI
 async function get(action,extra={}){let q=new URLSearchParams({action,auth:await token(),...extra,ts:Date.now()});let r=await fetch(API+'?'+q,{cache:'no-store'}),x=await r.json();if(x.error==='Wrong token')throw Error('Admin reached a token-gated backend. The Apps Script URL/version does not match this Admin file.');if(!x.ok)throw Error(x.error||'Request failed');return x}async function post(action,extra={}){let q=new URLSearchParams({action,auth:await token()});Object.entries(extra).forEach(([k,v])=>q.set(k,typeof v==='object'?JSON.stringify(v):String(v)));let r=await fetch(API,{method:'POST',body:q}),x=await r.json();if(!x.ok)throw Error(x.error||'Request failed');return x}
 function openView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));scrollTo({top:0,behavior:'smooth'})}document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openView(b.dataset.open));document.querySelectorAll('.back').forEach(b=>b.onclick=()=>openView('home'));
 async function dashboard(){try{let vr=await fetch(API+'?action=backend_version&ts='+Date.now(),{cache:'no-store'}),vx=await vr.json();if(!vx.ok||!vx.version)throw Error('The Apps Script URL is still serving an older backend. Deploy the new Code.gs version first.');let x=await get('admin_dashboard'),s=x.status,items=[['Jobs Sender',s.jobsSender,s.jobsSender==='running'],['Family Sender',s.familySender,s.familySender==='running'],['Job Sources',s.jobSources+' connected',s.jobSources>0],['Family Reminders',s.familyReminders+' active'+(s.familyError?' — '+s.familyError:''),!s.familyError],['Last Jobs Run',s.lastJobsRun,true],['Family Check',s.familyCheck,true]];$('statusGrid').replaceChildren();items.forEach(a=>{let d=document.createElement('div');d.className='status';let dot=document.createElement('span');dot.className='dot '+(a[2]?'green':'red');let b=document.createElement('b');b.textContent=a[0];let p=document.createElement('div');p.className='small';p.textContent=a[1];d.append(dot,b,p);$('statusGrid').append(d)})}catch(e){$('statusGrid').textContent='Status unavailable: '+e.message}}
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+function chips(list,cls){const w=el('div','chips');(list&&list.length?list:['—']).forEach(x=>w.append(el('span','chip '+(cls||''),x)));return w}
+function fmtDate(v){return v?new Date(v).toLocaleString(undefined,{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—'}
+function summarize(data){const out=[];Object.entries(data||{}).forEach(([k,v])=>{if(out.length>=8)return;let t=null;if(Array.isArray(v)&&v.every(i=>i===null||typeof i!=='object'))t=v.join(', ');else if(['string','number','boolean'].includes(typeof v))t=String(v);if(t&&t.trim())out.push(k.replace(/([A-Z])/g,' $1').replace(/[_-]/g,' ').toLowerCase()+': '+(t.length>60?t.slice(0,57)+'…':t))});return out}
+function senderCard(d){const card=el('div','panel'),head=el('div','panelHead');head.append(el('h3',null,'Sender settings'));const on=d.enabled===true||String(d.enabled)==='true';head.append(el('span','pill '+(on?'on':'off'),on?'● Enabled':'● Paused'));card.append(head);
+ const stats=el('div','stats');[['Jobs from',d.days+' day(s)'],['Job types',(d.jobTypes||[]).join(', ')||'Any'],['Reminder times',(d.times||[]).join(', ')||d.hour+':00'],['Active recipients',String(d.recipients||0)],['Last run',d.lastRun||'Not yet'],['Last error',d.lastError||'None']].forEach(([k,v])=>{const s=el('div','stat');s.append(el('span','small',k),el('b',null,v));if(k==='Last error'&&v!=='None')s.classList.add('bad');stats.append(s)});
+ card.append(el('div','lbl','Roles / keywords'),chips(d.keywords),el('div','lbl','Locations'),chips(d.locations,'loc'),stats);return card}
+function profilesPanel(rows){
+ const sel=new Set();let q='',kind='all';const panel=el('div','panel'),head=el('div','panelHead'),title=el('h3',null,'Saved Jobs data ('+rows.length+')');head.append(title);panel.append(head);
+ if(!rows.length){panel.append(el('p','small','No Jobs filters or Quick Fill records have been saved to the database yet.'));return panel}
+ const bar=el('div','toolbar'),allLbl=el('label','chk'),all=document.createElement('input');all.type='checkbox';allLbl.append(all,el('span',null,'Select all'));
+ const search=document.createElement('input');search.type='search';search.placeholder='Search by name…';
+ const ks=document.createElement('select');[['all','All types'],['filter','Jobs Filters'],['quickfill','Quick Fill']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;ks.append(o)});
+ const count=el('span','small'),delBtn=el('button','danger','Delete selected');bar.append(allLbl,search,ks,count,delBtn);panel.append(bar);
+ const list=el('div','plist');panel.append(list);
+ const visible=()=>rows.filter(r=>(kind==='all'||r.kind===kind)&&(!q||String(r.name||r.id).toLowerCase().includes(q)));
+ function sync(){const v=visible(),n=sel.size;count.textContent=v.length+' shown';delBtn.textContent=n?'Delete selected ('+n+')':'Delete selected';delBtn.disabled=!n;all.checked=v.length>0&&v.every(r=>sel.has(r.id));all.indeterminate=!all.checked&&v.some(r=>sel.has(r.id));list.querySelectorAll('.rec').forEach(c=>c.classList.toggle('picked',sel.has(c.dataset.id)))}
+ function draw(){list.replaceChildren();const v=visible();if(!v.length)list.append(el('p','small','No records match.'));
+  v.forEach(row=>{const card=el('div','rec');card.dataset.id=row.id;const top=el('div','recTop');
+   const cb=document.createElement('input');cb.type='checkbox';cb.checked=sel.has(row.id);cb.onchange=()=>{cb.checked?sel.add(row.id):sel.delete(row.id);sync()};
+   const info=el('div','recInfo');info.append(el('b',null,row.name||row.id),el('div','small','Updated '+fmtDate(row.updated_at)));
+   const badge=el('span','badge '+(row.kind==='quickfill'?'qf':'fl'),row.kind==='quickfill'?'Quick Fill':'Jobs Filters');
+   const actions=el('div','recActions'),view=el('button','secondary sm','View data'),del=el('button','danger sm','Delete');actions.append(view,del);top.append(cb,info,badge,actions);card.append(top);
+   const sm=summarize(row.data);if(sm.length)card.append(chips(sm,'sum'));
+   const raw=el('pre','raw',JSON.stringify(row.data||{},null,2));raw.hidden=true;card.append(raw);
+   view.onclick=()=>{raw.hidden=!raw.hidden;view.textContent=raw.hidden?'View data':'Hide data'};del.onclick=()=>removeRows([row.id]);list.append(card)});sync()}
+ async function removeRows(ids){
+  const names=ids.slice(0,8).map(id=>{const r=rows.find(x=>x.id===id);return '• '+((r&&r.name)||id)});
+  if(!confirm('Delete '+ids.length+' saved record'+(ids.length>1?'s':'')+' from the database?\n\n'+names.join('\n')+(ids.length>8?'\n…and '+(ids.length-8)+' more':'')+'\n\nThis cannot be undone. Deleting the main Jobs filters record resets the filters saved for the Jobs page.'))return;
+  delBtn.disabled=true;let done=0,fail=[];
+  for(const id of ids){try{message('jobMsg','Deleting '+(done+1)+' of '+ids.length+'…');await get('admin_job_profile_delete',{id});const i=rows.findIndex(r=>r.id===id);if(i>=0)rows.splice(i,1);sel.delete(id);done++}catch(e){fail.push(e.message)}}
+  title.textContent='Saved Jobs data ('+rows.length+')';draw();
+  if(fail.length)message('jobMsg','✕ Deleted '+done+', failed '+fail.length+': '+fail[0],true);else message('jobMsg','✓ Deleted '+done+' record'+(done>1?'s':'')+'.')}
+ all.onchange=()=>{visible().forEach(r=>all.checked?sel.add(r.id):sel.delete(r.id));draw()};
+ search.oninput=()=>{q=search.value.trim().toLowerCase();draw()};ks.onchange=()=>{kind=ks.value;draw()};delBtn.onclick=()=>removeRows([...sel]);
+ draw();return panel}
 async function loadJob(){
- const box=$('jobView');box.replaceChildren();
- const add=(tag,text,cls)=>{const e=document.createElement(tag);e.textContent=text;if(cls)e.className=cls;box.append(e);return e};
- const [a,b]=await Promise.allSettled([get('admin_job_data'),get('admin_job_profiles')]);
- let failed=[];
- if(a.status==='fulfilled'){const d=a.value.data;add('h3','Sender settings');const p=add('pre',['Roles / keywords: '+(d.keywords.join(', ')||'—'),'Locations: '+(d.locations.join(', ')||'—'),'Job types: '+(d.jobTypes.join(', ')||'Any'),'Jobs from: '+d.days+' day(s)','Reminder times: '+((d.times||[]).join(', ')||d.hour+':00'),'Active recipients: '+(d.recipients||0),'Sender enabled: '+d.enabled,'Last run: '+(d.lastRun||'Not yet'),'Last error: '+(d.lastError||'None')].join('\n'));p.style.whiteSpace='pre-wrap'}else failed.push('Sender settings: '+a.reason.message);
- if(b.status==='fulfilled'){const rows=(b.value.data||{}).profiles||[];add('h3','Saved Jobs data ('+rows.length+')');if(!rows.length)add('p','No Jobs filters or Quick Fill records have been saved to the database yet.','small');
-  rows.forEach(row=>{const card=document.createElement('div');card.className='editor open';const head=document.createElement('div');head.className='row';const t=document.createElement('b');t.textContent=(row.kind==='quickfill'?'Quick Fill · ':'Filters · ')+(row.name||row.id);const bd=document.createElement('span');bd.className='badge';bd.textContent=row.kind==='quickfill'?'Quick Fill':'Jobs Filters';head.append(t,bd);
-   const body=document.createElement('div');body.className='editorBody';const meta=document.createElement('p');meta.className='small';meta.textContent='Updated: '+(row.updated_at?new Date(row.updated_at).toLocaleString():'—');
-   const pre=document.createElement('pre');pre.style.cssText='white-space:pre-wrap;max-height:260px;overflow:auto';pre.textContent=JSON.stringify(row.data||{},null,2);
-   const del=document.createElement('button');del.className='danger';del.textContent='Delete from database';del.onclick=async()=>{if(!confirm('Delete this saved Jobs record?'))return;try{await get('admin_job_profile_delete',{id:row.id});loadJob()}catch(e){message('jobMsg','✕ '+e.message,true)}};
-   body.append(meta,pre,del);card.append(head,body);box.append(card)})}else failed.push('Saved profiles: '+b.reason.message);
+ const box=$('jobView');box.replaceChildren(el('p','small','Loading…'));
+ const [a,b]=await Promise.allSettled([get('admin_job_data'),get('admin_job_profiles')]);let failed=[];box.replaceChildren();
+ if(a.status==='fulfilled')box.append(senderCard(a.value.data||{}));else failed.push('Sender settings: '+a.reason.message);
+ if(b.status==='fulfilled')box.append(profilesPanel(((b.value.data||{}).profiles||[]).slice()));else failed.push('Saved profiles: '+b.reason.message);
  if(failed.length)message('jobMsg','✕ '+failed.join('\n'),true);else message('jobMsg','✓ Job data loaded.')
 }
 async function loadFamily(){
