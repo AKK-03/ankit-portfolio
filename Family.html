@@ -5,55 +5,54 @@
 .suggestWrap{position:relative}.liveSuggestions{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid #b9cbd3;border-radius:10px;box-shadow:0 10px 25px #0002;max-height:230px;overflow:auto;margin-top:4px}
 .liveSuggestions[hidden]{display:none}.liveSuggestions button{display:block;width:100%;text-align:left;background:#fff;color:#17323e;border:0;border-radius:0;padding:10px 12px;font-weight:500}
 .liveSuggestions button:hover,.liveSuggestions button.active{background:#e7f5f2;color:#075f55}.suggestState{font-size:12px;color:#58707b;margin-top:5px}
+.secs{display:flex;flex-direction:column;gap:22px}.secs h2{margin:0 0 12px;font-size:19px}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #087c6d;outline-offset:2px}
 @media(max-width:650px){.g{grid-template-columns:1fr}.full{grid-column:auto}}
-</style></head><body data-cms-page="family"><div id="adminCms-top"></div><div class="w"><div class="hero"><h1>Family Job Reminder</h1><p>Add multiple roles, locations, times and repeat rules.</p></div><div class="card" data-admin-target="deliverySection"><h2 id="deliverySectionTitle">Delivery details</h2><form id="f"><div class="g">
+</style></head><body data-cms-page="family"><div id="adminCms-top"></div><div class="w"><div class="hero"><h1>Family Job Reminder</h1><p>Add multiple roles, locations, times and repeat rules.</p></div><div class="card"><form id="f" class="secs"><section data-admin-target="deliverySection"><h2>Delivery details</h2><div class="g">
 <label>Send by<select id="channel"><option value="email">Email</option><option value="whatsapp">WhatsApp / Mobile</option></select></label><label>Recipient<input id="address" required autocomplete="email" placeholder="name@example.com"></label>
 
-<div><div class="title">Job roles</div><div class="combo"><div class="suggestWrap"><input id="roleInput" autocomplete="off" placeholder="Start typing, e.g. Data Analyst" autocomplete="off"><div id="roleLive" class="liveSuggestions" role="listbox" hidden></div></div><div id="roleSuggestState" class="suggestState">Type at least 2 letters for live recommendations.</div><div id="roleSuggestions" class="suggestions"></div></div><div id="roleTags" class="chips"></div><span class="hint">Recommendations appear while typing. Tab adds the highlighted match or your custom text. Enter does not add.</span></div>
-<div><div class="title">Locations</div><div class="combo"><div class="suggestWrap"><input id="locationInput" autocomplete="off" placeholder="Start typing, e.g. Gurugram" autocomplete="off"><div id="locationLive" class="liveSuggestions" role="listbox" hidden></div></div><div id="locationSuggestState" class="suggestState">Type at least 2 letters for live recommendations.</div><div id="locationSuggestions" class="suggestions"></div></div><div id="locationTags" class="chips"></div><span class="hint">Recommendations appear while typing. Tab adds the highlighted match or your custom text.</span></div>
+</div></section><section data-admin-target="roleLocationSection"><h2>Job roles &amp; locations</h2><div class="g"><div><div class="title">Job roles</div><div class="combo"><div class="suggestWrap"><input id="roleInput" autocomplete="off" placeholder="Start typing, e.g. Data Analyst" aria-label="Job role"><div id="roleLive" class="liveSuggestions" role="listbox" hidden></div></div><div id="roleSuggestState" class="suggestState">Type at least 2 letters for live recommendations.</div></div><div id="roleTags" class="chips"></div><span class="hint">Press Enter or Tab to add a match or your own text.</span></div>
+<div><div class="title">Locations</div><div class="combo"><div class="suggestWrap"><input id="locationInput" autocomplete="off" placeholder="Start typing, e.g. Gurugram" aria-label="Location"><div id="locationLive" class="liveSuggestions" role="listbox" hidden></div></div><div id="locationSuggestState" class="suggestState">Type at least 2 letters for live recommendations.</div></div><div id="locationTags" class="chips"></div><span class="hint">Press Enter or Tab to add a match or your own text.</span></div>
 
-<div><div class="title">Reminder times — multiple</div><div class="inline"><label>Time<input id="timeInput" type="time" value="09:00"></label><button type="button" id="addTime">Add</button></div><div id="timeTags" class="chips"></div></div>
+</div></section><section data-admin-target="scheduleSection"><h2>Reminder schedule</h2><div class="g"><div><div class="title">Reminder times — multiple</div><div class="inline"><label>Time<input id="timeInput" type="time" value="09:00"></label><button type="button" id="addTime">Add</button></div><div id="timeTags" class="chips"></div></div>
 <div><div class="title">Repeat — multiple / custom</div><div id="repeat" class="chips"><label class="chip"><input type="checkbox" value="daily">Every day</label><label class="chip"><input type="checkbox" value="weekdays" checked>Weekdays</label><label class="chip"><input type="checkbox" value="weekends">Weekends</label><label class="chip"><input type="checkbox" value="custom">Custom</label></div><div id="customRepeat" class="custom chips"><label class="chip"><input type="checkbox" value="1">Mon</label><label class="chip"><input type="checkbox" value="2">Tue</label><label class="chip"><input type="checkbox" value="3">Wed</label><label class="chip"><input type="checkbox" value="4">Thu</label><label class="chip"><input type="checkbox" value="5">Fri</label><label class="chip"><input type="checkbox" value="6">Sat</label><label class="chip"><input type="checkbox" value="0">Sun</label></div></div>
 
-<div><div class="title">Jobs from</div><select id="days"><option value="1">Last 24 hours</option><option value="3">Last 3 days</option><option value="7" selected>Last 7 days</option><option value="14">Last 14 days</option><option value="30">Last 30 days</option><option value="custom">Custom days</option></select><div id="customDaysWrap" class="custom"><input id="customDays" type="number" min="1" max="90" value="10" placeholder="Number of days"></div></div>
+</div></section><section data-admin-target="jobAgeSection"><h2>Jobs from &amp; timezone</h2><div class="g"><div><div class="title">Jobs from</div><select id="days"><option value="1">Last 24 hours</option><option value="3">Last 3 days</option><option value="7" selected>Last 7 days</option><option value="14">Last 14 days</option><option value="30">Last 30 days</option><option value="custom">Custom days</option></select><div id="customDaysWrap" class="custom"><input id="customDays" type="number" min="1" max="365" value="10" placeholder="Number of days"></div></div>
 <label>Time zone<input id="timezone" placeholder="Detected automatically"><span class="hint">Detected from this device by default; you can change it.</span></label>
 
-<div class="full"><div class="title">Work preference — select multiple</div><div class="chips" id="work"><label class="chip"><input type="checkbox" value="office">Office</label><label class="chip"><input type="checkbox" value="hybrid" checked>Hybrid</label><label class="chip"><input type="checkbox" value="remote" checked>Remote</label><label class="chip"><input type="checkbox" value="home">Work from home</label></div></div>
+</div></section><section data-admin-target="workSection"><h2>Work preference &amp; shift</h2><div class="g"><div class="full"><div class="title">Work preference — select multiple</div><div class="chips" id="work"><label class="chip"><input type="checkbox" value="office">Office</label><label class="chip"><input type="checkbox" value="hybrid" checked>Hybrid</label><label class="chip"><input type="checkbox" value="remote" checked>Remote</label><label class="chip"><input type="checkbox" value="home">Work from home</label></div></div>
 <div class="full"><div class="title">Shift — select multiple</div><div class="chips" id="shift"><label class="chip"><input type="checkbox" value="morning" checked>Morning</label><label class="chip"><input type="checkbox" value="evening">Evening</label><label class="chip"><input type="checkbox" value="night">Night</label></div></div>
-</div><div class="actions"><button id="check" class="secondary" type="button">Check Family Service</button><button id="save" type="submit">Save my reminder</button></div><div id="msg" class="msg"></div></form></div></div>
+</div></section><section data-admin-target="actionsSection"><div class="actions"><button id="check" class="secondary" type="button">Check Family Service</button><button id="save" type="submit">Save my reminder</button></div><div id="msg" class="msg" role="status"></div></section></form></div></div>
 <script src="./cms-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const FAMILY_SENDER_URL='https://script.google.com/macros/s/AKfycbwo9grCwLGuzA9B4Q5xKA85rn3H539fShT-eOfsigahLYg_erPkZcgBE6Uv54alh_iy/exec';
 const $=id=>document.getElementById(id),msg=(t,c='info')=>{$('msg').className='msg show '+c;$('msg').textContent=t},ck=id=>[...$(id).querySelectorAll('input:checked')].map(x=>x.value);
-const vals={role:[],location:[]}, times=[]; const active={role:-1,location:-1}, timers={};
-function db(){if(!window.PORTFOLIO_CMS?.url||!window.PORTFOLIO_CMS?.anonKey)throw Error('Supabase config was not found. Check cms-config.js.');return window.supabase.createClient(window.PORTFOLIO_CMS.url,window.PORTFOLIO_CMS.anonKey)}
+const vals={role:[],location:[]}, times=[];
+let _db;function db(){if(!window.PORTFOLIO_CMS?.url||!window.PORTFOLIO_CMS?.anonKey)throw Error('Supabase config was not found. Check cms-config.js.');return _db||(_db=window.supabase.createClient(window.PORTFOLIO_CMS.url,window.PORTFOLIO_CMS.anonKey))}
 function render(kind){let box=$(kind+'Tags');box.replaceChildren();vals[kind].forEach((v,i)=>{let b=document.createElement('button');b.type='button';b.className='chip';b.textContent=v+' ×';b.onclick=()=>{vals[kind].splice(i,1);render(kind)};box.appendChild(b)})}
-function hide(kind){$(kind+'Suggestions').classList.remove('show');active[kind]=-1}
+function hide(kind){hideSuggestions(kind)}
 function add(kind,v){v=(v||'').trim();if(!v)return;if(!vals[kind].some(x=>x.toLowerCase()===v.toLowerCase()))vals[kind].push(v);$(kind+'Input').value='';hide(kind);render(kind)}
-function showSuggestions(kind,a){let box=$(kind+'Suggestions');box.replaceChildren();a.slice(0,8).forEach((v,i)=>{let d=document.createElement('div');d.className='suggestion'+(i===0?' active':'');d.textContent=v;d.onclick=()=>add(kind,v);box.appendChild(d)});active[kind]=a.length?0:-1;box.classList.toggle('show',!!a.length)}
-async function suggest(kind,q){q=q.trim();if(q.length<2)return hide(kind);try{let r=await fetch(FAMILY_SENDER_URL+'?action=family_suggest&kind='+encodeURIComponent(kind)+'&q='+encodeURIComponent(q)+'&ts='+Date.now(),{cache:'no-store'});let x=await r.json();showSuggestions(kind,x.suggestions||[])}catch(e){hide(kind)}}
 
 const suggestTimers={role:null,location:null},suggestItems={role:[],location:[]},suggestActive={role:-1,location:-1};
+function addTag(kind){add(kind,$(kind+'Input').value)}
 function hideSuggestions(kind){const box=$(kind+'Live');if(box){box.hidden=true;box.replaceChildren()}suggestActive[kind]=-1}
 function chooseSuggestion(kind,value){
-  const input=$(kind==='role'?'roleInput':'locationInput'),arr=kind==='role'?roles:locations;
+  const input=$(kind==='role'?'roleInput':'locationInput'),arr=vals[kind];
   if(value&&!arr.some(x=>x.toLowerCase()===value.toLowerCase()))arr.push(value);
-  input.value='';renderTags(kind);hideSuggestions(kind);input.focus();
+  input.value='';render(kind);hideSuggestions(kind);input.focus();
 }
 function paintSuggestions(kind,items){
   const box=$(kind+'Live'),state=$(kind+'SuggestState');box.replaceChildren();suggestItems[kind]=items;suggestActive[kind]=-1;
   if(!items.length){box.hidden=true;state.textContent='No matching recommendation. You can keep your own text and press Tab to add it.';return}
   items.forEach((v,i)=>{const b=document.createElement('button');b.type='button';b.textContent=v;b.setAttribute('role','option');b.onmousedown=e=>e.preventDefault();b.onclick=()=>chooseSuggestion(kind,v);box.appendChild(b)});
-  box.hidden=false;state.textContent='Tab adds the first match. ↑/↓ selects another match. Enter remains available for a new line.';
+  box.hidden=false;state.textContent='Enter or Tab adds the first match (or your own text). ↑/↓ picks another match.';
 }
 async function requestSuggestions(kind){
-  const input=$(kind==='role'?'roleInput':'locationInput'),q=input.value.split(/
-/).pop().trim(),state=$(kind+'SuggestState');
+  const input=$(kind==='role'?'roleInput':'locationInput'),q=input.value.trim(),state=$(kind+'SuggestState');
   if(q.length<2){hideSuggestions(kind);state.textContent='Type at least 2 letters for live recommendations.';return}
   state.textContent='Finding matching '+(kind==='role'?'roles':'locations')+'…';
   try{
     const r=await fetch(FAMILY_SENDER_URL+'?action=family_suggest&kind='+encodeURIComponent(kind)+'&q='+encodeURIComponent(q)+'&ts='+Date.now(),{cache:'no-store'});
     if(!r.ok)throw Error('HTTP '+r.status);const x=await r.json();if(!x.ok)throw Error(x.error||'Suggestion service unavailable');
-    paintSuggestions(kind,Array.isArray(x.suggestions)?x.suggestions:[]);
+    if(input.value.trim()!==q)return;paintSuggestions(kind,Array.isArray(x.suggestions)?x.suggestions:[]);
   }catch(e){hideSuggestions(kind);state.textContent='Recommendations unavailable: '+e.message}
 }
 ['role','location'].forEach(kind=>{
@@ -61,9 +60,9 @@ async function requestSuggestions(kind){
   input.addEventListener('input',()=>{clearTimeout(suggestTimers[kind]);suggestTimers[kind]=setTimeout(()=>requestSuggestions(kind),320)});
   input.addEventListener('keydown',e=>{
     const box=$(kind+'Live'),items=suggestItems[kind];
+    if(e.key==='Enter'){e.preventDefault();const q=input.value.trim();if(items.length&&suggestActive[kind]>=0)chooseSuggestion(kind,items[suggestActive[kind]]);else if(q)addTag(kind);return;}
     if(e.key==='Tab'&&!e.shiftKey){
-      const q=input.value.split(/
-/).pop().trim();
+      const q=input.value.trim();
       if(items.length){e.preventDefault();chooseSuggestion(kind,items[suggestActive[kind]>=0?suggestActive[kind]:0]);}
       else if(q){e.preventDefault();addTag(kind);}
       return;
@@ -83,7 +82,7 @@ function addTime(){let v=$('timeInput').value;if(v&&!times.includes(v)){times.pu
 $('repeat').onchange=()=>$('customRepeat').classList.toggle('show',ck('repeat').includes('custom'));
 $('days').onchange=()=>$('customDaysWrap').classList.toggle('show',$('days').value==='custom');
 $('timezone').value=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
-$('channel').onchange=()=>{$('address').type=$('channel').value==='email'?'email':'tel';$('address').placeholder=$('channel').value==='email'?'name@example.com':'+91 98765 43210'};
+$('channel').onchange=()=>{$('address').autocomplete=$('channel').value==='email'?'email':'tel';$('address').type=$('channel').value==='email'?'email':'tel';$('address').placeholder=$('channel').value==='email'?'name@example.com':'+91 98765 43210'};
 
 async function familyDbCheck(){
   const client=db();
@@ -91,7 +90,7 @@ async function familyDbCheck(){
   if(error)throw Error('Supabase Family database: '+error.message);
   return true;
 }
-function settings(){if($('roleInput').value.trim())add('role',$('roleInput').value);if($('locationInput').value.trim())add('location',$('locationInput').value);if(!vals.role.length)throw Error('Add at least one job role.');if(!vals.location.length)throw Error('Add at least one location.');if(!times.length)throw Error('Add at least one reminder time.');let repeats=ck('repeat');if(!repeats.length)throw Error('Select at least one repeat option.');let repeatDays=ck('customRepeat');if(repeats.includes('custom')&&!repeatDays.length)throw Error('Choose custom repeat days.');let days=$('days').value==='custom'?+$('customDays').value:+$('days').value;if(!days||days<1)throw Error('Enter valid Jobs from days.');return{channel:$('channel').value,address:$('address').value.trim(),mode:'specific',roles:vals.role.slice(),locations:vals.location.slice(),times:times.slice(),repeat:repeats.length===1?repeats[0]:'multiple',repeats,repeatDays,timezone:$('timezone').value.trim()||Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',days,workModes:ck('work'),shifts:ck('shift')}}
+function settings(){if($('roleInput').value.trim())add('role',$('roleInput').value);if($('locationInput').value.trim())add('location',$('locationInput').value);if(!vals.role.length)throw Error('Add at least one job role.');if(!vals.location.length)throw Error('Add at least one location.');if(!times.length)throw Error('Add at least one reminder time.');let repeats=ck('repeat');if(!repeats.length)throw Error('Select at least one repeat option.');let repeatDays=ck('customRepeat');if(repeats.includes('custom')&&!repeatDays.length)throw Error('Choose custom repeat days.');let days=$('days').value==='custom'?+$('customDays').value:+$('days').value;if(!days||days<1||days>365)throw Error('Enter Jobs from days between 1 and 365.');let tz=$('timezone').value.trim()||'UTC';try{new Intl.DateTimeFormat('en',{timeZone:tz})}catch(_){throw Error('Unknown time zone: '+tz+'. Example: Asia/Kolkata')}let addr=$('address').value.trim().replace(/[\s()-]/g,'');if($('channel').value==='email'){if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('address').value.trim()))throw Error('Enter a valid email address.')}else if(!/^\+[1-9]\d{7,14}$/.test(addr))throw Error('Enter the mobile number with country code, e.g. +919876543210.');return{channel:$('channel').value,address:$('channel').value==='email'?$('address').value.trim():$('address').value.trim().replace(/[\s()-]/g,''),mode:'specific',roles:vals.role.slice(),locations:vals.location.slice(),times:times.slice(),repeat:repeats.length===1?repeats[0]:'multiple',repeats,repeatDays,timezone:$('timezone').value.trim()||Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',days,workModes:ck('work'),shifts:ck('shift')}}
 $('check').onclick=async()=>{
  let b=$('check');b.disabled=true;msg('Checking Family database and sender…');
  let lines=[];
@@ -130,7 +129,7 @@ msg('✓ Reminder saved successfully.\nReference: '+data,'ok')}catch(x){msg('✕
 </script><div id="adminCms-bottom"></div>
 <script>
 (function(){
- const API='https://script.google.com/macros/s/AKfycbwo9grCwLGuzA9B4Q5xKA85rn3H539fShT-eOfsigahLYg_erPkZcgBE6Uv54alh_iy/exec';
+ const API=FAMILY_SENDER_URL;
  async function render(page){
   try{
    const r=await fetch(API+'?action=page_config&page='+encodeURIComponent(page)+'&ts='+Date.now(),{cache:'no-store'});
@@ -152,7 +151,7 @@ msg('✓ Reminder saved successfully.\nReference: '+data,'ok')}catch(x){msg('✕
 <script>
 (async function(){
  try{
-  const API='https://script.google.com/macros/s/AKfycbwo9grCwLGuzA9B4Q5xKA85rn3H539fShT-eOfsigahLYg_erPkZcgBE6Uv54alh_iy/exec';
+  const API=FAMILY_SENDER_URL;
   const x=await (await fetch(API+'?action=page_manifest&page=family&ts='+Date.now(),{cache:'no-store'})).json();
   if(!x.ok)return;
   (x.builtins||[]).forEach((s,i)=>{
