@@ -50,6 +50,9 @@ button{min-height:42px;border-radius:12px;padding:10px 16px;transition:transform
 <button class="dashCard" data-open="familyPage"><span class="icon">📝</span><b>Edit Family Page</b><span class="small">Existing sections and custom content</span></button>
 </div></div></div>
 
+
+<section id="monitor" class="view card"><h2>Connection health</h2><p class="small">Checks run while this admin page is open. Backend failures are saved to Apps Script logs. Page checks confirm HTTP reachability, not complete functionality.</p><div class="row"><button id="runHealth">Test all now</button><label>Automatic interval<select id="healthInterval"><option value="0">Off</option><option value="60000">Every minute</option><option value="300000" selected>Every 5 minutes</option><option value="900000">Every 15 minutes</option></select></label></div><div id="healthResults" class="statusGrid"></div><h3>Connection failure and recovery log</h3><button id="reloadLogs">Refresh logs</button><div class="tablewrap"><table><thead><tr><th>Time</th><th>Service</th><th>Status</th><th>Duration</th><th>Reason</th></tr></thead><tbody id="healthLogs"></tbody></table></div></section>
+<section id="receivers" class="view card"><h2>Email receiver controls</h2><p class="small">Pause or disable a specific email recipient for Jobs or Family independently. Resume sets the recipient to active.</p><div class="grid"><label>Reminder type<select id="receiverType"><option value="jobs">Jobs</option><option value="family">Family</option></select></label><label>Receiver email<input id="receiverEmail" type="email" placeholder="person@example.com"></label><label>Action<select id="receiverStatus"><option value="active">Active / Resume</option><option value="paused">Pause</option><option value="disabled">Disable</option></select></label><label>Pause until (optional)<input id="receiverUntil" type="datetime-local"></label></div><button id="receiverSave">Save receiver control</button><div id="receiverMsg" class="msg"></div><button id="receiverRefresh">Refresh receivers</button><div id="receiverRows"></div></section>
 <section id="jobs" class="view card"><button class="back">← Dashboard</button><h2>Job Profiles</h2><button id="refreshJob">Refresh</button><div id="jobMsg" class="msg"></div><div class="filterBox"><input id="jobFilter" type="search" placeholder="🔍 Search saved Jobs data…" aria-label="Search saved Jobs data"></div><div id="jobView"></div></section>
 <section id="family" class="view card"><button class="back">← Dashboard</button><h2>Family Reminders</h2><div class="row"><button id="refreshFamily">Refresh</button><button id="selectAll" class="secondary">Select all</button><button id="deleteSelected" class="danger">Delete selected</button></div><div id="familyMsg" class="msg"></div><div class="filterBox"><input id="famFilter" type="search" placeholder="🔍 Search by email, role, location…" aria-label="Search reminders"></div><div id="familyList"></div></section>
 
@@ -206,13 +209,29 @@ $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword
 </script>
 <script>
 (function(){
- var tabs=[['home','🏠 Overview'],['jobs','💼 Jobs'],['family','👨‍👩‍👧 Family'],['sources','🔌 Sources'],['jobsPage','📝 Jobs page'],['sender','✉️ Sender'],['familyPage','📝 Family page']],bar=document.getElementById('tabbar');
+ var tabs=[['home','🏠 Overview'],['jobs','💼 Jobs'],['family','👨‍👩‍👧 Family'],['sources','🔌 Sources'],['jobsPage','📝 Jobs page'],['sender','✉️ Sender'],['familyPage','📝 Family page'],['monitor','📡 Health & logs'],['receivers','✉️ Receiver controls']],bar=document.getElementById('tabbar');
  tabs.forEach(function(t){var b=document.createElement('button');b.type='button';b.textContent=t[1];b.dataset.v=t[0];b.onclick=function(){openView(t[0])};bar.appendChild(b)});
  function mark(){var a=document.querySelector('.view.active');tabs.forEach(function(t,i){bar.children[i].classList.toggle('on',!!a&&a.id===t[0])});var on=bar.querySelector('.on');if(on&&on.scrollIntoView)on.scrollIntoView({inline:'center',block:'nearest'})}
  var o=openView;openView=function(){o.apply(this,arguments);mark()};mark();
  function wire(inp,box,sel){var i=document.getElementById(inp);i.oninput=function(){var q=i.value.trim().toLowerCase();document.querySelectorAll('#'+box+' '+sel).forEach(function(e){e.style.display=!q||e.textContent.toLowerCase().indexOf(q)>=0?'':'none'})}}
  wire('famFilter','familyList','.item');wire('jobFilter','jobView','.item');
  document.getElementById('password').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('signin').click()});
+})();
+</script>
+
+<script>
+(function(){
+ const $=id=>document.getElementById(id), endpoint=typeof API==='string'?API:'';
+ const targets=[['backend',endpoint+'?action=backend_version'],['family',endpoint+'?action=family_ping'],['jobs',endpoint+'?action=deployment_check'],['supabase',endpoint+'?action=family_status']];
+ let timer=null,last={};
+ async function probe(name,url){const started=performance.now(),ctrl=new AbortController(),timeout=setTimeout(()=>ctrl.abort(),12000);let status='working',reason='';try{const r=await fetch(url+'&ts='+Date.now(),{cache:'no-store',signal:ctrl.signal});if(!r.ok)throw Error('HTTP '+r.status);const data=await r.json();if(data.ok!==true)throw Error(data.error||'Service reported not ready');if(name==='supabase'&&!data.supabaseConnected)throw Error(data.error||'Supabase is not connected');}catch(e){status='lost';reason=e.name==='AbortError'?'Request timed out after 12 seconds':e.message;}finally{clearTimeout(timeout)}const durationMs=Math.round(performance.now()-started);const card=document.createElement('div');card.className='status';card.textContent=name.toUpperCase()+' — '+status+' ('+durationMs+' ms) | '+new Date().toLocaleString()+(reason?' | '+reason:'');$('healthResults').append(card);if(status==='lost'||last[name]==='lost'&&status==='working'){try{await post('admin_monitor_record',{record:{service:name,status,durationMs,reason:reason||'Connection restored'}})}catch(e){card.append(' | Log save failed: '+e.message)}}last[name]=status;}
+ async function run(){if($('app').hidden)return;$('healthResults').replaceChildren();await Promise.all(targets.map(t=>probe(...t)));await logs();}
+ async function logs(){try{let x=await get('admin_monitor_logs');$('healthLogs').replaceChildren();(x.rows||[]).forEach(r=>{let tr=document.createElement('tr');[r.time,r.service,r.status,r.durationMs+' ms',r.reason||'—'].forEach(v=>{let td=document.createElement('td');td.textContent=v;tr.append(td)});$('healthLogs').append(tr)})}catch(e){$('healthLogs').textContent=e.message}}
+ async function receivers(){try{let x=await get('admin_receiver_list');$('receiverRows').replaceChildren();(x.rows||[]).forEach(r=>{let d=document.createElement('div');d.className='item';d.textContent=r.type+' | '+r.address+' | '+r.status+(r.until?' | until '+r.until:'');$('receiverRows').append(d)})}catch(e){$('receiverRows').textContent=e.message}}
+ $('runHealth').onclick=run;$('reloadLogs').onclick=logs;$('receiverRefresh').onclick=receivers;
+ $('healthInterval').onchange=()=>{clearInterval(timer);if(+$('healthInterval').value)timer=setInterval(run,+$('healthInterval').value)};$('healthInterval').onchange();
+ $('receiverSave').onclick=async()=>{try{await post('admin_receiver_set',{type:$('receiverType').value,address:$('receiverEmail').value,status:$('receiverStatus').value,until:$('receiverUntil').value?new Date($('receiverUntil').value).toISOString():''});$('receiverMsg').textContent='Saved';await receivers()}catch(e){$('receiverMsg').textContent='Failed: '+e.message}};
+ const old=window.openView;window.openView=function(id){old(id);if(id==='monitor')run();if(id==='receivers')receivers()};
 })();
 </script>
 </body></html>
