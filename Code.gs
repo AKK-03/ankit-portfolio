@@ -13,6 +13,40 @@ function normLoc_(s) { return String(s).trim().replace(/^delhi[\s-]*ncr$/i, 'Del
 function checkAdzunaKeys() {
   if (!g('ADZUNA_ID', '') || !g('ADZUNA_KEY', '')) throw new Error('Add ADZUNA_ID and ADZUNA_KEY in Project Settings > Script properties.');
 }
+/* ================= SENDER IDENTITY (shown on every email) =================
+   Script properties (or Admin > Sender): SENDER_NAME, REPLY_TO, CONTACT_PHONE, CONTACT_EMAIL, CONTACT_WEBSITE.
+   Note: Apps Script always sends FROM the Google account that owns/runs this script; it cannot spoof another address.
+   What we CAN set is the display name and Reply-To, so replies go to the address you choose. */
+function senderInfo_() {
+  var owner = ''; try { owner = Session.getEffectiveUser().getEmail(); } catch (e) {}
+  var ok = function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? v : ''; };
+  var reply = ok(g('REPLY_TO', '').trim());
+  return { name: g('SENDER_NAME', '').trim() || 'CareerPulse', replyTo: reply || owner, phone: g('CONTACT_PHONE', '').trim(),
+    email: ok(g('CONTACT_EMAIL', '').trim()) || reply || owner, web: g('CONTACT_WEBSITE', '').trim() };
+}
+function footerParts_() {
+  var i = senderInfo_(), t = [], h = [];
+  if (i.phone) { t.push('Phone: ' + i.phone); h.push('📞 ' + familyHtml_(i.phone)); }
+  if (i.email) { t.push('Email: ' + i.email); h.push('✉️ <a href="mailto:' + familyHtml_(i.email) + '">' + familyHtml_(i.email) + '</a>'); }
+  if (i.web) { t.push('Web: ' + i.web); h.push('🌐 ' + familyHtml_(i.web)); }
+  return { info: i, text: t, html: h };
+}
+function footerText_() {
+  var f = footerParts_();
+  return '--\nSent by ' + f.info.name + (f.text.length ? '\n' + f.text.join('\n') : '') + '\nJust reply to this email to reach us, or to change or stop these alerts.';
+}
+function footerHtml_() {
+  var f = footerParts_();
+  return '<hr style="border:0;border-top:1px solid #dde6ea;margin:18px 0"><p style="font-size:13px;color:#4b616c;line-height:1.6;margin:0">Sent by <b>' + familyHtml_(f.info.name) + '</b>' +
+    (f.html.length ? '<br>' + f.html.join(' &nbsp;·&nbsp; ') : '') + '<br>Just reply to this email to reach us, or to change or stop these alerts.</p>';
+}
+/* One place that sends every email: display name + Reply-To + contact footer. */
+function sendMail_(to, subject, html, plain) {
+  var i = senderInfo_(), m = { to: to, subject: subject, body: String(plain || subject) + '\n\n' + footerText_(), name: i.name };
+  if (i.replyTo) m.replyTo = i.replyTo;
+  if (html) m.htmlBody = html + footerHtml_();
+  MailApp.sendEmail(m);
+}
 function shortKey_(s) {
   return Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, String(s)).map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join('').slice(0, 16);
 }
@@ -41,8 +75,10 @@ function doGet(e) {
       case 'admin_job_data': return jsonOut_(adminJobData_(p.auth));            // FIX: sender settings (was shadowed by profiles)
       case 'admin_job_profiles': return jsonOut_(adminJobProfilesDb_(p.auth));
       case 'admin_job_profile_delete': return jsonOut_(adminJobProfileDelete_(p.auth, p.id));
+      case 'admin_job_profile_save': return jsonOut_(adminJobProfileSave_(p.auth, p.profile, p.apply));
       case 'admin_job_search': portalRequireAdmin_(p.auth); return jsonOut_({ ok: true, data: searchResults_(p.query) });
       case 'admin_dashboard': return jsonOut_(adminDashboard_(p.auth));
+      case 'admin_sender_get': return jsonOut_(adminSenderGet_(p.auth));
       case 'admin_page_config': return jsonOut_(adminPageConfig_(p.auth, p.page));
       case 'admin_page_all': return jsonOut_(adminPageAllSections_(p.auth, p.page));
     }
@@ -65,6 +101,10 @@ function doPost(e) {
       case 'admin_builtin_save': return jsonOut_(adminBuiltinSave_(p.auth, p.page, p.config));
       case 'admin_builtin_reset': return jsonOut_(adminBuiltinReset_(p.auth, p.page));
       // FIX: large payloads (profiles, schedule) must be POSTed, not put in a GET URL
+      case 'admin_job_profile_save': return jsonOut_(adminJobProfileSave_(p.auth, p.profile, p.apply));
+      case 'admin_job_profile_delete': return jsonOut_(adminJobProfileDelete_(p.auth, p.id));
+      case 'admin_sender_save': return jsonOut_(adminSenderSave_(p.auth, p.config));
+      case 'admin_sender_test': return jsonOut_(adminSenderTest_(p.auth));
       case 'job_profile_save': return jsonOut_(jobProfileSave_(p.token, p.profile));
       case 'job_profile_delete': return jsonOut_(jobProfileDelete_(p.token, p.id));
     }
@@ -146,15 +186,15 @@ function digest(force) {
   P.setProperty('LAST', Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd MMM HH:mm'));
   if (!jobs.length) {
     var today = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
-    if (test) MailApp.sendEmail(to, 'Job radar: no new openings (test)', 'Test ran OK but found no openings.\n\nKeywords: ' + g('KW', '') + '\nLocations: ' + g('LOC', '') +
+    if (test) sendMail_(to, 'Job radar: no new openings (test)', '', 'Test ran OK but found no openings.\n\nKeywords: ' + g('KW', '') + '\nLocations: ' + g('LOC', '') +
       '\nJob types: ' + g('JT', '') + '\nDays back: ' + g('DAYS', '2') + (errText ? '\n\nProblems:\n' + errors.join('\n') : '\n\nNo errors. Try wider filters.'));
-    else if (errText && P.getProperty('ERRDAY') !== today) { P.setProperty('ERRDAY', today); MailApp.sendEmail(to, 'Job radar: problem with your daily search', 'Problems:\n' + errors.join('\n')); }
+    else if (errText && P.getProperty('ERRDAY') !== today) { P.setProperty('ERRDAY', today); sendMail_(to, 'Job radar: problem with your daily search', '', 'Problems:\n' + errors.join('\n')); }
     return 0;
   }
   var html = '<h3>' + jobs.length + ' new openings</h3>' + jobs.slice(0, 50).map(function (j) {
     return '<p><a href="' + familyHtml_(j.u) + '"><b>' + familyHtml_(j.t) + '</b></a><br>' + familyHtml_(j.c) + ' &middot; ' + familyHtml_(j.l) + '</p>';
   }).join('') + (errText ? '<p style="color:#b00">Some searches failed: ' + familyHtml_(errText) + '</p>' : '');
-  MailApp.sendEmail({ to: to, subject: 'Job radar: ' + jobs.length + ' new openings' + (test ? ' (test)' : ''), htmlBody: html });
+  sendMail_(to, 'Job radar: ' + jobs.length + ' new openings' + (test ? ' (test)' : ''), html, jobs.length + ' new openings:\n' + jobs.slice(0, 20).map(function (j) { return '- ' + j.t + ' - ' + j.c + ' ' + j.u; }).join('\n'));
   if (!test) P.setProperty('SEEN', JSON.stringify(jsonProp_('SEEN', []).concat(jobs.map(function (j) { return j.id; })).slice(-500)));
   return jobs.length;
 }
@@ -330,11 +370,11 @@ function sendReminder_(key, s, force, dueSlot) {
       : '<p>No new matching openings right now. Your reminder remains active.</p>';
     if (errors.length) html += '<p style="color:#a33">Some searches failed: ' + familyHtml_(errors.join(' | ')) + '</p>';
     html += '<p style="color:#60747d;font-size:12px">Posted within ' + familyHtml_(String(s.days || 7)) + ' day(s)</p></div>';
-    MailApp.sendEmail({ to: address, subject: 'CareerPulse: ' + jobs.length + ' new job' + (jobs.length === 1 ? '' : 's') + ' for ' + roles, htmlBody: html,
-      body: 'CareerPulse found ' + jobs.length + ' new job(s) for ' + roles + ' in ' + locations + '.' });
+    sendMail_(address, 'CareerPulse: ' + jobs.length + ' new job' + (jobs.length === 1 ? '' : 's') + ' for ' + roles, html,
+      'CareerPulse found ' + jobs.length + ' new job(s) for ' + roles + ' in ' + locations + '.\n' + jobs.slice(0, 10).map(function (j) { return '- ' + j.t + ' - ' + j.c + ' ' + j.u; }).join('\n'));
   } else if (s.channel === 'whatsapp') {
     var waKey = g('WA_KEY', ''); if (!waKey) throw new Error('WA_KEY is missing; WhatsApp delivery is not configured.');
-    var msg = (s.firstName ? 'Hi ' + s.firstName + ', ' : '') + 'CareerPulse: ' + jobs.length + ' new job(s) for ' + roles + '.\n' + jobs.slice(0, 5).map(function (j) { return '- ' + j.t + ' - ' + j.c + '\n' + j.u; }).join('\n');
+    var msg = (s.firstName ? 'Hi ' + s.firstName + ', ' : '') + 'CareerPulse: ' + jobs.length + ' new job(s) for ' + roles + '.\n' + jobs.slice(0, 5).map(function (j) { return '- ' + j.t + ' - ' + j.c + '\n' + j.u; }).join('\n') + waFooter_();
     var wa = UrlFetchApp.fetch('https://api.callmebot.com/whatsapp.php?phone=' + encodeURIComponent(address.replace(/[^\d+]/g, '')) + '&text=' + encodeURIComponent(msg) + '&apikey=' + encodeURIComponent(waKey), { muteHttpExceptions: true });
     if (wa.getResponseCode() < 200 || wa.getResponseCode() >= 300) throw new Error('WhatsApp HTTP ' + wa.getResponseCode() + ': ' + wa.getContentText().slice(0, 150));
   } else throw new Error('Unsupported delivery channel: ' + s.channel);
@@ -344,6 +384,7 @@ function sendReminder_(key, s, force, dueSlot) {
   }
   return { ok: true, jobs: jobs.length, errors: errors, recipient: address };
 }
+function waFooter_() { var i = senderInfo_(); return '\n\n— ' + i.name + (i.phone ? ' · ' + i.phone : '') + (i.email ? ' · ' + i.email : ''); }
 function familyHtml_(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
 /* ================= FAMILY (Supabase) ================= */
@@ -372,7 +413,7 @@ function testFamilyReminderNow() {
   var rows = familySupabaseReminders_(); if (!rows.length) throw new Error('No enabled Family reminders found.');
   var r = sendReminder_('FAM_' + rows[0].id, familySettings_(rows[0]), true); Logger.log(JSON.stringify(r)); return r;
 }
-function familySettings_(row) { var s = Object.assign({}, row.settings || {}); s.jobTypes = []; return s; }
+function familySettings_(row) { var s = Object.assign({}, row.settings || {}); if (!Array.isArray(s.jobTypes)) s.jobTypes = []; s.firstName = String(s.firstName || '').slice(0, 60); return s; }
 function familySupabaseTick() {
   var lock = LockService.getScriptLock(); if (!lock.tryLock(1000)) return;
   try {
@@ -461,12 +502,12 @@ function familySuggestions_(kind, q) {
   if (z) return { ok: true, suggestions: JSON.parse(z) };
   var out = [];
   portalEnabled_().slice(0, 3).forEach(function (p) {
-    try { portalSearchOne_(p, kind === 'role' ? q : '', kind === 'location' ? q : '', 50).forEach(function (j) {
+    try { portalSearchOne_(p, kind === 'role' ? q : '', kind === 'location' ? q : '', 20).forEach(function (j) {
       var v = kind === 'role' ? j.title : j.location;
-      if (v && q.toLowerCase().split(/\s+/).filter(String).every(function (w) { return v.toLowerCase().indexOf(w) >= 0; }) && !out.some(function (x) { return x.toLowerCase() === v.toLowerCase(); })) out.push(v);   // FIX: only suggestions that match what was typed
+      if (v && v.toLowerCase().indexOf(q.toLowerCase()) >= 0 && !out.some(function (x) { return x.toLowerCase() === v.toLowerCase(); })) out.push(v);   // FIX: only suggestions that match what was typed
     }); } catch (e) { Logger.log('Suggestion ' + p.name + ': ' + e.message); }
   });
-  out = out.slice(0, 30); c.put(ck, JSON.stringify(out), 600); return { ok: true, suggestions: out };
+  out = out.slice(0, 8); c.put(ck, JSON.stringify(out), 600); return { ok: true, suggestions: out };
 }
 
 /* ================= PAGE CMS ================= */
@@ -548,6 +589,62 @@ function adminJobProfilesDb_(auth) {
   return { ok: true, data: { profiles: rows, filters: rows.filter(function (x) { return x.kind === 'filter'; }), quickFill: rows.filter(function (x) { return x.kind === 'quickfill'; }) } };
 }
 function adminJobProfileDelete_(auth, id) { portalRequireAdmin_(auth); id = String(id || ''); if (!id) throw new Error('Missing profile id.'); jobDbReq_('delete', 'job_profiles?id=eq.' + encodeURIComponent(id), undefined, 'return=minimal'); return { ok: true, id: id }; }
+
+/* Admin edit/create of Jobs filters and Quick Fill records. apply='1' also pushes a 'filter' record to the live sender. */
+function adminJobProfileSave_(auth, raw, apply) {
+  portalRequireAdmin_(auth);
+  var row = cleanJobProfile_(raw), d = row.data || {};
+  if (row.kind === 'quickfill') {
+    var r = (d.recipients || [])[0];
+    if (!r || !r.address) throw new Error('A Quick Fill record needs one recipient.');
+  }
+  var applied = false;
+  if (row.kind === 'filter' && String(apply) === '1') { applyFilterToSender_(d); applied = true; }   // validate first: nothing is stored if invalid
+  var rows = jobDbReq_('post', 'job_profiles?on_conflict=id', [row], 'resolution=merge-duplicates,return=representation');
+  return { ok: true, profile: rows[0] || row, applied: applied };
+}
+function applyFilterToSender_(d) {
+  var times = Array.isArray(d.times) ? d.times : [];
+  if (!times.length || times.some(function (t) { return !/^([01]\d|2[0-3]):[0-5]\d$/.test(String(t)); })) throw new Error('Invalid reminder times.');
+  var days = String(d.days || '1'); if (!/^\d+$/.test(days) || Number(days) < 1 || Number(days) > 3650) throw new Error('Invalid posted-within days.');
+  var repeat = String(d.repeat || 'daily'); if (['daily', 'weekdays', 'custom'].indexOf(repeat) < 0) throw new Error('Invalid repeat.');
+  var tz = String(d.timezone || 'Asia/Kolkata'); Utilities.formatDate(new Date(), tz, 'HH:mm');
+  var rec = (Array.isArray(d.recipients) ? d.recipients : []).filter(function (r) {
+    if (!r || ['email', 'whatsapp', 'whatsapp_group'].indexOf(r.channel) < 0 || typeof r.address !== 'string' || !r.address.trim() || !Array.isArray(r.roles)) throw new Error('Invalid recipient.');
+    return true;
+  });
+  var u = { KW: (d.kw || []).join('|'), LOC: (d.loc || []).join('|'), JT: (d.types || []).join('|'), DAYS: days, HOUR: String(Number(times[0].split(':')[0])), REPEAT: repeat, TIMEZONE: tz,
+    ENABLED: d.enabled ? '1' : '0', TIMES_JSON: JSON.stringify(times), REPEAT_DAYS_JSON: JSON.stringify(d.repeatDays || []), RECIPIENTS_JSON: JSON.stringify(rec),
+    WORK_MODES_JSON: JSON.stringify(d.workModes || []), SHIFTS_JSON: JSON.stringify(d.shifts || []) };
+  Object.keys(u).forEach(function (k) { if (/_JSON$/.test(k) && Utilities.newBlob(u[k]).getBytes().length > 8500) throw new Error(k + ' is too large for Script properties.'); });
+  var lock = LockService.getScriptLock(); lock.waitLock(10000);
+  try { P.setProperties(u); setOn(u.ENABLED === '1'); } finally { lock.releaseLock(); }
+}
+
+var SENDER_KEYS_ = { name: 'SENDER_NAME', replyTo: 'REPLY_TO', phone: 'CONTACT_PHONE', email: 'CONTACT_EMAIL', web: 'CONTACT_WEBSITE' };
+function adminSenderGet_(auth) {
+  portalRequireAdmin_(auth); var i = senderInfo_(), raw = {};
+  Object.keys(SENDER_KEYS_).forEach(function (k) { raw[k] = g(SENDER_KEYS_[k], ''); });
+  return { ok: true, data: raw, effective: { fromAccount: (function () { try { return Session.getEffectiveUser().getEmail(); } catch (e) { return ''; } })(), name: i.name, replyTo: i.replyTo, phone: i.phone, email: i.email, web: i.web } };
+}
+function adminSenderSave_(auth, raw) {
+  portalRequireAdmin_(auth); var c = typeof raw === 'object' ? raw : JSON.parse(String(raw || '{}')), set = {}, del = [];
+  var mail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  Object.keys(SENDER_KEYS_).forEach(function (k) {
+    var v = String(c[k] == null ? '' : c[k]).trim().slice(0, 120);
+    if ((k === 'replyTo' || k === 'email') && v && !mail.test(v)) throw new Error('Enter a valid email address for ' + (k === 'replyTo' ? 'Reply-To' : 'Contact email') + '.');
+    if (k === 'phone' && v && !/^[+0-9()\-\s]{6,25}$/.test(v)) throw new Error('Enter a valid phone number, e.g. +91 98765 43210.');
+    if (k === 'web' && v && !/^https?:\/\//i.test(v)) throw new Error('Website must start with http:// or https://');
+    if (v) set[SENDER_KEYS_[k]] = v; else del.push(SENDER_KEYS_[k]);
+  });
+  P.setProperties(set); del.forEach(function (k) { P.deleteProperty(k); });
+  return adminSenderGet_(auth);
+}
+function adminSenderTest_(auth) {
+  var u = portalRequireAdmin_(auth); if (!u.email) throw new Error('Your admin account has no email address.');
+  sendMail_(u.email, 'CareerPulse sender test', '<h3>Sender test</h3><p>This is how reminder emails will look. Try replying to this message — the reply should reach the Reply-To address you set.</p>', 'Sender test. Try replying to this message — it should reach the Reply-To address you set.');
+  return { ok: true, sentTo: u.email };
+}
 
 /* Housekeeping: run occasionally (or add a weekly trigger) to drop state of deleted Family reminders. */
 function cleanupFamilyState() {

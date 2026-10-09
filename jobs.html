@@ -38,12 +38,50 @@ button.m{background:var(--mint);color:#06231f}.btns{display:flex;gap:10px;flex-w
 .historyList{display:grid;gap:8px;max-height:400px;overflow:auto;margin-top:12px}.historyEntry{display:block;text-align:left;width:100%;padding:9px 12px;background:var(--field);border:1px solid var(--border);color:var(--ink)}.historyEntry strong,.historyEntry small{display:block;overflow-wrap:anywhere}.historyEntry small{font-weight:400;font-size:12px;color:var(--muted);margin-top:3px}.historyEntry:hover{border-color:var(--mint)}
 .quickFillControls{display:flex;align-items:center;gap:8px;min-width:0}.quickFillControls select{width:300px;max-width:42vw;margin:0;padding:6px 8px;font-size:12px}.quickFillControls button{white-space:nowrap}@media(max-width:620px){.appHeading{flex-wrap:wrap}.quickFillControls{width:100%}.quickFillControls select{flex:1;max-width:none;min-width:0}}
 .quickFillMenu{position:relative;min-width:200px;margin:0}.quickFillMenu summary{font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:var(--field);cursor:pointer;list-style:none}.quickFillEntries{position:absolute;right:0;top:100%;width:min(580px,88vw);max-height:330px;overflow:auto;z-index:10;background:var(--card);padding:8px;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 20px #0003}.quickFillEntry{display:flex;align-items:center;gap:6px;margin:4px 0}.quickFillControls .quickFillLoad{white-space:normal;flex:1;text-align:left;color:var(--ink);border-color:var(--line);padding:7px}.quickFillEntry>button:last-child{color:var(--amber);border-color:var(--amber);flex:none}
-#checkDropdown .dropdownPanel{position:static;box-shadow:none;margin-top:6px;min-width:0}#searchCheckRows .crow{padding:6px 0;border-bottom:1px solid var(--line)}#searchCheckRows .crow:last-child{border-bottom:0}#searchCheckRows label{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:500;white-space:normal}#searchCheckRows .hint{margin:2px 0 0 20px;font-size:12px}.jump{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;white-space:nowrap;padding:8px 0;margin:0 0 12px;background:var(--bg);-webkit-overflow-scrolling:touch}.jump button{flex:0 0 auto;padding:5px 11px;font-size:12px;border-radius:16px}.jump button[aria-current="true"]{background:var(--mint);color:var(--bg)}[id^="sec"],#detailsPanel{scroll-margin-top:60px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;flex:none;filter:drop-shadow(0 4px 10px #65e2ce40)}h1 .g{background:linear-gradient(90deg,var(--mint),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}.tag{font-size:13px;color:var(--muted);letter-spacing:.2px;margin-top:-2px}.appHeading{padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:10px}@media(max-width:480px){h1{font-size:28px}.logo{width:40px;height:40px}}#msg{top:64px;z-index:50}</style></head><body data-cms-page="jobs"><div id="adminCms-top"></div>
+#checkDropdown .dropdownPanel{position:static;box-shadow:none;margin-top:6px;min-width:0}#searchCheckRows .crow{padding:6px 0;border-bottom:1px solid var(--line)}#searchCheckRows .crow:last-child{border-bottom:0}#searchCheckRows label{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:500;white-space:normal}#searchCheckRows .hint{margin:2px 0 0 20px;font-size:12px}.jump{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;white-space:nowrap;padding:8px 0;margin:0 0 12px;background:var(--bg);-webkit-overflow-scrolling:touch}.jump button{flex:0 0 auto;padding:5px 11px;font-size:12px;border-radius:16px}.jump button[aria-current="true"]{background:var(--mint);color:var(--bg)}[id^="sec"],#detailsPanel{scroll-margin-top:60px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;flex:none;filter:drop-shadow(0 4px 10px #65e2ce40)}h1 .g{background:linear-gradient(90deg,var(--mint),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}.tag{font-size:13px;color:var(--muted);letter-spacing:.2px;margin-top:-2px}.appHeading{padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:10px}@media(max-width:480px){h1{font-size:28px}.logo{width:40px;height:40px}}#msg{top:64px;z-index:50}</style><style id="uiPolish">
+/* ===== Simple & friendly layer ===== */
+body{background:radial-gradient(1200px 500px at 50% -120px,color-mix(in srgb,var(--mint) 22%,transparent),transparent),var(--bg);font-size:16px}
+main{max-width:760px}
+h1{font-size:30px}
+.appHeading{align-items:center;gap:12px;flex-wrap:wrap}
+.hero{margin:6px 0 18px;padding:18px 20px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(135deg,color-mix(in srgb,var(--mint) 16%,var(--card)),var(--card))}
+.hero h2{font-size:20px;margin:0 0 4px}.hero p{margin:0;color:var(--muted);font-size:14px}
+.sumChips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.sumChips span{padding:5px 12px;border-radius:999px;background:var(--field);border:1px solid var(--border);font-size:13px}
+.sumChips .on{background:var(--mint);color:#06231f;border-color:var(--mint);font-weight:700}.sumChips .off{color:var(--amber);border-color:var(--amber)}
+.sumChips .none{color:var(--muted);font-style:italic}
+.quickFillControls{width:100%;display:flex;flex-wrap:wrap;gap:8px;align-items:center}#dbSaveStatus{flex-basis:100%;margin:0!important;order:-1}
+.steps{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.steps a{flex:1;min-width:140px;text-decoration:none;color:var(--ink);font-size:13px;padding:8px 10px;border-radius:12px;background:var(--field);border:1px solid var(--border)}
+.steps b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--mint);color:#06231f;margin-right:6px;font-size:12px}
+.card{border-radius:18px;padding:22px 22px 18px;box-shadow:0 6px 22px #0002}
+#settingsPanel{counter-reset:step}
+.card[data-admin-target=secLook],.card[data-admin-target=secReminder],.card[data-admin-target=secRecipients]{counter-increment:step}
+.card[data-admin-target=secLook]>h2::before,.card[data-admin-target=secReminder]>h2::before,.card[data-admin-target=secRecipients]>h2::before{content:counter(step);display:inline-grid;place-items:center;width:30px;height:30px;margin-right:10px;border-radius:50%;background:var(--mint);color:#06231f;font-size:15px}
+h2{font-size:20px;display:flex;align-items:center}
+label{font-size:14px;color:var(--ink)}
+input,textarea,select{min-height:46px;border-radius:12px;font-size:16px}
+textarea{min-height:84px}
+button,.p a{min-height:42px;padding:9px 16px;border-radius:12px;font-size:14px}
+button.m{box-shadow:0 4px 14px color-mix(in srgb,var(--mint) 40%,transparent)}
+.ch label{padding:8px 14px;border-radius:999px;font-size:14px}.ch label:has(input:checked){background:color-mix(in srgb,var(--mint) 22%,transparent);border-color:var(--mint)}
+.saveBar{border-radius:16px;backdrop-filter:blur(8px);background:color-mix(in srgb,var(--card) 92%,transparent);border-color:var(--mint)}
+.saveBar .btns button{flex:1;min-width:140px}.saveBar button.m{flex:2;min-height:48px;font-size:16px}
+/* advanced sections fold away until needed */
+.adv>h2{cursor:pointer;justify-content:space-between;margin:0}.adv>h2::after{content:"Show ▾";font-size:12px;font-weight:600;color:var(--mint)}
+.adv.open>h2::after{content:"Hide ▴"}.adv.open>h2{margin-bottom:12px}.adv:not(.open)>*:not(h2){display:none!important}
+.adv>h2:focus-visible{outline:2px solid var(--mint)}
+/* navigation: one swipeable row of pills */
+#jumpNav{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:6px;flex-wrap:nowrap;scrollbar-width:none}#jumpNav::-webkit-scrollbar{display:none}#jumpNav button{white-space:nowrap;border-radius:999px}
+.tabs button{flex:1}
+@media(max-width:620px){body{padding:14px 12px 90px}.card{padding:18px 16px}h1{font-size:26px}.steps a{min-width:100%}}
+</style>
+</head><body data-cms-page="jobs"><div id="adminCms-top"></div>
 <div class="toolbar"><button id="theme" type="button" aria-label="Switch color theme">Light mode</button></div>
 <div id="msg" role="status"></div>
-<div id="lock" class="card"><h2 id="lt">Enter PIN</h2><input id="pin" type="password" inputmode="numeric" autocomplete="off" aria-label="PIN"><div class="btns"><button class="m" id="go">Unlock</button></div><p id="msg0" class="hint" style="color:var(--amber)"></p></div>
+<div id="lock" class="card"><h2 id="lt">Enter PIN</h2><input id="pin" type="password" inputmode="numeric" autocomplete="off" aria-label="PIN"><label id="codeWrap" hidden>Access code (once per device — same as “Secret token”)<input id="code0" type="password" autocomplete="off"></label><div class="btns"><button class="m" id="go">Unlock</button></div><p id="msg0" class="hint" style="color:var(--amber)"></p></div>
 <main id="app" hidden>
-<div class="appHeading"><div class="brand"><svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--mint)"/><stop offset="1" style="stop-color:var(--amber)"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="12" fill="var(--card)" stroke="var(--border)"/><circle cx="24" cy="24" r="14" fill="none" stroke="url(#lg)" stroke-width="2" opacity=".45"/><circle cx="24" cy="24" r="8" fill="none" stroke="url(#lg)" stroke-width="1.5" opacity=".3"/><path d="M7 25h8l4-9 6 17 4-8h12" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h1>Career<span class="g">Pulse</span></h1><div class="tag">Daily job alerts, tailored to you</div></div></div><div class="quickFillControls"><span id="dbSaveStatus" class="hint" style="margin-right:8px"></span><button id="quickFillToggle" type="button" aria-label="Open saved reminder dropdown">Quick fill</button><details id="quickFillMenu" class="quickFillMenu"><summary id="quickFillSummary">Select saved reminder ▾</summary><div id="quickFillEntries" class="quickFillEntries"></div></details></div></div><p class="s">Everything below is yours to set. Nothing is preset.</p>
+<div class="appHeading"><div class="brand"><svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--mint)"/><stop offset="1" style="stop-color:var(--amber)"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="12" fill="var(--card)" stroke="var(--border)"/><circle cx="24" cy="24" r="14" fill="none" stroke="url(#lg)" stroke-width="2" opacity=".45"/><circle cx="24" cy="24" r="8" fill="none" stroke="url(#lg)" stroke-width="1.5" opacity=".3"/><path d="M7 25h8l4-9 6 17 4-8h12" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h1>Career<span class="g">Pulse</span></h1><div class="tag">Job alerts that find you</div></div></div><div class="quickFillControls"><span id="dbSaveStatus" class="hint" style="margin-right:8px"></span><button id="quickFillToggle" type="button" aria-label="Open saved reminder dropdown">Quick fill</button><details id="quickFillMenu" class="quickFillMenu"><summary id="quickFillSummary">Select saved reminder ▾</summary><div id="quickFillEntries" class="quickFillEntries"></div></details></div></div><div class="hero card" id="summaryCard"><h2>Your job alert</h2><p>Fill the 3 steps below, then press <b>Save &amp; sync</b>. That’s all.</p><div class="sumChips" id="sumChips"></div>
+<div class="steps"><a href="#secLook"><b>1</b>What jobs?</a><a href="#secReminder"><b>2</b>When?</a><a href="#secRecipients"><b>3</b>Who gets it?</a></div></div>
 <div class="tabs" role="tablist" aria-label="CareerPulse tabs"><button id="settingsTab" role="tab" aria-selected="true" aria-controls="settingsPanel">Settings &amp; search</button><button id="detailsTab" role="tab" aria-selected="false" aria-controls="detailsPanel">Reminder details</button></div><nav id="jumpNav" class="jump" aria-label="Jump to section"><button type="button" data-t="secSwitches">Switches</button><button type="button" data-t="secLook">Filters</button><button type="button" data-t="secReminder">Reminders</button><button type="button" data-t="secRecipients">Recipients</button><button type="button" data-t="secSearch">Search</button><button type="button" data-t="secResults">Results</button><button type="button" data-t="secConsult">Consultancies</button><button type="button" data-t="secConn">Connection</button><button type="button" data-t="detailsPanel">Saved details</button></nav><section id="settingsPanel" role="tabpanel" aria-labelledby="settingsTab"><div class="card" data-admin-target="secSwitches"><h2 id="secSwitches">Switches</h2>
 <div class="sw"><div>Daily reminders (email + WhatsApp)<small id="st">Not connected</small></div><span class="tg"><input type="checkbox" id="on" aria-label="Daily reminders"><i></i></span><button id="reminderToggle" type="button">Enable reminders</button></div>
 <div class="sw"><div>Hidden shortcut on portfolio<small id="scs">Tap the logo 5 times on this device</small></div><span class="tg"><input type="checkbox" id="sc" aria-label="Portfolio shortcut"><i></i></span></div></div>
@@ -69,8 +107,8 @@ button.m{background:var(--mint);color:#06231f}.btns{display:flex;gap:10px;flex-w
 <div class="btns"><button id="cadd">Add portal</button></div></div>
 <div class="card" data-admin-target="secResults"><h2 id="secResults">Check search results</h2><p class="hint">Search links alone do not confirm jobs were found. Check the connected search service for results from each selected portal.</p><label>Job portal details<select id="portalInfo" aria-controls="portalInfoBox"></select></label><div id="portalInfoBox" class="card" style="margin:8px 0 14px" role="region" aria-live="polite"></div><div class="btns"><button id="checkResults" type="button">Check selected sites</button></div><p id="searchCheckStatus" class="hint" role="status">Not checked yet.</p><details id="checkDropdown" class="multiDropdown" open><summary id="checkSummary">Portals: all selected ▾</summary><div class="dropdownPanel"><label class="selectAll"><input id="allCheckPortals" type="checkbox" checked>Select all</label><div id="searchCheckRows"></div></div></details></div>
 <div class="card" data-admin-target="secConsult"><h2 id="secConsult">Find job consultancies</h2><p class="hint">Search for recruitment consultancies and open their contact details (phone, address, website, email) on Google Maps, Google, Justdial and LinkedIn.</p><div class="row"><label>Location<textarea id="csLoc" rows="3" placeholder="Select multiple locations; Tab selects, Enter adds a line"></textarea></label><label>Specialisation (optional)<textarea id="csField" rows="3" placeholder="Select multiple specialisations; Tab selects, Enter adds a line"></textarea></label></div><p class="hint">Add multiple locations and specialisations, one per line. Tab selects a suggestion; Enter starts a new line. Duplicate entries are removed automatically.</p><datalist id="csFieldList"><option value="IT / Software"><option value="Non-IT"><option value="Healthcare"><option value="BPO / Call centre"><option value="Banking and Finance"><option value="Engineering"><option value="Freshers"><option value="Executive search"><option value="Overseas / Gulf"></datalist><div class="btns"><button id="csSearch" type="button" class="m">Search consultancies</button></div><p id="csStatus" class="hint" role="status">Enter a location, then click Search consultancies.</p><div id="csLinks" class="p"></div><p class="hint">Genuine consultancies do not ask job seekers for upfront registration or placement fees. Verify any consultancy before sharing documents or paying anything.</p></div>
-<div class="card" data-admin-target="secConn"><h2 id="secConn">Reminder connection</h2><label>Apps Script web app URL<input id="url" placeholder="https://script.google.com/macros/s/AKfycbyUZI25EXv8OITTDkAW5mNbPQaeUBOCB1fbC3s0xoIFyGxvP7it2BDysu7e_CMnd84C/exec"></label><label>Secret token<input id="tok" type="password" autocomplete="off"></label>
-<div class="btns"><button id="conn" class="m">Connect &amp; load settings</button><button id="test">Send test now</button><button id="lk">Change PIN</button></div></div>
+<div class="card" data-admin-target="secConn"><h2 id="secConn">Reminder connection</h2><label>Apps Script web app URL<input id="url" placeholder="https://script.google.com/macros/s/AKfycbwo9grCwLGuzA9B4Q5xKA85rn3H539fShT-eOfsigahLYg_erPkZcgBE6Uv54alh_iy/exec"></label><label>Secret token<input id="tok" type="password" autocomplete="off"></label>
+<div class="btns"><button id="conn" class="m">Connect &amp; load settings</button><button id="test">Send test now</button><button id="lk">Change PIN</button><button id="devLink">Copy device link</button></div><p class="hint">“Copy device link” makes a private link that sets up another phone or computer in one tap (URL + access code). Only send it to yourself.</p></div>
 </section><section id="detailsPanel" role="tabpanel" aria-labelledby="detailsTab" hidden><div class="card"><h2>Saved reminder details</h2><p id="detailStatus" class="hint"></p><div class="row"><label>Recipient type<select id="detailChannel"><option value="email">Email</option><option value="whatsapp">Mobile</option><option value="whatsapp_group">WhatsApp group</option></select></label><label>Select recipient<select id="detailRecipient"></select></label></div><div class="tablewrap"><table><thead><tr><th>Channel</th><th>Recipient</th><th>Jobs / status</th><th>Reminder times</th><th>Repeat / time zone</th><th>Action</th></tr></thead><tbody id="detailRows"></tbody></table></div><p id="detailSearch" class="hint"></p><div class="btns"><button id="editDetails">Edit settings</button></div></div></section><dialog id="entryDialog" class="card" style="color:var(--ink);max-width:650px;width:90vw"><h2>Reminder entry details</h2><div id="entryInfo"></div><div class="btns"><button id="entryClose">Close</button></div></dialog></main>
 <script>
 var $=function(i){return document.getElementById(i)},L=localStorage,enc=encodeURIComponent,tt;
@@ -141,7 +179,7 @@ function reminderKey(r){return r.channel+':'+String(r.address||'').trim().toLowe
 function recipientSnapshot(snapshot,r){var copy=Object.assign(JSON.parse(JSON.stringify(D)),JSON.parse(JSON.stringify(snapshot)));copy.recipients=[JSON.parse(JSON.stringify(r))];copy.email=r.channel==='email'?r.address:'';copy.wa=r.channel==='whatsapp'?r.address:'';copy.groups=r.channel==='whatsapp_group'?[r.address]:[];return copy}
 function quickFillHistory(){var history=[];try{var raw=JSON.parse(L.getItem('jr_quickfill_history')||'null');if(Array.isArray(raw))history=raw;else{var old=JSON.parse(L.getItem('jr_quickfill')||'null');if(old)history=[{snapshot:old,savedAt:null}]}}catch(e){}var byRecipient=new Map();history.forEach(function(entry){if(!entry||!entry.snapshot)return;var recipients=entry.snapshot.recipients||[];if(!recipients.length){recipients=emails(entry.snapshot.email||'').map(function(address){return {channel:'email',address:address,enabled:true,mode:'all',roles:[]}}).concat(mobiles(entry.snapshot.wa||'').map(function(address){return {channel:'whatsapp',address:address,enabled:true,mode:'all',roles:[]}}))}recipients.forEach(function(r){if(!r.address)return;var key=reminderKey(r),previous=byRecipient.get(key);if(!previous||String(entry.savedAt||'')>=String(previous.savedAt||''))byRecipient.set(key,{id:key,savedAt:entry.savedAt||null,snapshot:recipientSnapshot(entry.snapshot,r)})})});var result=Array.from(byRecipient.values());L.setItem('jr_quickfill_history',JSON.stringify(result));return result}
 
-const DEFAULT_API='https://script.google.com/macros/s/AKfycbyUZI25EXv8OITTDkAW5mNbPQaeUBOCB1fbC3s0xoIFyGxvP7it2BDysu7e_CMnd84C/exec';
+const DEFAULT_API='https://script.google.com/macros/s/AKfycbwo9grCwLGuzA9B4Q5xKA85rn3H539fShT-eOfsigahLYg_erPkZcgBE6Uv54alh_iy/exec';
 function jobDbApi(){var u=($('url')&&$('url').value.trim())||L.getItem('jr_url')||'';return /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(u)?u:DEFAULT_API}
 let dbProfiles=[];
 function jobDbToken(){return ($('tok')&&$('tok').value)||L.getItem('jr_tok')||''}
@@ -152,16 +190,26 @@ async function jobDbGet(action,extra){
 async function jobDbSave(profile){
   let r=await fetch(jobDbApi(),{method:'POST',body:new URLSearchParams({action:'job_profile_save',token:jobDbToken(),profile:JSON.stringify(profile)})}),x=await r.json();if(!x.ok)throw Error(x.error||'Database save failed');return x;
 }
+function dbStatus(t){if($('dbSaveStatus'))$('dbSaveStatus').textContent=t}
+function delList(){try{var a=JSON.parse(L.getItem('jr_qf_deleted')||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function setDelList(a){L.setItem('jr_qf_deleted',JSON.stringify(a.slice(-200)))}
 async function loadDbProfiles(){
-  if(!jobDbToken())return;
+  if(!jobDbToken()){dbStatus('Not synced — enter the access code in Reminder connection');return}
   try{
     let x=await jobDbGet('job_profiles_list');dbProfiles=x.profiles||[];
-    let qf=dbProfiles.filter(x=>x.kind==='quickfill').map(x=>({id:x.id,savedAt:x.updated_at,snapshot:x.data}));
-    if(qf.length)L.setItem('jr_quickfill_history',JSON.stringify(qf));
-    let f=dbProfiles.find(x=>x.kind==='filter');
+    let gone=delList(),local=quickFillHistory().filter(function(e){return gone.indexOf(e.id)<0});
+    let remote=dbProfiles.filter(function(q){return q.kind==='quickfill'&&gone.indexOf(q.id)<0}).map(function(q){return{id:q.id,savedAt:q.updated_at,snapshot:q.data}});
+    // a delete that failed earlier is retried here, so it never comes back
+    gone.forEach(function(id){if(dbProfiles.some(function(q){return q.id===id}))deleteQuickFillFromDb(id)});
+    let t=function(e){return e&&e.savedAt?Date.parse(e.savedAt)||0:0},map=new Map(),push=[];
+    remote.forEach(function(e){map.set(e.id,e)});
+    local.forEach(function(e){var r=map.get(e.id);if(!r){map.set(e.id,e);push.push(e)}else if(t(e)>t(r)+1000){map.set(e.id,e);push.push(e)}});   // newer local copy wins and is uploaded
+    L.setItem('jr_quickfill_history',JSON.stringify(Array.from(map.values())));
+    let f=dbProfiles.find(function(q){return q.kind==='filter'});
     if(f&&f.data&&Date.parse(f.updated_at)>Number(L.getItem('jr_state_ts')||0)){Object.assign(st,f.data);persist();form();lists();toggles()}
-    quickFillView();detailsView();if($('dbSaveStatus'))$('dbSaveStatus').textContent='Database connected';
-  }catch(e){if($('dbSaveStatus'))$('dbSaveStatus').textContent='Local mode — '+e.message;}
+    quickFillView();detailsView();dbStatus('Database connected');
+    for(const e of push){try{await jobDbSave({id:e.id,kind:'quickfill',name:historyRecipientLabel(e.snapshot),data:e.snapshot})}catch(err){dbStatus('Some saved reminders could not be uploaded: '+err.message)}}
+  }catch(e){dbStatus('Local mode — '+e.message)}
 }
 async function saveFiltersToDb(){
   if(!jobDbToken())return;
@@ -169,15 +217,17 @@ async function saveFiltersToDb(){
   catch(e){if($('dbSaveStatus'))$('dbSaveStatus').textContent='Saved locally — database: '+e.message;}
 }
 async function saveQuickFillToDb(){
-  if(!jobDbToken())return;
-  let history=quickFillHistory().filter(function(en){return st.recipients.some(function(r){return reminderKey(r)===en.id})});
-  for(const entry of history){try{await jobDbSave({id:entry.id,kind:'quickfill',name:historyRecipientLabel(entry.snapshot),data:entry.snapshot});}catch(e){}}
+  if(!jobDbToken()){dbStatus('Saved on this device only — add the access code to sync other devices');return}
+  var bad=0,last='';
+  for(const entry of quickFillHistory()){try{await jobDbSave({id:entry.id,kind:'quickfill',name:historyRecipientLabel(entry.snapshot),data:entry.snapshot})}catch(e){bad++;last=e.message}}
+  dbStatus(bad?bad+' reminder(s) not synced: '+last:'Saved reminders synced to database');
 }
 async function deleteQuickFillFromDb(id){
+  var l=delList();if(l.indexOf(id)<0){l.push(id);setDelList(l)}   // remember the delete until the database confirms it
   if(!jobDbToken())return;
-  try{await jobDbGet('job_profile_delete',{id:id});}catch(e){}
+  try{await jobDbGet('job_profile_delete',{id:id});setDelList(delList().filter(function(x){return x!==id}))}catch(e){dbStatus('Delete will retry: '+e.message)}
 }
-function saveQuickFill(){var history=quickFillHistory();st.recipients.forEach(function(r){var key=reminderKey(r),entry={id:key,savedAt:new Date().toISOString(),snapshot:recipientSnapshot(st,r)},index=history.findIndex(function(item){return item.id===key});if(index<0)history.push(entry);else history[index]=entry});L.setItem('jr_quickfill_history',JSON.stringify(history));L.setItem('jr_quickfill',JSON.stringify(st));quickFillView();detailsView();saveQuickFillToDb();saveFiltersToDb()}
+function saveQuickFill(){var history=quickFillHistory();st.recipients.forEach(function(r){var key=reminderKey(r),entry={id:key,savedAt:new Date().toISOString(),snapshot:recipientSnapshot(st,r)},index=history.findIndex(function(item){return item.id===key});if(index<0)history.push(entry);else history[index]=entry});L.setItem('jr_quickfill_history',JSON.stringify(history));L.setItem('jr_quickfill',JSON.stringify(st));setDelList(delList().filter(function(id){return !history.some(function(h){return h.id===id})}));quickFillView();detailsView();saveQuickFillToDb();saveFiltersToDb()}
 function historyRecipientLabel(snapshot){return (snapshot.recipients||[]).map(function(r){var name=(r.firstName||'').trim();if(!name&&r.channel==='email')name=r.address.split('@')[0];return (name?name+' · ':'')+r.address}).join('; ')||snapshot.email||snapshot.wa||'Saved reminder'}
 function loadQuickFillEntry(id){var entry=quickFillHistory().find(function(record){return record.id===id});if(!entry){say('Saved reminder was not found.');return}st=Object.assign(JSON.parse(JSON.stringify(D)),JSON.parse(JSON.stringify(entry.snapshot)));st.scheduleSynced=false;if(st.recipients.length){recipientChannel=st.recipients[0].channel;recipientAddress=st.recipients[0].address}persist();form();lists();toggles();detailsView();tab(false);$('quickFillMenu').open=false;$('kw').scrollIntoView({behavior:'smooth',block:'center'});say('Reminder loaded. Edit any fields, then Save & sync to update this recipient’s saved reminder.')}
 function deleteQuickFillEntry(id){var history=quickFillHistory().filter(function(entry){return entry.id!==id});L.setItem('jr_quickfill_history',JSON.stringify(history));if(history.length)L.setItem('jr_quickfill',JSON.stringify(history[history.length-1].snapshot));else L.removeItem('jr_quickfill');quickFillView();detailsView();deleteQuickFillFromDb(id);say('Saved history entry deleted from this device and database. Delivery settings are unchanged.')}
@@ -186,9 +236,11 @@ function blankReminderForm(){var custom=st.custom,off=st.off,keepEnabled=st.enab
 function persist(){L.setItem('jr_state',JSON.stringify(st));L.setItem('jr_state_ts',String(Date.now()))}
 function say(t){var m=$('msg');m.textContent=t;m.style.display='block';clearTimeout(tt);tt=setTimeout(function(){m.style.display='none'},6500)}
 async function h(s){try{var b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('jr'+s));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')}catch(e){var n=5381;for(var i=0;i<s.length;i++)n=(n*33^s.charCodeAt(i))>>>0;return 'x'+n}}
-var stored=L.getItem('jr_pin');$('lt').textContent=stored?'Enter PIN':'Create a PIN';$('go').textContent=stored?'Unlock':'Save PIN';
-$('go').onclick=async function(){var p=$('pin').value;if(p.length<4){$('msg0').textContent='Use at least 4 digits.';return}var x=await h(p);if(!stored){L.setItem('jr_pin',x);start()}else if(x===stored)start();else $('msg0').textContent='Wrong PIN.'};
+(function(){try{var q=new URLSearchParams(location.hash.slice(1));if(q.get('code')){L.setItem('jr_tok',q.get('code'));if(q.get('url'))L.setItem('jr_url',q.get('url'));history.replaceState(null,'',location.pathname+location.search)}}catch(e){}})();
+var stored=L.getItem('jr_pin');$('codeWrap').hidden=!!L.getItem('jr_tok');$('lt').textContent=stored?'Enter PIN':'Create a PIN';$('go').textContent=stored?'Unlock':'Save PIN';
+$('go').onclick=async function(){var p=$('pin').value;if(p.length<4){$('msg0').textContent='Use at least 4 digits.';return}var cc=$('code0').value.trim();if(cc)L.setItem('jr_tok',cc);var x=await h(p);if(!stored){L.setItem('jr_pin',x);start()}else if(x===stored)start();else $('msg0').textContent='Wrong PIN.'};
 $('pin').onkeydown=function(e){if(e.key==='Enter')$('go').click()};
+$('devLink').onclick=function(){var t=jobDbToken();if(!t){say('Enter the secret token first.');return}var link=location.origin+location.pathname+'#code='+encodeURIComponent(t)+'&url='+encodeURIComponent(jobDbApi());(navigator.clipboard?navigator.clipboard.writeText(link):Promise.reject()).then(function(){say('Device link copied. Open it on the other device, then create a PIN there.')},function(){prompt('Copy this link:',link)})};
 $('lk').onclick=function(){L.removeItem('jr_pin');location.reload()};
 function lines(i){return uniqueValues($(i).value.split(/[\n,;]+/))}
 function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
@@ -325,5 +377,17 @@ window.careerPulsePublicSearchResults=async function(query){
  const r=await fetch(u,{cache:'no-store'}),x=await r.json();
  if(x&&x.error)throw new Error(x.error); return x;
 };
+</script>
+<script>
+function summaryView(){try{var b=document.getElementById('sumChips');if(!b)return;b.replaceChildren();function c(t,cl){var e=document.createElement('span');e.textContent=t;if(cl)e.className=cl;b.appendChild(e)}
+var on=document.getElementById('on')&&document.getElementById('on').checked;c(on?'● Reminders ON':'○ Reminders OFF',on?'on':'off');
+function lst(a,empty,icon){a=(a||[]).filter(Boolean);c(a.length?icon+' '+a.slice(0,3).join(', ')+(a.length>3?' +'+(a.length-3):''):empty,a.length?'':'none')}
+lst(st.kw,'No job roles yet','💼');lst(st.loc,'Any location','📍');lst(st.times,'No time set','⏰');var n=(st.recipients||[]).length;c(n?'👤 '+n+' recipient'+(n>1?'s':''):'No recipient yet',n?'':'none')}catch(e){}}
+(function(){var o=persist;persist=function(){o.apply(this,arguments);summaryView()};
+['secSearch','secResults','secConsult','secConn'].forEach(function(id){var h=document.getElementById(id);if(!h)return;var card=h.closest('.card');card.classList.add('adv');h.tabIndex=0;h.setAttribute('role','button');
+function t(){card.classList.toggle('open');h.setAttribute('aria-expanded',card.classList.contains('open'))}h.onclick=t;h.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}}});
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('#jumpNav [data-t]');if(!a)return;var h=document.getElementById(a.dataset.t);var c=h&&h.closest('.adv');if(c)c.classList.add('open')},true);
+var sc=document.getElementById('summaryCard');document.getElementById('on')&&document.getElementById('on').addEventListener('change',summaryView);
+var ap=document.getElementById('app');new MutationObserver(function(){if(!ap.hidden){summaryView();if(!(localStorage.getItem('jr_tok')||'')){var c=document.getElementById('secConn');c&&c.closest('.card').classList.add('open')}}}).observe(ap,{attributes:true,attributeFilter:['hidden']})})();
 </script>
 </body></html>

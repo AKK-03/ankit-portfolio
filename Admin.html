@@ -1,41 +1,66 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CareerPulse Admin</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f3f7fa;color:#17323e;font:15px system-ui,-apple-system,Segoe UI,sans-serif}.wrap{max-width:1120px;margin:auto;padding:20px}.hero{padding:28px;border-radius:22px;background:linear-gradient(135deg,#087c6d,#155d75);color:#fff}.hero h1{margin:0 0 8px}.card{background:#fff;border-radius:17px;padding:20px;margin-top:16px;box-shadow:0 8px 28px #17323e12}.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center}.dashboard{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.dashCard{border:1px solid #dce7eb;background:#fff;color:#17323e;text-align:left;padding:18px;border-radius:16px;min-height:128px;cursor:pointer}.dashCard:hover{box-shadow:0 8px 22px #17323e18;transform:translateY(-1px)}.dashCard b{display:block;font-size:17px;margin:8px 0}.icon{font-size:25px}.small{font-size:12px;color:#607782}.statusGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.status{padding:13px;border:1px solid #e0e9ec;border-radius:12px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;background:#999}.green{background:#15966f}.red{background:#c94a4a}.yellow{background:#d49a22}.view{display:none}.view.active{display:block}.back{background:#526b76}.primary,button{border:0;border-radius:10px;padding:10px 14px;background:#087c6d;color:white;font-weight:700;cursor:pointer;margin:3px}.secondary{background:#526b76}.danger{background:#a63333}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,textarea,select{width:100%;padding:10px;border:1px solid #bdd0d7;border-radius:9px;margin:5px 0 10px}.item,.editor{border:1px solid #dce7eb;border-radius:12px;padding:13px;margin:10px 0}.msg{padding:11px;border-radius:10px;background:#eaf3fb;margin:10px 0;white-space:pre-wrap}.ok{background:#e8f7ef;color:#176340}.bad{background:#fdecec;color:#8b2828}.pick{width:auto}.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.badge{font-size:11px;padding:4px 8px;background:#e6f0f3;border-radius:99px}.advanced{display:none}.advanced.show{display:block}.editorBody{display:none}.editor.open .editorBody{display:block}.preview{border:2px dashed #b9ccd3;border-radius:13px;padding:15px;margin-top:12px;background:#fbfdfe}.preview section{padding:12px;border-bottom:1px solid #e3ebee}.preview section:last-child{border:0}@media(max-width:850px){.dashboard{grid-template-columns:1fr 1fr}.statusGrid{grid-template-columns:1fr 1fr}}@media(max-width:600px){.dashboard,.statusGrid,.grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}}
-
-.panel{border:1px solid #dce7eb;border-radius:16px;padding:18px;margin:14px 0;background:linear-gradient(180deg,#fff,#f8fbfc)}
-.panelHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}.panelHead h3{margin:0}
-.pill{font-size:12px;font-weight:700;padding:5px 11px;border-radius:99px}.pill.on{background:#e3f6ee;color:#0b7a55}.pill.off{background:#fdecec;color:#a63333}
-.lbl{font-size:12px;font-weight:700;color:#607782;text-transform:uppercase;letter-spacing:.04em;margin:12px 0 6px}
-.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{font-size:12.5px;padding:5px 11px;border-radius:99px;background:#e2f3f0;color:#0a5f55;border:1px solid #c7e6e0}
-.chip.loc{background:#e8eef9;color:#2b4a85;border-color:#d1dcf2}.chip.sum{background:#f1f5f7;color:#3d5560;border-color:#e0e9ec;font-size:12px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-.stat{padding:12px;border:1px solid #e0e9ec;border-radius:12px;background:#fff}.stat span{display:block;margin-bottom:3px}.stat b{font-size:14px;word-break:break-word}.stat.bad{background:#fdf0f0;border-color:#f0caca}
-.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0 4px;padding:10px 12px;background:#f1f6f8;border-radius:12px;position:sticky;top:0;z-index:2}
-.toolbar input[type=search],.toolbar select{width:auto;margin:0;flex:1 1 150px;min-width:130px}.toolbar .danger{margin:0}.toolbar .danger:disabled{opacity:.4;cursor:not-allowed}
-.chk{display:flex;align-items:center;gap:7px;font-weight:600;cursor:pointer;margin:0}.chk input,.rec input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#087c6d;cursor:pointer}
-.rec{border:1px solid #dce7eb;border-radius:14px;padding:13px 14px;margin:10px 0;background:#fff;transition:.15s}.rec:hover{box-shadow:0 6px 18px #17323e14}.rec.picked{border-color:#087c6d;background:#f1faf8}
-.recTop{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.recInfo{flex:1 1 160px;min-width:0}.recInfo b{display:block;word-break:break-word}
-.recActions{display:flex;gap:4px}.sm{padding:6px 11px;font-size:12.5px;margin:0}
-.badge.qf{background:#fff1d6;color:#8a5a00}.badge.fl{background:#e1ecfb;color:#24508f}
-.rec .chips{margin-top:10px}.raw{white-space:pre-wrap;max-height:260px;overflow:auto;background:#f6f9fa;border:1px solid #e0e9ec;border-radius:10px;padding:10px;margin:10px 0 0;font-size:12px}
-@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
-</style></head><body><div class="wrap"><div class="hero"><h1>CareerPulse Admin</h1><div>Simple control center for Jobs, Family, job sources and page content.</div></div>
+</style><style id="uiPolish">
+/* ===== friendlier Admin layer ===== */
+:root{--a:#087c6d;--a2:#155d75;--bg:#f3f7fa;--card:#fff;--ink:#17323e;--mut:#607782;--line:#dce7eb}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1620;--card:#13222f;--ink:#e8eff4;--mut:#9db0bf;--line:#26394a}
+ .status,.dashCard,.item,.editor,.preview,.preview section{background:var(--card);color:var(--ink);border-color:var(--line)}
+ input,textarea,select{background:#0b1824;color:var(--ink);border-color:#3c5a6a}.msg{background:#16303f;color:var(--ink)}.ok{background:#12372b;color:#8be3b8}.bad{background:#3b1a1a;color:#ffb0b0}.badge{background:#1c3343;color:var(--ink)}.small{color:var(--mut)}}
+body{background:var(--bg);color:var(--ink);font-size:16px}
+.wrap{max-width:1000px;padding:16px}
+.hero{padding:24px 26px;border-radius:22px;background:linear-gradient(135deg,var(--a),var(--a2));box-shadow:0 12px 30px #087c6d40}.hero h1{font-size:28px}
+.card{background:var(--card);border-radius:20px;box-shadow:0 6px 24px #0000001a}
+h2{font-size:21px;margin:0 0 12px}
+#login{max-width:420px;margin:28px auto}#login button{width:100%;min-height:48px;font-size:16px}
+input,textarea,select{min-height:46px;border-radius:12px;font-size:16px;background:var(--card);color:var(--ink)}textarea{min-height:84px}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:3px solid #087c6d55;outline-offset:1px;border-color:var(--a)}
+button{min-height:42px;border-radius:12px;padding:10px 16px;transition:transform .12s,box-shadow .12s}button:hover{transform:translateY(-1px);box-shadow:0 6px 14px #0003}
+.back{display:none}
+.tabbar{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;padding:10px;margin:14px -4px 0;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);scrollbar-width:none}
+.tabbar::-webkit-scrollbar{display:none}
+.tabbar button{white-space:nowrap;background:var(--card);color:var(--ink);border:1px solid var(--line);margin:0;font-weight:600}
+.tabbar button.on{background:var(--a);color:#fff;border-color:var(--a)}
+.dashboard{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.dashCard{border-radius:18px;min-height:118px;background:var(--card);color:var(--ink)}.dashCard .icon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:color-mix(in srgb,var(--a) 14%,var(--card));font-size:24px}
+.statusGrid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.status{border-radius:14px;background:var(--card)}
+.item{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;border-radius:14px;background:var(--card)}.item>p{flex:1 1 100%;margin:0;color:var(--mut);font-size:13px}.item>b{flex:1 1 auto}
+.editor{border-radius:16px;border:2px solid color-mix(in srgb,var(--a) 40%,var(--line))}
+.editor label{display:block;font-weight:600;font-size:14px;margin-top:6px}
+.editor h3{margin-top:0}
+.filterBox{display:flex;gap:8px;margin:6px 0 10px}.filterBox input{margin:0}
+.toolsRow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}.toolsRow select{width:auto;flex:1;min-width:220px;margin:0}
+.pick{width:20px;height:20px;min-height:0;accent-color:var(--a)}
+.msg{border-radius:12px}.msg:empty{display:none}
+@media(max-width:600px){.topbar{flex-direction:row!important;align-items:center!important}.topbar button{white-space:nowrap}.wrap{padding:10px}.hero h1{font-size:23px}.card{padding:16px}}
+</style>
+</head><body><div class="wrap"><div class="hero"><h1>CareerPulse Admin</h1><div>Simple control center for Jobs, Family, job sources and page content.</div></div>
 <div id="login" class="card"><h2>Admin sign in</h2><label>Email<input id="email" type="email"></label><label>Password<input id="password" type="password"></label><button id="signin">Sign in</button><div id="loginMsg" class="msg">Use your Supabase Authentication admin account.</div></div>
 <div id="app" hidden>
 <div class="card topbar"><div><b id="who"></b><div class="small">Changes to page content use Draft → Preview → Publish.</div></div><button id="signout" class="secondary">Sign out</button></div>
+<nav class="tabbar" id="tabbar" aria-label="Admin sections"></nav>
 <div id="home" class="view active">
 <div class="card"><h2>System status</h2><div id="statusGrid" class="statusGrid"></div></div>
 <div class="card"><h2>Manage</h2><div class="dashboard">
 <button class="dashCard" data-open="jobs"><span class="icon">💼</span><b>Job Profiles</b><span class="small">Saved filters, schedule and sender status</span></button>
 <button class="dashCard" data-open="family"><span class="icon">👨‍👩‍👧</span><b>Family Reminders</b><span class="small">Recipients, roles, locations and schedules</span></button>
+<button class="dashCard" data-open="sender"><span class="icon">✉️</span><b>Sender details</b><span class="small">Name, reply-to, phone shown on emails</span></button>
 <button class="dashCard" data-open="sources"><span class="icon">🔌</span><b>Job Sources</b><span class="small">Add and test job portal APIs</span></button>
 <button class="dashCard" data-open="jobsPage"><span class="icon">📝</span><b>Edit Jobs Page</b><span class="small">Existing sections and custom content</span></button>
 <button class="dashCard" data-open="familyPage"><span class="icon">📝</span><b>Edit Family Page</b><span class="small">Existing sections and custom content</span></button>
 </div></div></div>
 
-<section id="jobs" class="view card"><button class="back">← Dashboard</button><h2>Job Profiles</h2><button id="refreshJob">Refresh</button><div id="jobMsg" class="msg"></div><div id="jobView"></div></section>
-<section id="family" class="view card"><button class="back">← Dashboard</button><h2>Family Reminders</h2><div class="row"><button id="refreshFamily">Refresh</button><button id="selectAll" class="secondary">Select all</button><button id="deleteSelected" class="danger">Delete selected</button></div><div id="familyMsg" class="msg"></div><div id="familyList"></div></section>
+<section id="jobs" class="view card"><button class="back">← Dashboard</button><h2>Job Profiles</h2><button id="refreshJob">Refresh</button><div id="jobMsg" class="msg"></div><div class="filterBox"><input id="jobFilter" type="search" placeholder="🔍 Search saved Jobs data…" aria-label="Search saved Jobs data"></div><div id="jobView"></div></section>
+<section id="family" class="view card"><button class="back">← Dashboard</button><h2>Family Reminders</h2><div class="row"><button id="refreshFamily">Refresh</button><button id="selectAll" class="secondary">Select all</button><button id="deleteSelected" class="danger">Delete selected</button></div><div id="familyMsg" class="msg"></div><div class="filterBox"><input id="famFilter" type="search" placeholder="🔍 Search by email, role, location…" aria-label="Search reminders"></div><div id="familyList"></div></section>
 
+<section id="sender" class="view card"><button class="back">← Dashboard</button><h2>Sender details</h2>
+<p class="small">These appear on every Jobs and Family reminder email, and replies go to the Reply-To address. WhatsApp messages get your name and phone at the end.</p>
+<div id="senderFrom" class="msg"></div>
+<div class="grid"><label>Sender name<input id="sName" maxlength="120" placeholder="e.g. Ankit · CareerPulse"></label><label>Reply-To email <span class="small">(replies go here)</span><input id="sReply" type="email" placeholder="you@example.com"></label>
+<label>Contact phone / WhatsApp<input id="sPhone" type="tel" placeholder="+91 98765 43210"></label><label>Contact email shown in footer <span class="small">(optional)</span><input id="sEmail" type="email" placeholder="Same as Reply-To if empty"></label>
+<label>Website <span class="small">(optional)</span><input id="sWeb" type="url" placeholder="https://"></label></div>
+<div class="row"><button id="senderSave">Save sender details</button><button id="senderTest" class="secondary">Send me a test email</button></div><div id="senderMsg" class="msg"></div>
+<p class="small"><b>Note:</b> the “From” address is always the Google account that owns the Apps Script project. Google does not allow changing it, but the name and Reply-To you set here are what people see and reply to. To send from another address, deploy the script under that Google account.</p></section>
 <section id="sources" class="view card"><button class="back">← Dashboard</button><h2>Job Sources</h2><p class="small">Choose a provider, enter credentials, test, then save. Technical mapping fields are hidden under Advanced settings.</p>
 <div class="grid"><label>Provider<select id="pType"><option value="adzuna">Adzuna</option><option value="generic">Other / Generic JSON API</option></select></label><label>Display name<input id="pName" placeholder="Adzuna India"></label><label>Country<input id="pCountry" value="in"></label><label>App / Client ID<input id="pAppId"></label><label>API key / secret<input id="pKey" type="password" placeholder="Leave blank to keep saved key"></label><label><input id="pEnabled" type="checkbox" checked style="width:auto"> Enabled</label></div>
 <button id="advancedBtn" class="secondary">Advanced settings</button><div id="advanced" class="advanced grid"><label>Base URL<input id="pBase"></label><label>Search parameter<input id="pQuery" value="what"></label><label>Location parameter<input id="pLocation" value="where"></label><label>Results JSON path<input id="pResults" value="results"></label><label>Title JSON path<input id="pTitle" value="title"></label><label>Location JSON path<input id="pLocPath" value="location.display_name"></label><label>Company JSON path<input id="pCompany" value="company.display_name"></label><label>Job URL JSON path<input id="pUrl" value="redirect_url"></label></div><input id="pId" type="hidden">
@@ -45,54 +70,98 @@
 <section id="familyPage" class="view card"><button class="back">← Dashboard</button><h2>Edit Family Page</h2><p class="small">Existing working sections can now be renamed, shown/hidden and reordered. Custom content uses Draft → Preview → Publish.</p><div class="row"><button class="saveBuiltins" data-page="family">Save existing sections</button><button class="resetBuiltins secondary" data-page="family">Restore defaults</button></div><div id="familyBuiltins"></div><hr><div class="row"><button class="addSection" data-page="family">+ Add section</button><button class="saveDraft secondary" data-page="family">Save draft</button><button class="previewBtn secondary" data-page="family">Preview</button><button class="publishBtn" data-page="family">Publish</button><button class="discardBtn danger" data-page="family">Cancel draft</button></div><div id="familySections"></div><div id="familyPreview" class="preview" hidden></div></section>
 </div></div>
 <script src="./cms-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const API='https://script.google.com/macros/s/AKfycbyUZI25EXv8OITTDkAW5mNbPQaeUBOCB1fbC3s0xoIFyGxvP7it2BDysu7e_CMnd84C/exec',$=x=>document.getElementById(x);let client,configs={jobs:[],family:[]};
+const API='https://script.google.com/macros/s/AKfycbwo9grCwLGuzA9B4Q5xKA85rn3H539fShT-eOfsigahLYg_erPkZcgBE6Uv54alh_iy/exec',$=x=>document.getElementById(x);let client,configs={jobs:[],family:[]};
 function db(){if(client)return client;if(!window.PORTFOLIO_CMS||!window.PORTFOLIO_CMS.url)throw Error('cms-config.js did not load or has no Supabase url/anonKey.');return client=window.supabase.createClient(window.PORTFOLIO_CMS.url,window.PORTFOLIO_CMS.anonKey)}function message(id,t,b=false){$(id).className='msg '+(b?'bad':'ok');$(id).textContent=t}async function token(){let {data:{session}}=await db().auth.getSession();if(!session)throw Error('Sign in again.');return session.access_token}
 async function get(action,extra={}){let q=new URLSearchParams({action,auth:await token(),...extra,ts:Date.now()});let r=await fetch(API+'?'+q,{cache:'no-store'}),x=await r.json();if(x.error==='Wrong token')throw Error('Admin reached a token-gated backend. The Apps Script URL/version does not match this Admin file.');if(!x.ok)throw Error(x.error||'Request failed');return x}async function post(action,extra={}){let q=new URLSearchParams({action,auth:await token()});Object.entries(extra).forEach(([k,v])=>q.set(k,typeof v==='object'?JSON.stringify(v):String(v)));let r=await fetch(API,{method:'POST',body:q}),x=await r.json();if(!x.ok)throw Error(x.error||'Request failed');return x}
 function openView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));scrollTo({top:0,behavior:'smooth'})}document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openView(b.dataset.open));document.querySelectorAll('.back').forEach(b=>b.onclick=()=>openView('home'));
 async function dashboard(){try{let vr=await fetch(API+'?action=backend_version&ts='+Date.now(),{cache:'no-store'}),vx=await vr.json();if(!vx.ok||!vx.version)throw Error('The Apps Script URL is still serving an older backend. Deploy the new Code.gs version first.');let x=await get('admin_dashboard'),s=x.status,items=[['Jobs Sender',s.jobsSender,s.jobsSender==='running'],['Family Sender',s.familySender,s.familySender==='running'],['Job Sources',s.jobSources+' connected',s.jobSources>0],['Family Reminders',s.familyReminders+' active'+(s.familyError?' — '+s.familyError:''),!s.familyError],['Last Jobs Run',s.lastJobsRun,true],['Family Check',s.familyCheck,true]];$('statusGrid').replaceChildren();items.forEach(a=>{let d=document.createElement('div');d.className='status';let dot=document.createElement('span');dot.className='dot '+(a[2]?'green':'red');let b=document.createElement('b');b.textContent=a[0];let p=document.createElement('div');p.className='small';p.textContent=a[1];d.append(dot,b,p);$('statusGrid').append(d)})}catch(e){$('statusGrid').textContent='Status unavailable: '+e.message}}
-function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
-function chips(list,cls){const w=el('div','chips');(list&&list.length?list:['—']).forEach(x=>w.append(el('span','chip '+(cls||''),x)));return w}
-function fmtDate(v){return v?new Date(v).toLocaleString(undefined,{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—'}
-function summarize(data){const out=[];Object.entries(data||{}).forEach(([k,v])=>{if(out.length>=8)return;let t=null;if(Array.isArray(v)&&v.every(i=>i===null||typeof i!=='object'))t=v.join(', ');else if(['string','number','boolean'].includes(typeof v))t=String(v);if(t&&t.trim())out.push(k.replace(/([A-Z])/g,' $1').replace(/[_-]/g,' ').toLowerCase()+': '+(t.length>60?t.slice(0,57)+'…':t))});return out}
-function senderCard(d){const card=el('div','panel'),head=el('div','panelHead');head.append(el('h3',null,'Sender settings'));const on=d.enabled===true||String(d.enabled)==='true';head.append(el('span','pill '+(on?'on':'off'),on?'● Enabled':'● Paused'));card.append(head);
- const stats=el('div','stats');[['Jobs from',d.days+' day(s)'],['Job types',(d.jobTypes||[]).join(', ')||'Any'],['Reminder times',(d.times||[]).join(', ')||d.hour+':00'],['Active recipients',String(d.recipients||0)],['Last run',d.lastRun||'Not yet'],['Last error',d.lastError||'None']].forEach(([k,v])=>{const s=el('div','stat');s.append(el('span','small',k),el('b',null,v));if(k==='Last error'&&v!=='None')s.classList.add('bad');stats.append(s)});
- card.append(el('div','lbl','Roles / keywords'),chips(d.keywords),el('div','lbl','Locations'),chips(d.locations,'loc'),stats);return card}
-function profilesPanel(rows){
- const sel=new Set();let q='',kind='all';const panel=el('div','panel'),head=el('div','panelHead'),title=el('h3',null,'Saved Jobs data ('+rows.length+')');head.append(title);panel.append(head);
- if(!rows.length){panel.append(el('p','small','No Jobs filters or Quick Fill records have been saved to the database yet.'));return panel}
- const bar=el('div','toolbar'),allLbl=el('label','chk'),all=document.createElement('input');all.type='checkbox';allLbl.append(all,el('span',null,'Select all'));
- const search=document.createElement('input');search.type='search';search.placeholder='Search by name…';
- const ks=document.createElement('select');[['all','All types'],['filter','Jobs Filters'],['quickfill','Quick Fill']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;ks.append(o)});
- const count=el('span','small'),delBtn=el('button','danger','Delete selected');bar.append(allLbl,search,ks,count,delBtn);panel.append(bar);
- const list=el('div','plist');panel.append(list);
- const visible=()=>rows.filter(r=>(kind==='all'||r.kind===kind)&&(!q||String(r.name||r.id).toLowerCase().includes(q)));
- function sync(){const v=visible(),n=sel.size;count.textContent=v.length+' shown';delBtn.textContent=n?'Delete selected ('+n+')':'Delete selected';delBtn.disabled=!n;all.checked=v.length>0&&v.every(r=>sel.has(r.id));all.indeterminate=!all.checked&&v.some(r=>sel.has(r.id));list.querySelectorAll('.rec').forEach(c=>c.classList.toggle('picked',sel.has(c.dataset.id)))}
- function draw(){list.replaceChildren();const v=visible();if(!v.length)list.append(el('p','small','No records match.'));
-  v.forEach(row=>{const card=el('div','rec');card.dataset.id=row.id;const top=el('div','recTop');
-   const cb=document.createElement('input');cb.type='checkbox';cb.checked=sel.has(row.id);cb.onchange=()=>{cb.checked?sel.add(row.id):sel.delete(row.id);sync()};
-   const info=el('div','recInfo');info.append(el('b',null,row.name||row.id),el('div','small','Updated '+fmtDate(row.updated_at)));
-   const badge=el('span','badge '+(row.kind==='quickfill'?'qf':'fl'),row.kind==='quickfill'?'Quick Fill':'Jobs Filters');
-   const actions=el('div','recActions'),view=el('button','secondary sm','View data'),del=el('button','danger sm','Delete');actions.append(view,del);top.append(cb,info,badge,actions);card.append(top);
-   const sm=summarize(row.data);if(sm.length)card.append(chips(sm,'sum'));
-   const raw=el('pre','raw',JSON.stringify(row.data||{},null,2));raw.hidden=true;card.append(raw);
-   view.onclick=()=>{raw.hidden=!raw.hidden;view.textContent=raw.hidden?'View data':'Hide data'};del.onclick=()=>removeRows([row.id]);list.append(card)});sync()}
- async function removeRows(ids){
-  const names=ids.slice(0,8).map(id=>{const r=rows.find(x=>x.id===id);return '• '+((r&&r.name)||id)});
-  if(!confirm('Delete '+ids.length+' saved record'+(ids.length>1?'s':'')+' from the database?\n\n'+names.join('\n')+(ids.length>8?'\n…and '+(ids.length-8)+' more':'')+'\n\nThis cannot be undone. Deleting the main Jobs filters record resets the filters saved for the Jobs page.'))return;
-  delBtn.disabled=true;let done=0,fail=[];
-  for(const id of ids){try{message('jobMsg','Deleting '+(done+1)+' of '+ids.length+'…');await get('admin_job_profile_delete',{id});const i=rows.findIndex(r=>r.id===id);if(i>=0)rows.splice(i,1);sel.delete(id);done++}catch(e){fail.push(e.message)}}
-  title.textContent='Saved Jobs data ('+rows.length+')';draw();
-  if(fail.length)message('jobMsg','✕ Deleted '+done+', failed '+fail.length+': '+fail[0],true);else message('jobMsg','✓ Deleted '+done+' record'+(done>1?'s':'')+'.')}
- all.onchange=()=>{visible().forEach(r=>all.checked?sel.add(r.id):sel.delete(r.id));draw()};
- search.oninput=()=>{q=search.value.trim().toLowerCase();draw()};ks.onchange=()=>{kind=ks.value;draw()};delBtn.onclick=()=>removeRows([...sel]);
- draw();return panel}
+const JD={kw:[],loc:[],types:[],exp:'',days:'1',remote:'',hour:'9',email:'',wa:'',off:[],custom:[],times:['09:00'],repeat:'daily',repeatDays:[],timezone:'Asia/Kolkata',scheduleSynced:false,enabled:false,recipients:[],groups:[],searchKeywords:[],searchLocations:[],workModes:[],shifts:[]};
+let jobRows=[],editing=null;
+const lines=v=>[...new Set(String(v||'').split(/[\n,;|]+/).map(x=>x.trim()).filter(Boolean))];
+const rkey=r=>r.channel+':'+String(r.address||'').trim().toLowerCase();
+function qfLabel(d){return((d.recipients||[]).map(r=>{let n=(r.firstName||'').trim();if(!n&&r.channel==='email')n=String(r.address).split('@')[0];return(n?n+' · ':'')+r.address}).join('; '))||'Saved reminder'}
+function E(tag,props,...kids){const e=document.createElement(tag);Object.assign(e,props||{});kids.forEach(k=>e.append(k));return e}
+function lab(text,el){const l=document.createElement('label');l.append(text,el);return l}
+function checks(opts,sel,name){const w=E('div',{className:'row'});opts.forEach(([v,t])=>{const l=E('label',{style:'display:inline-flex;gap:6px;align-items:center;margin-right:14px'});const c=E('input',{type:'checkbox',value:v,checked:sel.map(String).includes(String(v))});c.style.width='auto';c.style.margin='0';c.dataset.g=name;l.append(c,t);w.append(l)});return w}
+const picked=(root,name)=>[...root.querySelectorAll('input[data-g="'+name+'"]:checked')].map(c=>c.value);
 async function loadJob(){
- const box=$('jobView');box.replaceChildren(el('p','small','Loading…'));
- const [a,b]=await Promise.allSettled([get('admin_job_data'),get('admin_job_profiles')]);let failed=[];box.replaceChildren();
- if(a.status==='fulfilled')box.append(senderCard(a.value.data||{}));else failed.push('Sender settings: '+a.reason.message);
- if(b.status==='fulfilled')box.append(profilesPanel(((b.value.data||{}).profiles||[]).slice()));else failed.push('Saved profiles: '+b.reason.message);
+ const box=$('jobView');box.replaceChildren();editing=null;
+ const [a,b]=await Promise.allSettled([get('admin_job_data'),get('admin_job_profiles')]);
+ const failed=[];
+ if(a.status==='fulfilled'){const d=a.value.data;box.append(E('h3',{textContent:'Live sender'}),E('pre',{style:'white-space:pre-wrap',textContent:['Roles / keywords: '+(d.keywords.join(', ')||'—'),'Locations: '+(d.locations.join(', ')||'—'),'Job types: '+(d.jobTypes.join(', ')||'Any'),'Jobs from: '+d.days+' day(s)','Reminder times: '+((d.times||[]).join(', ')||d.hour+':00'),'Active recipients: '+(d.recipients||0),'Sender enabled: '+d.enabled,'Last run: '+(d.lastRun||'Not yet'),'Last error: '+(d.lastError||'None')].join('\n')}))}else failed.push('Sender: '+a.reason.message);
+ if(b.status==='fulfilled'){jobRows=(b.value.data||{}).profiles||[];renderJobTools(box)}else failed.push('Saved records: '+b.reason.message);
  if(failed.length)message('jobMsg','✕ '+failed.join('\n'),true);else message('jobMsg','✓ Job data loaded.')
 }
+function renderJobTools(box){
+ const qf=jobRows.filter(r=>r.kind==='quickfill'),fl=jobRows.filter(r=>r.kind==='filter');
+ const bar=E('div',{className:'row'});
+ const sel=E('select');sel.append(E('option',{value:'',textContent:qf.length?'Quick Fill — saved reminders ('+qf.length+') ▾':'Quick Fill — none saved yet'}));
+ qf.forEach(r=>sel.append(E('option',{value:r.id,textContent:qfLabel(r.data||{})})));
+ sel.onchange=()=>{const r=jobRows.find(x=>x.id===sel.value);if(r)openEditor(r)};
+ const nb=E('button',{textContent:'+ New Quick Fill'});nb.onclick=()=>openEditor(null,'quickfill');
+ const nf=E('button',{className:'secondary',textContent:'+ New filter set'});nf.onclick=()=>openEditor(null,'filter');
+ sel.style.maxWidth='420px';bar.append(sel,nb,nf);box.append(E('h3',{textContent:'Saved Jobs data ('+jobRows.length+')'}),bar,E('div',{id:'jobEditor'}));
+ if(!jobRows.length)box.append(E('p',{className:'small',textContent:'No Jobs filters or Quick Fill records are saved in the database yet.'}));
+ [...fl,...qf].forEach(row=>{
+  const d=row.data||{},card=E('div',{className:'item'});
+  const sum=(row.kind==='quickfill'?qfLabel(d):'All recipients & shared filters')+' • Roles: '+((d.kw||[]).join(', ')||'—')+' • Locations: '+((d.loc||[]).join(', ')||'—')+' • '+((d.times||[]).join(', ')||'—')+' • '+(d.repeat||'daily');
+  const t=E('b',{textContent:(row.kind==='quickfill'?'Quick Fill · ':'Filters · ')+(row.name||row.id)}),pp=E('p',{className:'small',textContent:sum+' • Updated '+(row.updated_at?new Date(row.updated_at).toLocaleString():'—')});
+  const ed=E('button',{className:'secondary',textContent:'Edit'});ed.onclick=()=>openEditor(row);
+  const dp=E('button',{className:'secondary',textContent:'Duplicate'});dp.onclick=()=>openEditor(row,row.kind,true);
+  const del=E('button',{className:'danger',textContent:'Delete'});del.onclick=async()=>{if(!confirm('Delete this saved Jobs record?'))return;try{await get('admin_job_profile_delete',{id:row.id});loadJob()}catch(e){message('jobMsg','✕ '+e.message,true)}};
+  card.append(t,pp,ed,dp,del);box.append(card)})
+}
+function openEditor(row,kind,asCopy){
+ kind=row?row.kind:kind;const d=Object.assign(JSON.parse(JSON.stringify(JD)),JSON.parse(JSON.stringify((row&&row.data)||{})));
+ if(!Array.isArray(d.recipients))d.recipients=[];if(kind==='quickfill'&&!d.recipients.length)d.recipients=[{channel:'email',address:'',enabled:true,mode:'all',roles:[],firstName:''}];
+ if(asCopy&&kind==='quickfill')d.recipients=d.recipients.slice(0,1).map(r=>Object.assign({},r,{address:''}));
+ editing={id:asCopy?null:(row&&row.id)||null,kind,oldKey:!asCopy&&row&&kind==='quickfill'?row.id:null};
+ const host=$('jobEditor');host.replaceChildren();const f=E('div',{className:'editor open'});
+ f.append(E('h3',{textContent:(editing.id?'Edit ':'New ')+(kind==='quickfill'?'Quick Fill reminder':'filter set')}));
+ const kw=E('textarea',{rows:2,value:(d.kw||[]).join('\n'),placeholder:'One role per line'}),loc=E('textarea',{rows:2,value:(d.loc||[]).join('\n'),placeholder:'One location per line'});
+ const days=E('input',{type:'number',min:1,max:365,value:d.days||'1'}),times=E('input',{value:(d.times||[]).join(', '),placeholder:'09:00, 18:00'}),tz=E('input',{value:d.timezone||'Asia/Kolkata'});
+ const rep=E('select');[['daily','Every day'],['weekdays','Weekdays only'],['custom','Custom days']].forEach(([v,t])=>rep.append(E('option',{value:v,textContent:t,selected:d.repeat===v})));
+ const rd=checks([[1,'Mon'],[2,'Tue'],[3,'Wed'],[4,'Thu'],[5,'Fri'],[6,'Sat'],[0,'Sun']],d.repeatDays||[],'rd');rd.hidden=d.repeat!=='custom';rep.onchange=()=>rd.hidden=rep.value!=='custom';
+ const ty=checks([['full','Full time'],['part','Part time'],['contract','Contract']],d.types||[],'ty'),wm=checks([['office','Office'],['home','Work from home'],['hybrid','Hybrid'],['remote','Remote']],d.workModes||[],'wm'),sh=checks([['morning','Morning'],['evening','Evening'],['night','Night']],d.shifts||[],'sh');
+ f.append(lab('Roles / keywords',kw),lab('Locations',loc),E('div',{textContent:'Job types'}),ty,lab('Posted within (days)',days),lab('Reminder times (HH:MM, comma separated)',times),lab('Repeat',rep),rd,lab('Time zone',tz),E('div',{textContent:'Work mode'}),wm,E('div',{textContent:'Shift'}),sh);
+ // recipients
+ const rbox=E('div'),rows=[];
+ function addRow(r){const w=E('div',{className:'item'});const ch=E('select');[['email','Email'],['whatsapp','WhatsApp number'],['whatsapp_group','WhatsApp group']].forEach(([v,t])=>ch.append(E('option',{value:v,textContent:t,selected:r.channel===v})));
+  const ad=E('input',{value:r.address||'',placeholder:'Email or +91… number'}),fn=E('input',{value:r.firstName||'',placeholder:'First name (optional)'});
+  const md=E('select');[['all','All roles'],['specific','Only these roles'],['random','Random mix']].forEach(([v,t])=>md.append(E('option',{value:v,textContent:t,selected:(r.mode||'all')===v})));
+  const ro=E('input',{value:(r.roles||[]).join(', '),placeholder:'Roles for this recipient, comma separated'});const en=E('input',{type:'checkbox',checked:r.enabled!==false});en.style.width='auto';
+  const rm=E('button',{className:'danger',textContent:'Remove'});rm.onclick=()=>{rows.splice(rows.indexOf(o),1);w.remove()};
+  const o={ch,ad,fn,md,ro,en};rows.push(o);const l=E('label',{style:'display:flex;gap:8px;align-items:center'});l.append(en,'Active');
+  w.append(ch,ad,fn,md,ro,l);if(kind!=='quickfill')w.append(rm);rbox.append(w)}
+ d.recipients.forEach(addRow);f.append(E('h4',{textContent:kind==='quickfill'?'Recipient':'Recipients'}),rbox);
+ if(kind!=='quickfill'){const ab=E('button',{textContent:'+ Add recipient'});ab.onclick=()=>addRow({channel:'email',address:'',enabled:true,mode:'all',roles:[]});f.append(ab)}
+ let enabled=null;if(kind==='filter'){enabled=E('input',{type:'checkbox',checked:!!d.enabled});enabled.style.width='auto';const l=E('label',{style:'display:flex;gap:8px;align-items:center'});l.append(enabled,'Reminders enabled');f.append(l)}
+ let apply=null;if(kind==='filter'){apply=E('input',{type:'checkbox',checked:true});apply.style.width='auto';const l=E('label',{style:'display:flex;gap:8px;align-items:center'});l.append(apply,'Also apply to the live reminder sender now');f.append(l)}
+ const msg=E('div',{className:'msg'}),save=E('button',{textContent:'Save to database'}),cancel=E('button',{className:'secondary',textContent:'Cancel'});cancel.onclick=()=>host.replaceChildren();
+ save.onclick=async()=>{try{
+   const tl=lines(times.value.replace(/\s/g,'\n'));if(!tl.length||tl.some(t=>!/^([01]\d|2[0-3]):[0-5]\d$/.test(t)))throw Error('Enter times like 09:00, 18:00.');
+   const dn=Number(days.value);if(!Number.isInteger(dn)||dn<1||dn>365)throw Error('Posted-within days must be 1–365.');
+   const tzv=tz.value.trim()||'Asia/Kolkata';try{new Intl.DateTimeFormat('en',{timeZone:tzv})}catch(_){throw Error('Unknown time zone.')}
+   if(rep.value==='custom'&&!picked(f,'rd').length)throw Error('Choose at least one repeat day.');
+   const rec=rows.map(o=>{const ch=o.ch.value;let a=o.ad.value.trim();if(ch!=='email'&&ch!=='whatsapp_group')a=a.replace(/[\s()-]/g,'');
+     if(ch==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a))throw Error('Invalid email: '+(a||'(empty)'));if(ch==='whatsapp'&&!/^\+[1-9]\d{7,14}$/.test(a))throw Error('Mobile needs country code, e.g. +919876543210.');if(!a)throw Error('Recipient address is required.');
+     return{channel:ch,address:a,enabled:o.en.checked,mode:o.md.value,roles:lines(o.ro.value),firstName:o.fn.value.trim()}});
+   if(!rec.length&&kind==='quickfill')throw Error('Add a recipient.');
+   const data=Object.assign({},d,{kw:lines(kw.value),loc:lines(loc.value),types:picked(f,'ty'),days:String(dn),times:tl,repeat:rep.value,repeatDays:rep.value==='custom'?picked(f,'rd'):[],timezone:tzv,workModes:picked(f,'wm'),shifts:picked(f,'sh'),recipients:rec,scheduleSynced:false});
+   data.email=rec.filter(r=>r.channel==='email').map(r=>r.address).join(', ');data.wa=rec.filter(r=>r.channel==='whatsapp').map(r=>r.address).join(', ');data.groups=rec.filter(r=>r.channel==='whatsapp_group').map(r=>r.address);
+   if(enabled)data.enabled=enabled.checked;
+   const id=kind==='quickfill'?rkey(rec[0]):(editing.id||'main-filters'),name=kind==='quickfill'?qfLabel(data):'Jobs filters';
+   if(kind==='quickfill'&&id!==editing.id&&jobRows.some(r=>r.id===id)&&!confirm('A saved reminder for this recipient already exists. Replace it?'))return;
+   const r=await post('admin_job_profile_save',{profile:JSON.stringify({id,kind,name,data}),apply:apply&&apply.checked?'1':''});
+   if(kind==='quickfill'&&editing.oldKey&&editing.oldKey!==id&&confirm('The recipient changed. Remove the old saved reminder ('+editing.oldKey+')?'))await get('admin_job_profile_delete',{id:editing.oldKey});
+   await loadJob();message('jobMsg','✓ Saved to the database'+(r.applied?' and applied to the live sender.':'. The Jobs page picks it up on next open.'))
+  }catch(e){msg.className='msg bad';msg.textContent='✕ '+e.message}};
+ f.append(E('div',{className:'row'},save,cancel),msg);host.append(f);f.scrollIntoView({behavior:'smooth',block:'start'})
+}
+async function loadSender(){try{const r=await get('admin_sender_get'),d=r.data||{},e=r.effective||{};$('sName').value=d.name||'';$('sReply').value=d.replyTo||'';$('sPhone').value=d.phone||'';$('sEmail').value=d.email||'';$('sWeb').value=d.web||'';
+ $('senderFrom').className='msg';$('senderFrom').textContent='Emails are sent from: '+(e.fromAccount||'(script owner)')+'\nReplies go to: '+(e.replyTo||'—')+'\nShown as: '+(e.name||'CareerPulse')}catch(x){message('senderMsg','✕ '+x.message,true)}}
+$('senderSave').onclick=async()=>{try{await post('admin_sender_save',{config:{name:$('sName').value,replyTo:$('sReply').value,phone:$('sPhone').value,email:$('sEmail').value,web:$('sWeb').value}});await loadSender();message('senderMsg','✓ Saved. New reminders will use these details.')}catch(x){message('senderMsg','✕ '+x.message,true)}};
+$('senderTest').onclick=async()=>{const b=$('senderTest');b.disabled=true;try{const r=await post('admin_sender_test');message('senderMsg','✓ Test email sent to '+r.sentTo+'. Open it and press Reply to confirm it goes to your Reply-To address.')}catch(x){message('senderMsg','✕ '+x.message,true)}finally{b.disabled=false}};
 async function loadFamily(){
  try{
   const {data,error}=await db().from('family_reminders').select('*').order('created_at',{ascending:false});if(error)throw error;
@@ -120,7 +189,7 @@ document.querySelectorAll('.previewBtn').forEach(b=>b.onclick=()=>{let p=b.datas
 document.querySelectorAll('.publishBtn').forEach(b=>b.onclick=async()=>{let p=b.dataset.page;try{await post('admin_page_draft_save',{page:p,config:configs[p]});if(confirm('Publish these changes to the live '+p+' page?')){await post('admin_page_publish',{page:p});alert('Published. Refresh the live page to see it.');loadPage(p)}}catch(e){alert(e.message)}});
 document.querySelectorAll('.discardBtn').forEach(b=>b.onclick=async()=>{let p=b.dataset.page;if(confirm('Discard the draft and return to published content?')){let x=await post('admin_page_draft_discard',{page:p});configs[p]=x.sections||[];editors(p);$(p+'Preview').hidden=true}});
 $('refreshJob').onclick=loadJob;$('refreshFamily').onclick=loadFamily;
-async function state(){try{let {data:{session}}=await db().auth.getSession();$('login').hidden=!!session;$('app').hidden=!session;if(session){$('who').textContent='Signed in: '+session.user.email;await Promise.allSettled([dashboard(),loadJob(),loadFamily(),portals(),loadPage('jobs'),loadPage('family')])}}catch(e){$('login').hidden=false;message('loginMsg','✕ '+e.message,true)}}
+async function state(){try{let {data:{session}}=await db().auth.getSession();$('login').hidden=!!session;$('app').hidden=!session;if(session){$('who').textContent='Signed in: '+session.user.email;await Promise.allSettled([dashboard(),loadJob(),loadFamily(),portals(),loadPage('jobs'),loadPage('family'),loadSender()])}}catch(e){$('login').hidden=false;message('loginMsg','✕ '+e.message,true)}}
 $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;state()}catch(e){message('loginMsg','✕ '+e.message,true)}};$('password').onkeydown=e=>{if(e.key==='Enter')$('signin').click()};$('signout').onclick=async()=>{await db().auth.signOut();state()};state();
 </script>
 <script>
@@ -133,6 +202,17 @@ $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword
   el.textContent='Backend: '+(x.version||x.error||'unknown');
   document.body.prepend(el);
  }catch(e){}
+})();
+</script>
+<script>
+(function(){
+ var tabs=[['home','🏠 Overview'],['jobs','💼 Jobs'],['family','👨‍👩‍👧 Family'],['sources','🔌 Sources'],['jobsPage','📝 Jobs page'],['sender','✉️ Sender'],['familyPage','📝 Family page']],bar=document.getElementById('tabbar');
+ tabs.forEach(function(t){var b=document.createElement('button');b.type='button';b.textContent=t[1];b.dataset.v=t[0];b.onclick=function(){openView(t[0])};bar.appendChild(b)});
+ function mark(){var a=document.querySelector('.view.active');tabs.forEach(function(t,i){bar.children[i].classList.toggle('on',!!a&&a.id===t[0])});var on=bar.querySelector('.on');if(on&&on.scrollIntoView)on.scrollIntoView({inline:'center',block:'nearest'})}
+ var o=openView;openView=function(){o.apply(this,arguments);mark()};mark();
+ function wire(inp,box,sel){var i=document.getElementById(inp);i.oninput=function(){var q=i.value.trim().toLowerCase();document.querySelectorAll('#'+box+' '+sel).forEach(function(e){e.style.display=!q||e.textContent.toLowerCase().indexOf(q)>=0?'':'none'})}}
+ wire('famFilter','familyList','.item');wire('jobFilter','jobView','.item');
+ document.getElementById('password').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('signin').click()});
 })();
 </script>
 </body></html>
