@@ -34,7 +34,34 @@ button{min-height:42px;border-radius:12px;padding:10px 16px;transition:transform
 .msg{border-radius:12px}.msg:empty{display:none}
 @media(max-width:600px){.topbar{flex-direction:row!important;align-items:center!important}.topbar button{white-space:nowrap}.wrap{padding:10px}.hero h1{font-size:23px}.card{padding:16px}}
 </style>
-</head><body><div class="wrap"><div class="hero"><h1>CareerPulse Admin</h1><div>Simple control center for Jobs, Family, job sources and page content.</div></div>
+<style id="connectionLogPolish">
+#monitor .logHeading{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin:30px 0 14px}
+#monitor .logHeading h3{margin:0 0 5px;font-size:20px}
+#monitor .logHeading p{margin:0}
+#monitor .logSummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0 16px}
+#monitor .logStat{border:1px solid var(--line,#dce7eb);border-radius:14px;padding:14px 16px;background:var(--card,#fff);display:flex;flex-direction:column;gap:3px}
+#monitor .logStat strong{font-size:25px;line-height:1.2;font-variant-numeric:tabular-nums}
+#monitor .logStat span{font-size:12px;color:var(--mut,#607782);font-weight:600}
+#monitor .logStat.failure strong{color:#b93838}#monitor .logStat.recovery strong{color:#087c6d}
+#monitor .logToolbar{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+#monitor .logToolbar label{font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px}
+#monitor .logToolbar select{min-height:38px;width:auto;min-width:170px;font-size:14px;margin:0}
+#monitor .logList{display:grid;gap:10px}
+#monitor .logEvent{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--line,#dce7eb);border-left:4px solid #b93838;background:var(--card,#fff);padding:15px 16px;border-radius:12px;min-width:0}
+#monitor .logEvent.logRecovered{border-left-color:#087c6d}
+#monitor .logDot{width:10px;height:10px;flex:0 0 10px;margin-top:7px;border-radius:50%;background:#c34545}
+#monitor .logRecovered .logDot{background:#087c6d}
+#monitor .logEventBody{min-width:0;flex:1}
+#monitor .logEventTop{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+#monitor .logService{font-size:14px;letter-spacing:.035em}
+#monitor .logBadge{font-size:11px;font-weight:700;border-radius:20px;padding:4px 9px;background:#fff0ef;color:#a12d2d}
+#monitor .logRecovered .logBadge{background:#e1f5ec;color:#096e51}
+#monitor .logReason{margin:7px 0 6px;overflow-wrap:anywhere;font-size:14px;line-height:1.5}
+#monitor .logMeta{font-size:12px;color:var(--mut,#607782);font-variant-numeric:tabular-nums}
+#monitor .logEmpty{padding:30px 16px;text-align:center;border:1px dashed var(--line,#dce7eb);border-radius:14px;color:var(--mut,#607782)}
+#monitor .logError{color:#b93838}
+@media(max-width:560px){#monitor .logSummary{gap:7px}#monitor .logStat{padding:11px}#monitor .logStat strong{font-size:21px}#monitor .logHeading{align-items:flex-start}#monitor .logEvent{padding:12px}}
+</style></head><body><div class="wrap"><div class="hero"><h1>CareerPulse Admin</h1><div>Simple control center for Jobs, Family, job sources and page content.</div></div>
 <div id="login" class="card"><h2>Admin sign in</h2><label>Email<input id="email" type="email"></label><label>Password<input id="password" type="password"></label><button id="signin">Sign in</button><div id="loginMsg" class="msg">Use your Supabase Authentication admin account.</div></div>
 <div id="app" hidden>
 <div class="card topbar"><div><b id="who"></b><div class="small">Changes to page content use Draft → Preview → Publish.</div></div><button id="signout" class="secondary">Sign out</button></div>
@@ -51,7 +78,7 @@ button{min-height:42px;border-radius:12px;padding:10px 16px;transition:transform
 </div></div></div>
 
 
-<section id="monitor" class="view card"><h2>Connection health</h2><p class="small">Checks run while this admin page is open. Backend failures are saved to Apps Script logs. Page checks confirm HTTP reachability, not complete functionality.</p><div class="row"><button id="runHealth">Test all now</button><label>Automatic interval<select id="healthInterval"><option value="0">Off</option><option value="60000">Every minute</option><option value="300000" selected>Every 5 minutes</option><option value="900000">Every 15 minutes</option></select></label></div><div id="healthResults" class="statusGrid"></div><h3>Connection failure and recovery log</h3><button id="reloadLogs">Refresh logs</button><div class="tablewrap"><table><thead><tr><th>Time</th><th>Service</th><th>Status</th><th>Duration</th><th>Reason</th></tr></thead><tbody id="healthLogs"></tbody></table></div></section>
+<section id="monitor" class="view card"><h2>Connection health</h2><p class="small">Checks run while this admin page is open. Backend failures are saved to Apps Script logs. Page checks confirm HTTP reachability, not complete functionality.</p><div class="row"><button id="runHealth">Test all now</button><label>Automatic interval<select id="healthInterval"><option value="0">Off</option><option value="60000">Every minute</option><option value="300000" selected>Every 5 minutes</option><option value="900000">Every 15 minutes</option></select></label></div><div id="healthResults" class="statusGrid"></div><div class="logHeading"><div><h3>Connection activity</h3><p class="small">Recent failures and recoveries, with the reason and response time.</p></div><button id="reloadLogs" type="button">↻ Refresh logs</button></div><div class="logSummary" id="logSummary" aria-live="polite"></div><div class="logToolbar"><label for="logFilter">Show events <select id="logFilter"><option value="all">All events</option><option value="lost">Failures only</option><option value="working">Recoveries only</option></select></label><span id="logCount" class="small"></span></div><div class="logList" id="healthLogs" aria-live="polite"></div></section>
 <section class="card" id="deploymentDiagnostics"><h2>Backend compatibility</h2><p class="small">A green HTTP check does not confirm that the deployed backend supports receiver controls and templates.</p><button type="button" id="checkCompatibility">Check deployed backend features</button><div id="compatibilityResult" class="msg" role="status">Not checked yet.</div></section><section id="receivers" class="view card"><h2>Email receiver controls</h2><p class="small">Pause or disable a specific email recipient for Jobs or Family independently. Resume sets the recipient to active.</p><div class="grid"><label>Reminder type<select id="receiverType"><option value="jobs">Jobs</option><option value="family">Family</option></select></label><label>Receiver email<input id="receiverEmail" type="email" placeholder="person@example.com"></label><label>Action<select id="receiverStatus"><option value="active">Active / Resume</option><option value="paused">Pause</option><option value="disabled">Disable</option></select></label><label>Pause until (optional)<input id="receiverUntil" type="datetime-local"></label></div><button id="receiverSave">Save receiver control</button><div id="receiverMsg" class="msg"></div><button id="receiverRefresh">Refresh receivers</button><h3>Saved reminder recipients</h3><p class="small">Choose Jobs or Family to load actual email recipients. Each reminder has independent controls.</p><div id="receiverReminders"></div><h3>Existing receiver overrides</h3><div id="receiverRows"></div></section>
 <section id="jobs" class="view card"><button class="back">← Dashboard</button><h2>Job Profiles</h2><button id="refreshJob">Refresh</button><div id="jobMsg" class="msg"></div><div class="filterBox"><input id="jobFilter" type="search" placeholder="🔍 Search saved Jobs data…" aria-label="Search saved Jobs data"></div><div id="jobView"></div></section>
 <section id="family" class="view card"><button class="back">← Dashboard</button><h2>Family Reminders</h2><div class="row"><button id="refreshFamily">Refresh</button><button id="selectAll" class="secondary">Select all</button><button id="deleteSelected" class="danger">Delete selected</button></div><div id="familyMsg" class="msg"></div><div class="filterBox"><input id="famFilter" type="search" placeholder="🔍 Search by email, role, location…" aria-label="Search reminders"></div><div id="familyList"></div></section>
@@ -229,7 +256,29 @@ $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword
  let timer=null,last={};
  async function probe(name,url){const started=performance.now(),ctrl=new AbortController(),timeout=setTimeout(()=>ctrl.abort(),12000);let status='working',reason='';try{const r=await fetch(url+'&ts='+Date.now(),{cache:'no-store',signal:ctrl.signal});if(!r.ok)throw Error('HTTP '+r.status);const data=await r.json();if(data.ok!==true)throw Error(data.error||'Service reported not ready');if(name==='supabase'&&!data.supabaseConnected)throw Error(data.error||'Supabase is not connected');}catch(e){status='lost';reason=e.name==='AbortError'?'Request timed out after 12 seconds':e.message;}finally{clearTimeout(timeout)}const durationMs=Math.round(performance.now()-started);const card=document.createElement('div');card.className='status';card.textContent=name.toUpperCase()+' — '+status+' ('+durationMs+' ms) | '+new Date().toLocaleString()+(reason?' | '+reason:'');$('healthResults').append(card);if(status==='lost'||last[name]==='lost'&&status==='working'){try{await post('admin_monitor_record',{record:{service:name,status,durationMs,reason:reason||'Connection restored'}})}catch(e){card.append(' | Log save failed: '+e.message)}}last[name]=status;}
  async function run(){if($('app').hidden)return;$('healthResults').replaceChildren();await Promise.all(targets.map(t=>probe(...t)));await logs();}
- async function logs(){try{let x=await get('admin_monitor_logs');$('healthLogs').replaceChildren();(x.rows||[]).forEach(r=>{let tr=document.createElement('tr');[r.time,r.service,r.status,r.durationMs+' ms',r.reason||'—'].forEach(v=>{let td=document.createElement('td');td.textContent=v;tr.append(td)});$('healthLogs').append(tr)})}catch(e){$('healthLogs').textContent=e.message}}
+ let cachedLogs=[];
+ function renderLogs(){
+  const filter=$('logFilter').value,rows=cachedLogs.filter(r=>filter==='all'||String(r.status).toLowerCase()===filter),host=$('healthLogs');host.replaceChildren();
+  const failures=cachedLogs.filter(r=>String(r.status).toLowerCase()==='lost').length;
+  const recoveries=cachedLogs.filter(r=>String(r.status).toLowerCase()==='working').length;
+  $('logSummary').replaceChildren();
+  [['Total events',cachedLogs.length,'total'],['Failures',failures,'failure'],['Recoveries',recoveries,'recovery']].forEach(([label,num,cls])=>{const c=document.createElement('div');c.className='logStat '+cls;const v=document.createElement('strong');v.textContent=num;const t=document.createElement('span');t.textContent=label;c.append(v,t);$('logSummary').append(c)});
+  $('logCount').textContent=rows.length+' event'+(rows.length===1?'':'s');
+  if(!rows.length){const empty=document.createElement('div');empty.className='logEmpty';empty.textContent=cachedLogs.length?'No events match this filter.':'No connection events recorded yet.';host.append(empty);return;}
+  rows.forEach(r=>{
+   const lost=String(r.status).toLowerCase()==='lost',item=document.createElement('article');item.className='logEvent '+(lost?'logLost':'logRecovered');
+   const dot=document.createElement('span');dot.className='logDot';dot.setAttribute('aria-hidden','true');
+   const content=document.createElement('div');content.className='logEventBody';const top=document.createElement('div');top.className='logEventTop';
+   const service=document.createElement('strong');service.className='logService';service.textContent=String(r.service||'Service').toUpperCase();
+   const status=document.createElement('span');status.className='logBadge';status.textContent=lost?'Connection lost':'Recovered';top.append(service,status);
+   const reason=document.createElement('p');reason.className='logReason';reason.textContent=r.reason||(lost?'No failure reason provided':'Connection restored');
+   const meta=document.createElement('div');meta.className='logMeta';let time='Unknown time';if(r.time){const dt=new Date(r.time);time=isNaN(dt.getTime())?String(r.time):dt.toLocaleString(undefined,{dateStyle:'medium',timeStyle:'medium'});}
+   const duration=Number(r.durationMs);meta.textContent=time+'  ·  '+(Number.isFinite(duration)?duration.toLocaleString()+' ms':'Duration unavailable');
+   content.append(top,reason,meta);item.append(dot,content);host.append(item);
+  });
+ }
+ async function logs(){const host=$('healthLogs');host.textContent='Loading connection events…';try{let x=await get('admin_monitor_logs');cachedLogs=Array.isArray(x.rows)?x.rows:[];renderLogs()}catch(e){host.replaceChildren();const error=document.createElement('div');error.className='logEmpty logError';error.textContent='Could not load logs: '+e.message;host.append(error);$('logCount').textContent='';$('logSummary').replaceChildren()}}
+ $('logFilter').onchange=renderLogs;
  async function receivers(){try{let x=await get('admin_receiver_list');$('receiverRows').replaceChildren();(x.rows||[]).forEach(r=>{let d=document.createElement('div');d.className='item';d.textContent=r.type+' | '+r.address+' | '+r.status+(r.until?' | until '+r.until:'');$('receiverRows').append(d)})}catch(e){$('receiverRows').textContent=e.message}}
  $('runHealth').onclick=run;$('reloadLogs').onclick=logs;$('receiverRefresh').onclick=receivers;
  $('healthInterval').onchange=()=>{clearInterval(timer);if(+$('healthInterval').value)timer=setInterval(run,+$('healthInterval').value)};$('healthInterval').onchange();
