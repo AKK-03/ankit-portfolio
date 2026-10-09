@@ -1,4 +1,4 @@
-var CAREERPULSE_BACKEND_VERSION = '2026-10-07-family-db-v7';
+var CAREERPULSE_BACKEND_VERSION = '2026-10-09-receiver-templates-monitor-v8';
 /* CareerPulse backend (Google Apps Script) — v7
    SCRIPT PROPERTIES: TOKEN, ADZUNA_ID, ADZUNA_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY
    OPTIONAL: WA_KEY (CallMeBot), ADMIN_EMAILS (comma-separated allow-list for Admin.html — STRONGLY recommended)
@@ -47,7 +47,7 @@ function sendMail_(to, subject, html, plain, kindOverride, reminderId) {
   if (i.replyTo) m.replyTo = i.replyTo;
   var kind=kindOverride||(/^Job radar:/.test(String(subject))?'jobs':null);
   if(kind){var manage=receiverMailControls_(kind,to,reminderId);m.body+='\n\nManage your alerts: '+manage.text;if(html)html+=manage.html;}
-  if(kind){var tpl=mailTemplatePublic_(kind);if(tpl){subject=tpl.subject.replace(/\{\{subject\}\}/g,subject);m.subject=subject;html=tpl.html.replace(/\{\{content\}\}/g,html||'').replace(/\{\{controls\}\}/g,manage.html);}}
+  if(kind){var tpl=mailTemplatePublic_(kind);if(tpl){subject=tpl.subject.replace(/\{\{subject\}\}/g,subject);m.subject=subject;var content=String(html||'').replace(manage.html,'');html=tpl.html.replace(/\{\{content\}\}/g,content).replace(/\{\{controls\}\}/g,manage.html);}}
   if (html) m.htmlBody = html + footerHtml_();
   MailApp.sendEmail(m);
 }
@@ -64,7 +64,7 @@ function doGet(e) {
     switch (a) {
       case 'deployment_check': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, adminAuth: 'supabase', family: true, jobsDb: true });
       case 'family_ping': return jsonOut_({ ok: true, service: 'family', version: CAREERPULSE_BACKEND_VERSION });
-      case 'backend_version': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION });
+      case 'backend_version': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, capabilities: ['admin_receiver_set','admin_receiver_reminders','admin_receiver_list','admin_mail_template_save','admin_mail_templates','admin_monitor_record','admin_monitor_logs'] });
       case 'family_status': return jsonOut_(familyPublicStatus_());
       case 'family_suggest': return jsonOut_(familySuggestions_(p.kind, p.q));
       case 'page_config': return jsonOut_(pageConfigPublic_(p.page));
@@ -683,11 +683,20 @@ function receiverVerify_(p){var type=String(p.type||''),address=String(p.address
 function receiverManagePage_(p){try{var x=receiverVerify_(p),esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');};var hidden=['type','address','status','expires','sig','reminderId'].map(function(k){return '<input type="hidden" name="'+k+'" value="'+esc(p[k])+'">';}).join('');return HtmlService.createHtmlOutput('<html><meta name="viewport" content="width=device-width"><body style="font:16px system-ui;max-width:520px;margin:60px auto;padding:20px"><h2>Confirm '+esc(x.status)+'</h2><p>Apply this change to <b>'+esc(x.type)+'</b> reminders for <b>'+esc(x.address)+'</b>?</p><form method="post" action="'+ScriptApp.getService().getUrl()+'"><input type="hidden" name="action" value="receiver_confirm">'+hidden+'<button style="padding:12px">Confirm</button></form><p>Close this page to cancel.</p></body></html>');}catch(e){return HtmlService.createHtmlOutput('Invalid or expired link. Request a new reminder email.');}}
 function receiverConfirm_(p){try{var x=receiverVerify_(p),key=receiverKey_(x.type,x.address,x.reminderId),props=PropertiesService.getScriptProperties();if(x.status==='active')props.deleteProperty(key);else props.setProperty(key,JSON.stringify({type:x.type,address:x.address,reminderId:x.reminderId,status:x.status,until:'',updated:new Date().toISOString(),source:'email'}));return HtmlService.createHtmlOutput('<h2>Preference saved</h2><p>'+x.type+' reminders are now '+x.status+'. You can close this page.</p>');}catch(e){return HtmlService.createHtmlOutput('<h2>Link expired or invalid</h2><p>No changes were made.</p>');}}
 
+function familyAllSupabaseReminders_(){
+  familyRequireSupabase_();
+  var key=g('SUPABASE_SERVICE_KEY','');
+  var url=String(g('SUPABASE_URL','')).replace(/\/+$/,'')+'/rest/v1/family_reminders?select=id,created_at,enabled,settings&order=created_at.asc';
+  var resp=UrlFetchApp.fetch(url,{method:'get',headers:{apikey:key,Authorization:'Bearer '+key},muteHttpExceptions:true});
+  if(resp.getResponseCode()!==200)throw Error('Family reminders HTTP '+resp.getResponseCode()+': '+resp.getContentText().slice(0,200));
+  var rows=JSON.parse(resp.getContentText()||'[]');return Array.isArray(rows)?rows:[];
+}
+
 /* Admin list of actual reminders; no invented recipients. */
 function receiverReminders_(auth,type){
   portalRequireAdmin_(auth);type=String(type||'family').toLowerCase();var rows=[];
   if(type==='family'){
-    familySupabaseReminders_().forEach(function(r){var v=r.settings||{};if(v.channel==='email'&&v.address)rows.push({id:'FAM_'+r.id,address:String(v.address).toLowerCase(),label:(v.roles||[]).join(', ')||'Family reminder',locations:(v.locations||[]).join(', '),enabled:r.enabled!==false});});
+    familyAllSupabaseReminders_().forEach(function(r){var v=r.settings||{};if(v.channel==='email'&&v.address)rows.push({id:'FAM_'+r.id,address:String(v.address).toLowerCase(),label:(v.roles||[]).join(', ')||'Family reminder',locations:(v.locations||[]).join(', '),enabled:r.enabled!==false});});
   }else if(type==='jobs'){
     jobsRecipients_().forEach(function(r){if(r.channel==='email'&&r.address)rows.push({id:'JOBS_'+shortKey_(r.channel+':'+String(r.address).toLowerCase()),address:String(r.address).toLowerCase(),label:(r.roles||[]).join(', ')||'Jobs reminder',locations:'',enabled:true});});
   }else throw Error('Invalid reminder type');
