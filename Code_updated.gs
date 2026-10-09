@@ -41,12 +41,13 @@ function footerHtml_() {
     (f.html.length ? '<br>' + f.html.join(' &nbsp;·&nbsp; ') : '') + '<br>Just reply to this email to reach us, or to change or stop these alerts.</p>';
 }
 /* One place that sends every email: display name + Reply-To + contact footer. */
-function sendMail_(to, subject, html, plain, kindOverride) {
+function sendMail_(to, subject, html, plain, kindOverride, reminderId) {
   if (/^Job radar:/.test(String(subject)) && receiverBlocked_('jobs',to)) return;
   var i = senderInfo_(), m = { to: to, subject: subject, body: String(plain || subject) + '\n\n' + footerText_(), name: i.name };
   if (i.replyTo) m.replyTo = i.replyTo;
   var kind=kindOverride||(/^Job radar:/.test(String(subject))?'jobs':null);
-  if(kind){var manage=receiverMailControls_(kind,to);m.body+='\n\nManage your alerts: '+manage.text;if(html)html+=manage.html;}
+  if(kind){var manage=receiverMailControls_(kind,to,reminderId);m.body+='\n\nManage your alerts: '+manage.text;if(html)html+=manage.html;}
+  if(kind){var tpl=mailTemplatePublic_(kind);if(tpl){subject=tpl.subject.replace(/\{\{subject\}\}/g,subject);m.subject=subject;html=tpl.html.replace(/\{\{content\}\}/g,html||'').replace(/\{\{controls\}\}/g,manage.html);}}
   if (html) m.htmlBody = html + footerHtml_();
   MailApp.sendEmail(m);
 }
@@ -84,6 +85,8 @@ function doGet(e) {
       case 'admin_dashboard': return jsonOut_(adminDashboard_(p.auth));
       case 'admin_monitor_logs': return jsonOut_(monitorLogs_(p.auth));
       case 'admin_receiver_list': return jsonOut_(receiverList_(p.auth));
+      case 'admin_receiver_reminders': return jsonOut_(receiverReminders_(p.auth,p.type));
+      case 'admin_mail_templates': return jsonOut_(mailTemplates_(p.auth));
       case 'admin_sender_get': return jsonOut_(adminSenderGet_(p.auth));
       case 'admin_page_config': return jsonOut_(adminPageConfig_(p.auth, p.page));
       case 'admin_page_all': return jsonOut_(adminPageAllSections_(p.auth, p.page));
@@ -112,7 +115,8 @@ function doPost(e) {
       case 'admin_sender_save': return jsonOut_(adminSenderSave_(p.auth, p.config));
       case 'admin_sender_test': return jsonOut_(adminSenderTest_(p.auth));
       case 'admin_monitor_record': return jsonOut_(monitorRecord_(p.auth,p.record));
-      case 'admin_receiver_set': return jsonOut_(receiverSet_(p.auth,p.type,p.address,p.status,p.until));
+      case 'admin_receiver_set': return jsonOut_(receiverSet_(p.auth,p.type,p.address,p.status,p.until,p.reminderId));
+      case 'admin_mail_template_save': return jsonOut_(mailTemplateSave_(p.auth,p.type,p.subject,p.html));
       case 'receiver_confirm': return receiverConfirm_(p);
       case 'job_profile_save': return jsonOut_(jobProfileSave_(p.token, p.profile));
       case 'job_profile_delete': return jsonOut_(jobProfileDelete_(p.token, p.id));
@@ -367,7 +371,7 @@ function sendReminder_(key, s, force, dueSlot) {
   var address = String(s.address || '').trim();
   if (!address) throw new Error('Recipient is empty.');
   if (s.channel === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) throw new Error('Invalid email: ' + address);
-  if (s.channel === 'email' && receiverBlocked_(key.indexOf('FAM_') === 0 ? 'family' : 'jobs',address)) return {ok:true,skipped:true,reason:'Receiver paused or disabled'};
+  if (s.channel === 'email' && receiverBlocked_(key.indexOf('FAM_') === 0 ? 'family' : 'jobs',address,key)) return {ok:true,skipped:true,reason:'Receiver paused or disabled'};
   var res = fetchAdzunaJobs_(s, 100), seen = jsonProp_('SEEN_' + key, []);
   var jobs = force ? res.jobs : res.jobs.filter(function (j) { return seen.indexOf(j.id) < 0; });   // NEW: do not resend the same jobs every run
   if (s.random) jobs = jobs.sort(function () { return Math.random() - 0.5; });
@@ -381,7 +385,7 @@ function sendReminder_(key, s, force, dueSlot) {
     if (errors.length) html += '<p style="color:#a33">Some searches failed: ' + familyHtml_(errors.join(' | ')) + '</p>';
     html += '<p style="color:#60747d;font-size:12px">Posted within ' + familyHtml_(String(s.days || 7)) + ' day(s)</p></div>';
     sendMail_(address, 'CareerPulse: ' + jobs.length + ' new job' + (jobs.length === 1 ? '' : 's') + ' for ' + roles, html,
-      'CareerPulse found ' + jobs.length + ' new job(s) for ' + roles + ' in ' + locations + '.\n' + jobs.slice(0, 10).map(function (j) { return '- ' + j.t + ' - ' + j.c + ' ' + j.u; }).join('\n'),key.indexOf('FAM_')===0?'family':'jobs');
+      'CareerPulse found ' + jobs.length + ' new job(s) for ' + roles + ' in ' + locations + '.\n' + jobs.slice(0, 10).map(function (j) { return '- ' + j.t + ' - ' + j.c + ' ' + j.u; }).join('\n'),key.indexOf('FAM_')===0?'family':'jobs',key);
   } else if (s.channel === 'whatsapp') {
     var waKey = g('WA_KEY', ''); if (!waKey) throw new Error('WA_KEY is missing; WhatsApp delivery is not configured.');
     var msg = (s.firstName ? 'Hi ' + s.firstName + ', ' : '') + 'CareerPulse: ' + jobs.length + ' new job(s) for ' + roles + '.\n' + jobs.slice(0, 5).map(function (j) { return '- ' + j.t + ' - ' + j.c + '\n' + j.u; }).join('\n') + waFooter_();
@@ -664,9 +668,9 @@ function cleanupFamilyState() {
 function shortKeyless_(id) { return String(id); }
 
 /* Admin monitoring and receiver delivery preferences. Script Properties persist across deployments. */
-function receiverKey_(type,address){return 'RCV_'+shortKey_(String(type).toLowerCase()+':'+String(address).trim().toLowerCase());}
-function receiverBlocked_(type,address){var raw=PropertiesService.getScriptProperties().getProperty(receiverKey_(type,address));if(!raw)return false;try{var x=JSON.parse(raw);if(x.status==='disabled')return true;if(x.status==='paused'){if(!x.until)return true;if(Date.now()<Date.parse(x.until))return true;}return false;}catch(e){return false;}}
-function receiverSet_(auth,type,address,status,until){portalRequireAdmin_(auth);type=String(type||'').toLowerCase();address=String(address||'').trim().toLowerCase();status=String(status||'');if(['jobs','family'].indexOf(type)<0||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)||['active','paused','disabled'].indexOf(status)<0)throw Error('Invalid type, email or status');if(until&&!isFinite(Date.parse(until)))throw Error('Invalid pause end time');var p=PropertiesService.getScriptProperties(),key=receiverKey_(type,address);if(status==='active')p.deleteProperty(key);else p.setProperty(key,JSON.stringify({type:type,address:address,status:status,until:status==='paused'?String(until||''):'',updated:new Date().toISOString()}));return {ok:true};}
+function receiverKey_(type,address,reminderId){return 'RCV_'+shortKey_(String(type).toLowerCase()+':'+String(address).trim().toLowerCase()+(reminderId?':'+reminderId:''));}
+function receiverBlocked_(type,address,reminderId){var p=PropertiesService.getScriptProperties();return [receiverKey_(type,address),reminderId?receiverKey_(type,address,reminderId):''].some(function(k){if(!k)return false;var raw=p.getProperty(k);if(!raw)return false;try{var x=JSON.parse(raw);return x.status==='disabled'||(x.status==='paused'&&(!x.until||Date.now()<Date.parse(x.until)));}catch(e){return false;}});}
+function receiverSet_(auth,type,address,status,until,reminderId){portalRequireAdmin_(auth);type=String(type||'').toLowerCase();address=String(address||'').trim().toLowerCase();status=String(status||'');if(['jobs','family'].indexOf(type)<0||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)||['active','paused','disabled'].indexOf(status)<0)throw Error('Invalid type, email or status');if(until&&!isFinite(Date.parse(until)))throw Error('Invalid pause end time');var p=PropertiesService.getScriptProperties(),key=receiverKey_(type,address,reminderId);if(status==='active')p.deleteProperty(key);else p.setProperty(key,JSON.stringify({type:type,address:address,reminderId:String(reminderId||''),status:status,until:status==='paused'?String(until||''):'',updated:new Date().toISOString()}));return {ok:true};}
 function receiverList_(auth){portalRequireAdmin_(auth);var p=PropertiesService.getScriptProperties().getProperties(),rows=[];Object.keys(p).filter(function(k){return k.indexOf('RCV_')===0;}).forEach(function(k){try{rows.push(JSON.parse(p[k]));}catch(e){}});return {ok:true,rows:rows};}
 function monitorRecord_(auth,record){portalRequireAdmin_(auth);var x=JSON.parse(record||'{}');if(!['jobs','family','backend','supabase'].includes(x.service))throw Error('Unknown service');var p=PropertiesService.getScriptProperties(),rows=JSON.parse(p.getProperty('MONITOR_LOGS')||'[]');rows.unshift({time:new Date().toISOString(),service:x.service,status:String(x.status||'unknown').slice(0,30),durationMs:Number(x.durationMs)||0,reason:String(x.reason||'').slice(0,500)});p.setProperty('MONITOR_LOGS',JSON.stringify(rows.slice(0,80)));return {ok:true};}
 function monitorLogs_(auth){portalRequireAdmin_(auth);return {ok:true,rows:JSON.parse(PropertiesService.getScriptProperties().getProperty('MONITOR_LOGS')||'[]')};}
@@ -674,7 +678,23 @@ function monitorLogs_(auth){portalRequireAdmin_(auth);return {ok:true,rows:JSON.
 /* Secure receiver self-service: signed expiring links; confirmation required. */
 function receiverSecret_(){var p=PropertiesService.getScriptProperties(),v=p.getProperty('RECEIVER_LINK_SECRET');if(!v){v=Utilities.getUuid()+Utilities.getUuid();p.setProperty('RECEIVER_LINK_SECRET',v);}return v;}
 function receiverSignature_(payload){return Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(payload,receiverSecret_())).replace(/=+$/,'');}
-function receiverMailControls_(type,address){var base=ScriptApp.getService().getUrl(),expiry=Date.now()+30*86400000;var labels=[['active','Resume / Active'],['paused','Pause'],['disabled','Disable']];var links=labels.map(function(a){var payload=[type,address.toLowerCase(),a[0],expiry].join('|');var url=base+'?action=receiver_manage&type='+encodeURIComponent(type)+'&address='+encodeURIComponent(address)+'&status='+a[0]+'&expires='+expiry+'&sig='+encodeURIComponent(receiverSignature_(payload));return {label:a[1],url:url};});return {text:links.map(function(x){return x.label+': '+x.url;}).join('\n'),html:'<p style="font-size:13px"><b>Manage '+type+' emails:</b><br>'+links.map(function(x){return '<a style="display:inline-block;margin:6px;padding:8px;border:1px solid #087c6d;border-radius:6px" href="'+x.url+'">'+x.label+'</a>';}).join('')+'</p>'};}
-function receiverVerify_(p){var type=String(p.type||''),address=String(p.address||'').trim().toLowerCase(),status=String(p.status||''),expires=Number(p.expires);if(['jobs','family'].indexOf(type)<0||['active','paused','disabled'].indexOf(status)<0||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)||!isFinite(expires)||expires<Date.now()||expires>Date.now()+31*86400000)throw Error('Invalid or expired link');var payload=[type,address,status,expires].join('|');if(receiverSignature_(payload)!==String(p.sig||''))throw Error('Invalid signature');return {type:type,address:address,status:status};}
-function receiverManagePage_(p){try{var x=receiverVerify_(p),esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');};var hidden=['type','address','status','expires','sig'].map(function(k){return '<input type="hidden" name="'+k+'" value="'+esc(p[k])+'">';}).join('');return HtmlService.createHtmlOutput('<html><meta name="viewport" content="width=device-width"><body style="font:16px system-ui;max-width:520px;margin:60px auto;padding:20px"><h2>Confirm '+esc(x.status)+'</h2><p>Apply this change to <b>'+esc(x.type)+'</b> reminders for <b>'+esc(x.address)+'</b>?</p><form method="post" action="'+ScriptApp.getService().getUrl()+'"><input type="hidden" name="action" value="receiver_confirm">'+hidden+'<button style="padding:12px">Confirm</button></form><p>Close this page to cancel.</p></body></html>');}catch(e){return HtmlService.createHtmlOutput('Invalid or expired link. Request a new reminder email.');}}
-function receiverConfirm_(p){try{var x=receiverVerify_(p),key=receiverKey_(x.type,x.address),props=PropertiesService.getScriptProperties();if(x.status==='active')props.deleteProperty(key);else props.setProperty(key,JSON.stringify({type:x.type,address:x.address,status:x.status,until:'',updated:new Date().toISOString(),source:'email'}));return HtmlService.createHtmlOutput('<h2>Preference saved</h2><p>'+x.type+' reminders are now '+x.status+'. You can close this page.</p>');}catch(e){return HtmlService.createHtmlOutput('<h2>Link expired or invalid</h2><p>No changes were made.</p>');}}
+function receiverMailControls_(type,address,reminderId){var base=ScriptApp.getService().getUrl(),expiry=Date.now()+30*86400000;var labels=[['active','Resume / Active'],['paused','Pause'],['disabled','Disable']];var links=labels.map(function(a){var payload=[type,address.toLowerCase(),a[0],expiry,String(reminderId||'')].join('|');var url=base+'?action=receiver_manage&type='+encodeURIComponent(type)+'&address='+encodeURIComponent(address)+'&status='+a[0]+'&expires='+expiry+'&reminderId='+encodeURIComponent(reminderId||'')+'&sig='+encodeURIComponent(receiverSignature_(payload));return {label:a[1],url:url};});return {text:links.map(function(x){return x.label+': '+x.url;}).join('\n'),html:'<p style="font-size:13px"><b>Manage '+type+' emails:</b><br>'+links.map(function(x){return '<a style="display:inline-block;margin:6px;padding:8px;border:1px solid #087c6d;border-radius:6px" href="'+x.url+'">'+x.label+'</a>';}).join('')+'</p>'};}
+function receiverVerify_(p){var type=String(p.type||''),address=String(p.address||'').trim().toLowerCase(),status=String(p.status||''),expires=Number(p.expires);if(['jobs','family'].indexOf(type)<0||['active','paused','disabled'].indexOf(status)<0||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)||!isFinite(expires)||expires<Date.now()||expires>Date.now()+31*86400000)throw Error('Invalid or expired link');var payload=[type,address,status,expires,String(p.reminderId||'')].join('|');if(receiverSignature_(payload)!==String(p.sig||''))throw Error('Invalid signature');return {type:type,address:address,status:status,reminderId:String(p.reminderId||'')};}
+function receiverManagePage_(p){try{var x=receiverVerify_(p),esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');};var hidden=['type','address','status','expires','sig','reminderId'].map(function(k){return '<input type="hidden" name="'+k+'" value="'+esc(p[k])+'">';}).join('');return HtmlService.createHtmlOutput('<html><meta name="viewport" content="width=device-width"><body style="font:16px system-ui;max-width:520px;margin:60px auto;padding:20px"><h2>Confirm '+esc(x.status)+'</h2><p>Apply this change to <b>'+esc(x.type)+'</b> reminders for <b>'+esc(x.address)+'</b>?</p><form method="post" action="'+ScriptApp.getService().getUrl()+'"><input type="hidden" name="action" value="receiver_confirm">'+hidden+'<button style="padding:12px">Confirm</button></form><p>Close this page to cancel.</p></body></html>');}catch(e){return HtmlService.createHtmlOutput('Invalid or expired link. Request a new reminder email.');}}
+function receiverConfirm_(p){try{var x=receiverVerify_(p),key=receiverKey_(x.type,x.address,x.reminderId),props=PropertiesService.getScriptProperties();if(x.status==='active')props.deleteProperty(key);else props.setProperty(key,JSON.stringify({type:x.type,address:x.address,reminderId:x.reminderId,status:x.status,until:'',updated:new Date().toISOString(),source:'email'}));return HtmlService.createHtmlOutput('<h2>Preference saved</h2><p>'+x.type+' reminders are now '+x.status+'. You can close this page.</p>');}catch(e){return HtmlService.createHtmlOutput('<h2>Link expired or invalid</h2><p>No changes were made.</p>');}}
+
+/* Admin list of actual reminders; no invented recipients. */
+function receiverReminders_(auth,type){
+  portalRequireAdmin_(auth);type=String(type||'family').toLowerCase();var rows=[];
+  if(type==='family'){
+    familySupabaseReminders_().forEach(function(r){var v=r.settings||{};if(v.channel==='email'&&v.address)rows.push({id:'FAM_'+r.id,address:String(v.address).toLowerCase(),label:(v.roles||[]).join(', ')||'Family reminder',locations:(v.locations||[]).join(', '),enabled:r.enabled!==false});});
+  }else if(type==='jobs'){
+    jobsRecipients_().forEach(function(r){if(r.channel==='email'&&r.address)rows.push({id:'JOBS_'+shortKey_(r.channel+':'+String(r.address).toLowerCase()),address:String(r.address).toLowerCase(),label:(r.roles||[]).join(', ')||'Jobs reminder',locations:'',enabled:true});});
+  }else throw Error('Invalid reminder type');
+  var props=PropertiesService.getScriptProperties();rows.forEach(function(r){var raw=props.getProperty(receiverKey_(type,r.address,r.id))||props.getProperty(receiverKey_(type,r.address));try{var x=JSON.parse(raw||'{}');r.status=x.status==='paused'&&x.until&&Date.now()>=Date.parse(x.until)?'active':(x.status||'active');r.until=x.until||'';}catch(e){r.status='active';}});
+  return {ok:true,rows:rows};
+}
+/* Templates are admin-only and persist across deployments. {{content}} and {{controls}} are placeholders. */
+function mailTemplatePublic_(type){try{return JSON.parse(PropertiesService.getScriptProperties().getProperty('MAIL_TEMPLATE_'+type)||'null');}catch(e){return null;}}
+function mailTemplates_(auth){portalRequireAdmin_(auth);return {ok:true,jobs:mailTemplatePublic_('jobs'),family:mailTemplatePublic_('family')};}
+function mailTemplateSave_(auth,type,subject,html){portalRequireAdmin_(auth);if(['jobs','family'].indexOf(type)<0)throw Error('Invalid template type');subject=String(subject||'').slice(0,250);html=String(html||'');if(html.length>25000)throw Error('Template too large');if(html&&html.indexOf('{{content}}')<0)throw Error('Include {{content}} in HTML template');if(html&&html.indexOf('{{controls}}')<0)throw Error('Include {{controls}} so recipients can manage reminders');var data=html?{subject:subject||'{{subject}}',html:html}:null;var p=PropertiesService.getScriptProperties();if(data)p.setProperty('MAIL_TEMPLATE_'+type,JSON.stringify(data));else p.deleteProperty('MAIL_TEMPLATE_'+type);return {ok:true};}
