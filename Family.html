@@ -24,7 +24,27 @@
 .msTools{display:flex;gap:6px;margin-bottom:6px}.msTools button{padding:5px 11px;font-size:12px;margin:0}
 .msList .opt{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;cursor:pointer;margin:0;font-weight:500}.msList .opt:hover{background:#e7f5f2}.msList .opt input{width:auto;margin:0;accent-color:#087c6d}
 .msChips .chip{background:#e2f3f0;border-color:#c7e6e0;color:#0a5f55;padding:5px 11px;font-size:13px}
-</style></head><body data-cms-page="family"><div id="adminCms-top"></div><div class="w"><div class="hero"><h1>Family Job Reminder</h1><p>Add multiple roles, locations, times and repeat rules.</p></div><div class="card"><form id="f" class="secs"><section data-admin-target="deliverySection"><h2>Delivery details</h2><div class="g">
+</style><style id="familyPolish">
+:root{--f-bg:#f3f7fa;--f-card:#fff;--f-ink:#17323e;--f-line:#d5e2e8;--f-acc:#087c6d}
+@media(prefers-color-scheme:dark){:root{--f-bg:#0b1620;--f-card:#13222f;--f-ink:#e8eff4;--f-line:#2b4152}
+ body{background:var(--f-bg);color:var(--f-ink)}.card,input,select,.chip,.liveSuggestions,.liveSuggestions button,.suggestions,.ms>summary,.msPanel{background:var(--f-card);color:var(--f-ink);border-color:var(--f-line)}
+ .liveSuggestions button:hover,.liveSuggestions button.active,.msList .opt:hover{background:#17394a;color:#9ff0df}.hint,.suggestState{color:#9db0bf}.timeHelp{background:#10202c;color:#b7c8d4}
+ .chip{background:#10202c}.msChips .chip,.days .chip:has(input:checked){background:#0f3a35;color:#9ff0df;border-color:#1b6f64}.ok{background:#12372b;color:#8be3b8}.bad{background:#3b1a1a;color:#ffb0b0}.info{background:#16303f;color:#bcdcf0}
+ .liveSuggestions button.more{background:#10202c}}
+body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;background:radial-gradient(900px 380px at 50% -140px,#087c6d33,transparent),var(--f-bg)}
+.w{max-width:860px}
+.hero{position:relative;overflow:hidden;padding:30px 28px;border-radius:22px;box-shadow:0 16px 36px #087c6d33}.hero::after{content:"";position:absolute;right:-50px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#ffffff33,transparent 70%)}
+.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.5px}.hero p{margin:0;opacity:.92}
+.card{border:1px solid var(--f-line);border-radius:20px;padding:26px}
+.secs>section{padding-bottom:22px;border-bottom:1px dashed var(--f-line)}.secs>section:last-child{border-bottom:0;padding-bottom:0}
+.secs h2{display:flex;align-items:center;gap:10px;font-size:19px}.secs{counter-reset:s}.secs>section[data-admin-target]:not([data-admin-target=actionsSection])>h2::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--f-acc);color:#fff;font-size:14px}
+input,select{min-height:46px;border-radius:12px;transition:border-color .15s,box-shadow .15s}input:focus,select:focus{outline:0;border-color:var(--f-acc);box-shadow:0 0 0 3px #087c6d33}
+button{border-radius:12px;min-height:44px;background:linear-gradient(135deg,#087c6d,#0a9a86);box-shadow:0 6px 16px #087c6d33;transition:transform .12s,box-shadow .12s}button:hover:not(:disabled){transform:translateY(-1px)}button.secondary{background:linear-gradient(135deg,#155d75,#1b7a98)}
+.chip{transition:background .15s}.msg{border-radius:12px;font-size:14px}
+#save{flex:1;min-width:180px;font-size:16px}
+@media(max-width:650px){.w{padding:12px}.hero{padding:22px 18px}.card{padding:18px}}
+</style>
+</head><body data-cms-page="family"><div id="adminCms-top"></div><div class="w"><div class="hero"><h1>👨‍👩‍👧 Family Job Reminder</h1><p>Pick roles, places and times — we email the newest openings for you.</p></div><div class="card"><form id="f" class="secs"><section data-admin-target="deliverySection"><h2>Delivery details</h2><div class="g">
 <label>Send by<select id="channel"><option value="email">Email</option><option value="whatsapp">WhatsApp / Mobile</option></select></label><label>Recipient<input id="address" required autocomplete="email" placeholder="name@example.com"></label>
 
 </div></section><section data-admin-target="roleLocationSection"><h2>Job roles &amp; locations</h2><div class="g"><div><div class="title">Job roles</div><div class="combo"><div class="suggestWrap"><input id="roleInput" autocomplete="off" placeholder="Start typing, e.g. Data Analyst" aria-label="Job role"><div id="roleLive" class="liveSuggestions" role="listbox" hidden></div></div><div id="roleSuggestState" class="suggestState">Type at least 2 letters for recommendations.</div></div><div id="roleTags" class="chips"></div><span class="hint">Press Enter or Tab to add a match or your own text.</span></div>
@@ -47,7 +67,7 @@
 <div class="full"><div class="title">Shift — select multiple</div><details class="ms"><summary><span class="msLabel">Select shift</span></summary><div class="msPanel"><div class="msTools"><button type="button" class="secondary" data-act="all">Select all</button><button type="button" class="secondary" data-act="none">Clear</button></div><div class="msList" id="shift"><label class="opt"><input type="checkbox" value="morning" checked>Morning</label><label class="opt"><input type="checkbox" value="evening">Evening</label><label class="opt"><input type="checkbox" value="night">Night</label></div></div></details><div class="chips msChips"></div></div>
 </div></section><section data-admin-target="actionsSection"><div class="actions"><button id="check" class="secondary" type="button">Check Family Service</button><button id="save" type="submit">Save my reminder</button></div><div id="msg" class="msg" role="status"></div></section></form></div></div>
 <script src="./cms-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const FAMILY_SENDER_URL='https://script.google.com/macros/s/AKfycbwx3QFZKcyvzKzXRca_ms_g7l4rj-G45VvmdMq9-qY13BQ2fJGbXGofJeei5pqDtld3/exec';
+const FAMILY_SENDER_URL=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'https://script.google.com/macros/s/AKfycbwx3QFZKcyvzKzXRca_ms_g7l4rj-G45VvmdMq9-qY13BQ2fJGbXGofJeei5pqDtld3/exec';
 const $=id=>document.getElementById(id),msg=(t,c='info')=>{$('msg').className='msg show '+c;$('msg').textContent=t},ck=id=>[...$(id).querySelectorAll('input:checked')].map(x=>x.value);
 const vals={role:[],location:[]}, times=[];
 let _db;function db(){if(!window.PORTFOLIO_CMS?.url||!window.PORTFOLIO_CMS?.anonKey)throw Error('Supabase config was not found. Check cms-config.js.');return _db||(_db=window.supabase.createClient(window.PORTFOLIO_CMS.url,window.PORTFOLIO_CMS.anonKey))}
@@ -132,7 +152,7 @@ $('channel').onchange=()=>{$('address').autocomplete=$('channel').value==='email
 async function familyDbCheck(){
   const client=db();
   const {data,error}=await client.from('family_reminders').select('id,enabled').limit(1);
-  if(error)throw Error('Supabase Family database: '+error.message);
+  if(error&&!(error.code==='42501'||/permission|policy|row-level/i.test(error.message||'')))throw Error('Supabase Family database: '+error.message);   // read-restricted is fine: visitors only need to insert
   return true;
 }
 function settings(){if($('roleInput').value.trim())add('role',$('roleInput').value);if($('locationInput').value.trim())add('location',$('locationInput').value);if(!vals.role.length)throw Error('Add at least one job role.');if(!vals.location.length)throw Error('Add at least one location.');if(!times.length)throw Error('Add at least one reminder time.');let repeats=[$('repeatMode').value];if(!repeats.length)throw Error('Select at least one repeat option.');let repeatDays=ck('customRepeat');if(repeats.includes('custom')&&!repeatDays.length)throw Error('Choose custom repeat days.');let days=$('days').value==='custom'?+$('customDays').value:+$('days').value;if(!days||days<1||days>365)throw Error('Enter Jobs from days between 1 and 365.');let tz=$('timezone').value.trim()||'UTC';try{new Intl.DateTimeFormat('en',{timeZone:tz})}catch(_){throw Error('Unknown time zone: '+tz+'. Example: Asia/Kolkata')}let addr=$('address').value.trim().replace(/[\s()-]/g,'');if($('channel').value==='email'){if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('address').value.trim()))throw Error('Enter a valid email address.')}else if(!/^\+[1-9]\d{7,14}$/.test(addr))throw Error('Enter the mobile number with country code, e.g. +919876543210.');return{channel:$('channel').value,address:$('channel').value==='email'?$('address').value.trim():$('address').value.trim().replace(/[\s()-]/g,''),mode:'specific',roles:vals.role.slice(),locations:vals.location.slice(),times:times.slice(),repeat:repeats.length===1?repeats[0]:'multiple',repeats,repeatDays,timezone:$('timezone').value.trim()||Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',days,workModes:ck('work'),shifts:ck('shift')}}
@@ -166,11 +186,11 @@ $('check').onclick=async()=>{
 };
 $('f').onsubmit=async e=>{e.preventDefault();let b=$('save');try{let s=settings();if(!s.address)throw Error('Enter the recipient.');b.disabled=true;msg('Connecting and saving…');let client=db(),{data,error}=await client.rpc('create_family_reminder',{p_settings:s});
 if(error){
-  let ins=await client.from('family_reminders').insert({enabled:true,settings:s}).select('id').single();
+  let ins=await client.from('family_reminders').insert({enabled:true,settings:s});
   if(ins.error)throw Error('Could not save Family reminder: '+error.message+'; fallback: '+ins.error.message);
-  data=ins.data.id;
+  data='saved';
 }
-msg('✓ Reminder saved successfully.\nReference: '+data,'ok')}catch(x){msg('✕ '+x.message,'bad')}finally{b.disabled=false}};
+msg('✓ Reminder saved successfully.'+(data&&data!=='saved'?'\nReference: '+data:'')+'\nEvery email has Enable / Pause / Disable / Delete buttons so you stay in control.','ok')}catch(x){msg('✕ '+x.message,'bad')}finally{b.disabled=false}};
 </script><div id="adminCms-bottom"></div>
 <script>
 (function(){
@@ -206,4 +226,17 @@ msg('✓ Reminder saved successfully.\nReference: '+data,'ok')}catch(x){msg('✕
   });
  }catch(e){}
 })();
-</script></body></html>
+</script><script>
+/* Page switch (Admin > Pages). Fails open: if the check cannot be made, the page stays usable. */
+(function(){var URL_=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'https://script.google.com/macros/s/AKfycbwx3QFZKcyvzKzXRca_ms_g7l4rj-G45VvmdMq9-qY13BQ2fJGbXGofJeei5pqDtld3/exec';
+fetch(URL_+'?action=page_status&page=family&ts='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){
+ if(!d||d.enabled!==false)return;
+ var o=document.createElement('div');o.id='pageOff';o.setAttribute('role','alert');
+ o.style.cssText='position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#0b1620,#155d75);font-family:system-ui,Segoe UI,Arial,sans-serif';
+ var b=document.createElement('div');b.style.cssText='max-width:440px;width:100%;background:#fff;color:#17323e;border-radius:22px;padding:34px 28px;text-align:center;box-shadow:0 20px 60px #0008';
+ var e=document.createElement('div');e.style.cssText='font-size:52px';e.textContent='\u{1F6A7}';var h=document.createElement('h2');h.style.margin='10px 0 8px';h.textContent=d.title||'Page unavailable';
+ var p=document.createElement('p');p.style.cssText='color:#4b616c;line-height:1.55;margin:0';p.textContent=d.message||'This page is temporarily unavailable. Please check back soon.';
+ b.append(e,h,p);o.append(b);document.body.append(o);document.documentElement.style.overflow='hidden';
+}).catch(function(){});})();
+</script>
+</body></html>

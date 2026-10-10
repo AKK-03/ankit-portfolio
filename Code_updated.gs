@@ -1,4 +1,4 @@
-var CAREERPULSE_BACKEND_VERSION = '2026-10-09-receiver-templates-monitor-v8';
+var CAREERPULSE_BACKEND_VERSION = '2026-10-10-page-switches-v11';
 /* CareerPulse backend (Google Apps Script) — v7
    SCRIPT PROPERTIES: TOKEN, ADZUNA_ID, ADZUNA_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY
    OPTIONAL: WA_KEY (CallMeBot), ADMIN_EMAILS (comma-separated allow-list for Admin.html — STRONGLY recommended)
@@ -47,7 +47,7 @@ function sendMail_(to, subject, html, plain, kindOverride, reminderId) {
   if (i.replyTo) m.replyTo = i.replyTo;
   var kind=kindOverride||(/^Job radar:/.test(String(subject))?'jobs':null);
   if(kind){var manage=receiverMailControls_(kind,to,reminderId);m.body+='\n\nManage your alerts: '+manage.text;if(html)html+=manage.html;}
-  if(kind){var tpl=mailTemplatePublic_(kind);if(tpl){subject=tpl.subject.replace(/\{\{subject\}\}/g,subject);m.subject=subject;var content=String(html||'').replace(manage.html,'');html=tpl.html.replace(/\{\{content\}\}/g,content).replace(/\{\{controls\}\}/g,manage.html);}}
+  if(kind){var tpl=mailTemplatePublic_(kind);if(tpl){var subj0=subject;subject=tpl.subject.replace(/\{\{subject\}\}/g,function(){return subj0;});m.subject=subject;var content=String(html||'').replace(manage.html,'');html=tpl.html.replace(/\{\{subject\}\}/g,function(){return subject;}).replace(/\{\{content\}\}/g,function(){return content;}).replace(/\{\{controls\}\}/g,function(){return manage.html;});}}
   if (html) m.htmlBody = html + footerHtml_();
   MailApp.sendEmail(m);
 }
@@ -59,14 +59,15 @@ function dropTriggers_(fns) { ScriptApp.getProjectTriggers().forEach(function (t
 
 /* ================= ROUTING ================= */
 function doGet(e) {
-  var p = (e && e.parameter) || {}, a = String(p.action || '');
+  var p = (e && e.parameter) || {}, a = String(p.action || ''); rememberUrl_();
   try {
     switch (a) {
-      case 'deployment_check': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, adminAuth: 'supabase', family: true, jobsDb: true });
-      case 'family_ping': return jsonOut_({ ok: true, service: 'family', version: CAREERPULSE_BACKEND_VERSION });
-      case 'backend_version': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, capabilities: ['admin_receiver_set','admin_receiver_reminders','admin_receiver_list','admin_mail_template_save','admin_mail_templates','admin_monitor_record','admin_monitor_logs'] });
+      case 'deployment_check': var jh = jobsHealth_(); return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, adminAuth: 'supabase', family: true, jobsDb: true, jobsOk: jh.ok, jobsReason: jh.reason });
+      case 'family_ping': var fh = familyHealth_(); return jsonOut_({ ok: true, service: 'family', version: CAREERPULSE_BACKEND_VERSION, senderRunning: fh.ok, senderReason: fh.reason });
+      case 'backend_version': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, execUrl: liveUrl_(), capabilities: ['admin_receiver_set','admin_receiver_reminders','admin_receiver_list','admin_mail_template_save','admin_mail_templates','admin_monitor_record','admin_monitor_logs','admin_family_list','admin_family_set_enabled','admin_family_delete','admin_reminder_delete','admin_receiver_clear','monitor_recovery','admin_sessions','admin_session_ping','admin_session_revoke','admin_logout_all','page_status','admin_pages','admin_page_flags_save','admin_page_add','admin_page_remove'] });
       case 'family_status': return jsonOut_(familyPublicStatus_());
-      case 'family_suggest': return jsonOut_(familySuggestions_(p.kind, p.q));
+      case 'family_suggest': if (!pageFlag_('family').enabled) return jsonOut_({ ok: false, error: 'page_disabled' }); return jsonOut_(familySuggestions_(p.kind, p.q));
+      case 'page_status': return jsonOut_(pageStatusPublic_(p.page));
       case 'page_config': return jsonOut_(pageConfigPublic_(p.page));
       case 'page_manifest': return jsonOut_(pageManifestPublic_(p.page));
       case 'search_results': return jsonOut_(searchResults_(p.query));
@@ -84,6 +85,9 @@ function doGet(e) {
       case 'admin_job_search': portalRequireAdmin_(p.auth); return jsonOut_({ ok: true, data: searchResults_(p.query) });
       case 'admin_dashboard': return jsonOut_(adminDashboard_(p.auth));
       case 'admin_monitor_logs': return jsonOut_(monitorLogs_(p.auth));
+      case 'admin_family_list': return jsonOut_(adminFamilyList_(p.auth));
+      case 'admin_sessions': return jsonOut_(adminSessions_(p.auth));
+      case 'admin_pages': return jsonOut_(adminPages_(p.auth));
       case 'admin_receiver_list': return jsonOut_(receiverList_(p.auth));
       case 'admin_receiver_reminders': return jsonOut_(receiverReminders_(p.auth,p.type));
       case 'admin_mail_templates': return jsonOut_(mailTemplates_(p.auth));
@@ -97,7 +101,7 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  var p = (e && e.parameter) || {}, a = String(p.action || '');
+  var p = (e && e.parameter) || {}, a = String(p.action || ''); rememberUrl_();
   try {
     switch (a) {
       case 'portal_admin_save': return jsonOut_(portalAdminSave_(p.auth, p.portal || p.config || p.data));
@@ -115,6 +119,16 @@ function doPost(e) {
       case 'admin_sender_save': return jsonOut_(adminSenderSave_(p.auth, p.config));
       case 'admin_sender_test': return jsonOut_(adminSenderTest_(p.auth));
       case 'admin_monitor_record': return jsonOut_(monitorRecord_(p.auth,p.record));
+      case 'admin_family_set_enabled': return jsonOut_(adminFamilySetEnabled_(p.auth,p.id,p.enabled));
+      case 'admin_family_delete': return jsonOut_(adminFamilyDelete_(p.auth,p.ids));
+      case 'admin_session_ping': return jsonOut_(adminSessionPing_(p.auth,p.label));
+      case 'admin_session_revoke': return jsonOut_(adminSessionRevoke_(p.auth,p.id));
+      case 'admin_logout_all': return jsonOut_(adminLogoutAll_(p.auth));
+      case 'admin_page_flags_save': return jsonOut_(adminPageFlagsSave_(p.auth,p.page,p.enabled,p.sender,p.message));
+      case 'admin_page_add': return jsonOut_(adminPageAdd_(p.auth,p.page,p.title));
+      case 'admin_page_remove': return jsonOut_(adminPageRemove_(p.auth,p.page));
+      case 'admin_reminder_delete': return jsonOut_(adminReminderDelete_(p.auth,p.type,p.address,p.id));
+      case 'admin_receiver_clear': return jsonOut_(receiverClear_(p.auth,p.type,p.address,p.reminderId));
       case 'admin_receiver_set': return jsonOut_(receiverSet_(p.auth,p.type,p.address,p.status,p.until,p.reminderId));
       case 'admin_mail_template_save': return jsonOut_(mailTemplateSave_(p.auth,p.type,p.subject,p.html));
       case 'receiver_confirm': return receiverConfirm_(p);
@@ -150,6 +164,7 @@ function jobsTick() {
   if (!lock.tryLock(1000)) return;
   try {
     if (g('ENABLED', '0') !== '1') return;
+    if (!pageFlag_('jobs').sender) return;      // switched off in Admin > Sender
     var base = {
       times: jsonProp_('TIMES_JSON', []), repeat: g('REPEAT', 'daily'), repeatDays: jsonProp_('REPEAT_DAYS_JSON', []),
       timezone: g('TIMEZONE', Session.getScriptTimeZone()), days: g('DAYS', '1'),
@@ -205,7 +220,7 @@ function digest(force) {
     return 0;
   }
   var html = '<h3>' + jobs.length + ' new openings</h3>' + jobs.slice(0, 50).map(function (j) {
-    return '<p><a href="' + familyHtml_(j.u) + '"><b>' + familyHtml_(j.t) + '</b></a><br>' + familyHtml_(j.c) + ' &middot; ' + familyHtml_(j.l) + '</p>';
+    return '<p><a href="' + safeUrl_(j.u) + '"><b>' + familyHtml_(j.t) + '</b></a><br>' + familyHtml_(j.c) + ' &middot; ' + familyHtml_(j.l) + '</p>';
   }).join('') + (errText ? '<p style="color:#b00">Some searches failed: ' + familyHtml_(errText) + '</p>' : '');
   sendMail_(to, 'Job radar: ' + jobs.length + ' new openings' + (test ? ' (test)' : ''), html, jobs.length + ' new openings:\n' + jobs.slice(0, 20).map(function (j) { return '- ' + j.t + ' - ' + j.c + ' ' + j.u; }).join('\n'));
   if (!test) P.setProperty('SEEN', JSON.stringify(jsonProp_('SEEN', []).concat(jobs.map(function (j) { return j.id; })).slice(-500)));
@@ -215,6 +230,7 @@ function digest(force) {
 function radarApi_(e) {
   var p = (e && e.parameter) || {}, result;
   if (!g('TOKEN', '') || p.token !== g('TOKEN')) return jsonOut_({ error: 'Wrong token' });
+  if (!pageFlag_('jobs').enabled) return jsonOut_({ error: 'page_disabled', message: pageStatusPublic_('jobs').message });
   var lock = LockService.getScriptLock(), locked = false;
   try {
     var action = p.action || 'status', sent;
@@ -271,7 +287,7 @@ function diagnose() {
   var k = g('KW', '').split('|').filter(String)[0] || 'developer', l = g('LOC', '').split('|').filter(String).map(normLoc_)[0] || '', lines = [];
   function run(label, what, where, d) {
     var url = 'https://api.adzuna.com/v1/api/jobs/in/search/1?app_id=' + encodeURIComponent(g('ADZUNA_ID')) + '&app_key=' + encodeURIComponent(g('ADZUNA_KEY')) +
-      '&results_per_page=' + q.maxResults + '&max_days_old=' + d + '&what=' + encodeURIComponent(what) + (where ? '&where=' + encodeURIComponent(where) : '');
+      '&results_per_page=20&max_days_old=' + d + '&what=' + encodeURIComponent(what) + (where ? '&where=' + encodeURIComponent(where) : '');
     try { var r = UrlFetchApp.fetch(url, { muteHttpExceptions: true }); lines.push(label + ': ' + (r.getResponseCode() !== 200 ? 'HTTP ' + r.getResponseCode() + ' ' + r.getContentText().slice(0, 120) : JSON.parse(r.getContentText()).count + ' matches')); }
     catch (e) { lines.push(label + ': error ' + e.message); }
   }
@@ -378,12 +394,7 @@ function sendReminder_(key, s, force, dueSlot) {
   var errors = res.errors, roles = (s.roles || []).join(', ') || 'All jobs', locations = (s.locations || []).join(', ') || 'Any location';
   var hi = s.firstName ? 'Hi ' + familyHtml_(s.firstName) + ',' : '';
   if (s.channel === 'email') {
-    var html = '<div style="font-family:Arial,sans-serif;max-width:760px"><h2>CareerPulse job reminder</h2>' + (hi ? '<p>' + hi + '</p>' : '') +
-      '<p><b>Roles:</b> ' + familyHtml_(roles) + '<br><b>Locations:</b> ' + familyHtml_(locations) + '</p>';
-    html += jobs.length ? jobs.slice(0, 25).map(function (j) { return '<p><a href="' + familyHtml_(j.u) + '"><b>' + familyHtml_(j.t) + '</b></a><br>' + familyHtml_(j.c) + ' &middot; ' + familyHtml_(j.l) + '</p>'; }).join('')
-      : '<p>No new matching openings right now. Your reminder remains active.</p>';
-    if (errors.length) html += '<p style="color:#a33">Some searches failed: ' + familyHtml_(errors.join(' | ')) + '</p>';
-    html += '<p style="color:#60747d;font-size:12px">Posted within ' + familyHtml_(String(s.days || 7)) + ' day(s)</p></div>';
+    var html = reminderHtml_(hi, roles, locations, jobs, errors, s.days);
     sendMail_(address, 'CareerPulse: ' + jobs.length + ' new job' + (jobs.length === 1 ? '' : 's') + ' for ' + roles, html,
       'CareerPulse found ' + jobs.length + ' new job(s) for ' + roles + ' in ' + locations + '.\n' + jobs.slice(0, 10).map(function (j) { return '- ' + j.t + ' - ' + j.c + ' ' + j.u; }).join('\n'),key.indexOf('FAM_')===0?'family':'jobs',key);
   } else if (s.channel === 'whatsapp') {
@@ -431,6 +442,7 @@ function familySettings_(row) { var s = Object.assign({}, row.settings || {}); i
 function familySupabaseTick() {
   var lock = LockService.getScriptLock(); if (!lock.tryLock(1000)) return;
   try {
+    if (!pageFlag_('family').sender) return;   // switched off in Admin > Sender
     var now = new Date();
     familySupabaseReminders_().forEach(function (row) {
       try { var key = 'FAM_' + row.id, s = familySettings_(row), due = scheduleDueSlot_(key, s, now); if (due) sendReminder_(key, s, false, due); }
@@ -448,6 +460,10 @@ function portalRequireAdmin_(tok) {
   // SECURITY FIX: any signed-in Supabase user used to be treated as admin. Enforce an allow-list.
   var allow = g('ADMIN_EMAILS', '').toLowerCase().split(/[\s,;]+/).filter(String);
   if (allow.length && allow.indexOf(String(u.email || '').toLowerCase()) < 0) throw new Error('This account is not an authorised admin.');
+  var c = jwtClaims_(tok), rv = Number(P.getProperty('ADMIN_REVOKE_' + shortKey_(u.id)) || 0);
+  if (rv && Number(c.iat || 0) * 1000 < rv) throw new Error('You were signed out of all devices. Please sign in again.');
+  u._sid = sessionId_(c);
+  var ss = sessionsLoad_(); if (ss[u._sid] && ss[u._sid].x) throw new Error('This device was signed out. Please sign in again.');
   return u;
 }
 function portalLoad_() { return jsonProp_('PORTALS_JSON', []); }
@@ -573,7 +589,7 @@ function adminDashboard_(tok) {
   var fam = 0, famErr = ''; try { fam = familySupabaseReminders_().length; } catch (e) { famErr = e.message; }   // FIX: one failing source no longer kills the dashboard
   return { ok: true, status: {
     jobsSender: (trigExists_('digest') || trigExists_('jobsTick')) ? 'running' : 'stopped', familySender: trigExists_('familySupabaseTick') ? 'running' : 'stopped',
-    jobSources: portalEnabled_().length, familyReminders: fam, familyError: famErr, lastJobsRun: g('LAST', '') || 'Not yet', lastJobsError: g('LASTERR', ''), familyCheck: 'Every 5 minutes' } };
+    jobSources: portalEnabled_().length, familyReminders: fam, familyError: famErr, lastJobsRun: g('LAST', '') || 'Not yet', lastJobsError: g('LASTERR', ''), familyCheck: 'Every 5 minutes', pagesOff: Object.keys(PAGE_BUILTIN_).filter(function (k) { return !pageFlag_(k).enabled; }), sendersOff: Object.keys(PAGE_BUILTIN_).filter(function (k) { return !pageFlag_(k).sender; }), activeSessions: activeAdminSessions_() } };
 }
 function adminJobData_(tok) {
   portalRequireAdmin_(tok);
@@ -669,19 +685,11 @@ function shortKeyless_(id) { return String(id); }
 
 /* Admin monitoring and receiver delivery preferences. Script Properties persist across deployments. */
 function receiverKey_(type,address,reminderId){return 'RCV_'+shortKey_(String(type).toLowerCase()+':'+String(address).trim().toLowerCase()+(reminderId?':'+reminderId:''));}
-function receiverBlocked_(type,address,reminderId){var p=PropertiesService.getScriptProperties();return [receiverKey_(type,address),reminderId?receiverKey_(type,address,reminderId):''].some(function(k){if(!k)return false;var raw=p.getProperty(k);if(!raw)return false;try{var x=JSON.parse(raw);return x.status==='disabled'||(x.status==='paused'&&(!x.until||Date.now()<Date.parse(x.until)));}catch(e){return false;}});}
-function receiverSet_(auth,type,address,status,until,reminderId){portalRequireAdmin_(auth);type=String(type||'').toLowerCase();address=String(address||'').trim().toLowerCase();status=String(status||'');if(['jobs','family'].indexOf(type)<0||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)||['active','paused','disabled'].indexOf(status)<0)throw Error('Invalid type, email or status');if(until&&!isFinite(Date.parse(until)))throw Error('Invalid pause end time');var p=PropertiesService.getScriptProperties(),key=receiverKey_(type,address,reminderId);if(status==='active')p.deleteProperty(key);else p.setProperty(key,JSON.stringify({type:type,address:address,reminderId:String(reminderId||''),status:status,until:status==='paused'?String(until||''):'',updated:new Date().toISOString()}));return {ok:true};}
 function receiverList_(auth){portalRequireAdmin_(auth);var p=PropertiesService.getScriptProperties().getProperties(),rows=[];Object.keys(p).filter(function(k){return k.indexOf('RCV_')===0;}).forEach(function(k){try{rows.push(JSON.parse(p[k]));}catch(e){}});return {ok:true,rows:rows};}
-function monitorRecord_(auth,record){portalRequireAdmin_(auth);var x=JSON.parse(record||'{}');if(!['jobs','family','backend','supabase'].includes(x.service))throw Error('Unknown service');var p=PropertiesService.getScriptProperties(),rows=JSON.parse(p.getProperty('MONITOR_LOGS')||'[]');rows.unshift({time:new Date().toISOString(),service:x.service,status:String(x.status||'unknown').slice(0,30),durationMs:Number(x.durationMs)||0,reason:String(x.reason||'').slice(0,500)});p.setProperty('MONITOR_LOGS',JSON.stringify(rows.slice(0,80)));return {ok:true};}
-function monitorLogs_(auth){portalRequireAdmin_(auth);return {ok:true,rows:JSON.parse(PropertiesService.getScriptProperties().getProperty('MONITOR_LOGS')||'[]')};}
 
 /* Secure receiver self-service: signed expiring links; confirmation required. */
 function receiverSecret_(){var p=PropertiesService.getScriptProperties(),v=p.getProperty('RECEIVER_LINK_SECRET');if(!v){v=Utilities.getUuid()+Utilities.getUuid();p.setProperty('RECEIVER_LINK_SECRET',v);}return v;}
 function receiverSignature_(payload){return Utilities.base64EncodeWebSafe(Utilities.computeHmacSha256Signature(payload,receiverSecret_())).replace(/=+$/,'');}
-function receiverMailControls_(type,address,reminderId){var base=ScriptApp.getService().getUrl(),expiry=Date.now()+30*86400000;var labels=[['active','Resume / Active'],['paused','Pause'],['disabled','Disable']];var links=labels.map(function(a){var payload=[type,address.toLowerCase(),a[0],expiry,String(reminderId||'')].join('|');var url=base+'?action=receiver_manage&type='+encodeURIComponent(type)+'&address='+encodeURIComponent(address)+'&status='+a[0]+'&expires='+expiry+'&reminderId='+encodeURIComponent(reminderId||'')+'&sig='+encodeURIComponent(receiverSignature_(payload));return {label:a[1],url:url};});return {text:links.map(function(x){return x.label+': '+x.url;}).join('\n'),html:'<p style="font-size:13px"><b>Manage '+type+' emails:</b><br>'+links.map(function(x){return '<a style="display:inline-block;margin:6px;padding:8px;border:1px solid #087c6d;border-radius:6px" href="'+x.url+'">'+x.label+'</a>';}).join('')+'</p>'};}
-function receiverVerify_(p){var type=String(p.type||''),address=String(p.address||'').trim().toLowerCase(),status=String(p.status||''),expires=Number(p.expires);if(['jobs','family'].indexOf(type)<0||['active','paused','disabled'].indexOf(status)<0||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)||!isFinite(expires)||expires<Date.now()||expires>Date.now()+31*86400000)throw Error('Invalid or expired link');var payload=[type,address,status,expires,String(p.reminderId||'')].join('|');if(receiverSignature_(payload)!==String(p.sig||''))throw Error('Invalid signature');return {type:type,address:address,status:status,reminderId:String(p.reminderId||'')};}
-function receiverManagePage_(p){try{var x=receiverVerify_(p),esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');};var hidden=['type','address','status','expires','sig','reminderId'].map(function(k){return '<input type="hidden" name="'+k+'" value="'+esc(p[k])+'">';}).join('');return HtmlService.createHtmlOutput('<html><meta name="viewport" content="width=device-width"><body style="font:16px system-ui;max-width:520px;margin:60px auto;padding:20px"><h2>Confirm '+esc(x.status)+'</h2><p>Apply this change to <b>'+esc(x.type)+'</b> reminders for <b>'+esc(x.address)+'</b>?</p><form method="post" action="'+ScriptApp.getService().getUrl()+'"><input type="hidden" name="action" value="receiver_confirm">'+hidden+'<button style="padding:12px">Confirm</button></form><p>Close this page to cancel.</p></body></html>');}catch(e){return HtmlService.createHtmlOutput('Invalid or expired link. Request a new reminder email.');}}
-function receiverConfirm_(p){try{var x=receiverVerify_(p),key=receiverKey_(x.type,x.address,x.reminderId),props=PropertiesService.getScriptProperties();if(x.status==='active')props.deleteProperty(key);else props.setProperty(key,JSON.stringify({type:x.type,address:x.address,reminderId:x.reminderId,status:x.status,until:'',updated:new Date().toISOString(),source:'email'}));return HtmlService.createHtmlOutput('<h2>Preference saved</h2><p>'+x.type+' reminders are now '+x.status+'. You can close this page.</p>');}catch(e){return HtmlService.createHtmlOutput('<h2>Link expired or invalid</h2><p>No changes were made.</p>');}}
 
 function familyAllSupabaseReminders_(){
   familyRequireSupabase_();
@@ -700,10 +708,361 @@ function receiverReminders_(auth,type){
   }else if(type==='jobs'){
     jobsRecipients_().forEach(function(r){if(r.channel==='email'&&r.address)rows.push({id:'JOBS_'+shortKey_(r.channel+':'+String(r.address).toLowerCase()),address:String(r.address).toLowerCase(),label:(r.roles||[]).join(', ')||'Jobs reminder',locations:'',enabled:true});});
   }else throw Error('Invalid reminder type');
-  var props=PropertiesService.getScriptProperties();rows.forEach(function(r){var raw=props.getProperty(receiverKey_(type,r.address,r.id))||props.getProperty(receiverKey_(type,r.address));try{var x=JSON.parse(raw||'{}');r.status=x.status==='paused'&&x.until&&Date.now()>=Date.parse(x.until)?'active':(x.status||'active');r.until=x.until||'';}catch(e){r.status='active';}});
+  rows.forEach(function(r){var rec=receiverRec_(type,r.address,r.id)||receiverRec_(type,r.address,'');r.status=receiverEffective_(rec);r.until=rec&&r.status==='paused'?(rec.until||''):'';});
   return {ok:true,rows:rows};
 }
 /* Templates are admin-only and persist across deployments. {{content}} and {{controls}} are placeholders. */
 function mailTemplatePublic_(type){try{return JSON.parse(PropertiesService.getScriptProperties().getProperty('MAIL_TEMPLATE_'+type)||'null');}catch(e){return null;}}
 function mailTemplates_(auth){portalRequireAdmin_(auth);return {ok:true,jobs:mailTemplatePublic_('jobs'),family:mailTemplatePublic_('family')};}
 function mailTemplateSave_(auth,type,subject,html){portalRequireAdmin_(auth);if(['jobs','family'].indexOf(type)<0)throw Error('Invalid template type');subject=String(subject||'').slice(0,250);html=String(html||'');if(html.length>25000)throw Error('Template too large');if(html&&html.indexOf('{{content}}')<0)throw Error('Include {{content}} in HTML template');if(html&&html.indexOf('{{controls}}')<0)throw Error('Include {{controls}} so recipients can manage reminders');var data=html?{subject:subject||'{{subject}}',html:html}:null;var p=PropertiesService.getScriptProperties();if(data)p.setProperty('MAIL_TEMPLATE_'+type,JSON.stringify(data));else p.deleteProperty('MAIL_TEMPLATE_'+type);return {ok:true};}
+
+/* =====================================================================
+   v9 ADDITIONS
+   - Recipient e-mail buttons (Enable / Pause / Disable / Delete) that really work
+   - Receiver override logic (per-reminder record wins over the address-wide one)
+   - Admin Family list / enable / delete through the service key (bypasses RLS)
+   - Health monitor with failure AND recovery events, downtime, server-side checks
+   ===================================================================== */
+/* The URL the current request arrived on. Saved automatically so e-mail buttons always use the newest deployment
+   (no more editing DEFAULT_WEBAPP_URL_ after a new deployment). */
+function liveUrl_() { try { var u = ScriptApp.getService().getUrl() || ''; return /\/exec$/.test(u) ? u : ''; } catch (e) { return ''; } }
+function rememberUrl_() { try { var u = liveUrl_(); if (u && g('WEBAPP_URL', '') !== u) P.setProperty('WEBAPP_URL', u); } catch (e) {} }
+var DEFAULT_WEBAPP_URL_ = 'https://script.google.com/macros/s/AKfycbwx3QFZKcyvzKzXRca_ms_g7l4rj-G45VvmdMq9-qY13BQ2fJGbXGofJeei5pqDtld3/exec';
+/* Public /exec URL used inside e-mail links. Optional script property WEBAPP_URL overrides it.
+   (ScriptApp.getService().getUrl() can return a /dev URL when called from a trigger, which broke the links.) */
+function webAppUrl_() {
+  var u = g('WEBAPP_URL', '').trim();
+  if (/^https:\/\/script\.google\.com\/.+\/exec$/.test(u)) return u;
+  try { u = ScriptApp.getService().getUrl() || ''; } catch (e) { u = ''; }
+  return /\/exec$/.test(u) ? u : DEFAULT_WEBAPP_URL_;
+}
+function safeUrl_(u) { u = String(u || ''); return familyHtml_(/^https?:\/\//i.test(u) ? u : '#'); }
+
+/* ---------- attractive default reminder e-mail ---------- */
+function reminderHtml_(hi, roles, locations, jobs, errors, days) {
+  var cards = jobs.length ? jobs.slice(0, 25).map(function (j) {
+    return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e1eaee;border-radius:12px;margin:0 0 10px;background:#ffffff"><tr><td style="padding:14px 16px">' +
+      '<div style="font-size:16px;font-weight:bold;color:#17323e">' + familyHtml_(j.t) + '</div>' +
+      '<div style="font-size:13px;color:#5b707b;margin:3px 0 10px">' + familyHtml_(j.c || 'Company not listed') + ' &middot; ' + familyHtml_(j.l || 'Location not listed') + '</div>' +
+      '<a href="' + safeUrl_(j.u) + '" style="display:inline-block;padding:8px 14px;border-radius:8px;background:#087c6d;color:#ffffff;text-decoration:none;font-size:13px;font-weight:bold">View &amp; apply</a></td></tr></table>';
+  }).join('') : '<div style="padding:16px;border:1px dashed #b9ccd3;border-radius:12px;color:#4b616c">No new matching openings right now. Your reminder is still active.</div>';
+  return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:auto;background:#f3f7fa;padding:18px;border-radius:16px">' +
+    '<div style="background:linear-gradient(135deg,#087c6d,#155d75);background-color:#087c6d;color:#ffffff;padding:22px 24px;border-radius:14px">' +
+    '<div style="font-size:12px;letter-spacing:2px;font-weight:bold;opacity:.9">CAREERPULSE</div><div style="font-size:22px;font-weight:bold;margin-top:6px">' + (hi ? hi : 'Your job reminder') + '</div>' +
+    '<div style="font-size:13px;margin-top:6px;opacity:.92">' + jobs.length + ' new opening' + (jobs.length === 1 ? '' : 's') + ' for you</div></div>' +
+    '<p style="font-size:13px;color:#4b616c;margin:14px 2px"><b>Roles:</b> ' + familyHtml_(roles) + '<br><b>Locations:</b> ' + familyHtml_(locations) + '</p>' + cards +
+    (errors.length ? '<p style="color:#a33;font-size:12px">Some searches failed: ' + familyHtml_(errors.join(' | ')) + '</p>' : '') +
+    '<p style="color:#60747d;font-size:12px;margin:10px 2px">Posted within ' + familyHtml_(String(days || 7)) + ' day(s)</p></div>';
+}
+
+/* ---------- receiver overrides ---------- */
+function receiverRec_(type, address, id) {
+  var raw = P.getProperty(receiverKey_(type, address, id));
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch (e) { return null; }
+}
+function receiverEffective_(rec) {
+  if (!rec) return 'active';
+  if (rec.status === 'paused' && rec.until && Date.now() >= Date.parse(rec.until)) return 'active';   // pause expired
+  return rec.status || 'active';
+}
+/* Store a preference. 'active' on one reminder writes an explicit record when an address-wide block exists,
+   otherwise the Resume button used to do nothing because the wide block still applied. */
+function receiverStore_(type, address, status, until, reminderId, source) {
+  var key = receiverKey_(type, address, reminderId);
+  if (status === 'active') {
+    if (reminderId && receiverRec_(type, address, '')) P.setProperty(key, JSON.stringify({ type: type, address: address, reminderId: String(reminderId), status: 'active', until: '', updated: new Date().toISOString(), source: source || 'admin' }));
+    else P.deleteProperty(key);
+    return;
+  }
+  P.setProperty(key, JSON.stringify({ type: type, address: address, reminderId: String(reminderId || ''), status: status, until: status === 'paused' ? String(until || '') : '', updated: new Date().toISOString(), source: source || 'admin' }));
+}
+function receiverBlocked_(type, address, reminderId) {
+  var rec = reminderId ? receiverRec_(type, address, reminderId) : null;
+  if (!rec) rec = receiverRec_(type, address, '');
+  var st = receiverEffective_(rec);
+  return st === 'disabled' || st === 'paused';
+}
+function receiverSet_(auth, type, address, status, until, reminderId) {
+  portalRequireAdmin_(auth); type = String(type || '').toLowerCase(); address = String(address || '').trim().toLowerCase(); status = String(status || '');
+  if (['jobs', 'family'].indexOf(type) < 0 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address) || ['active', 'paused', 'disabled'].indexOf(status) < 0) throw Error('Invalid type, email or status');
+  if (until && !isFinite(Date.parse(until))) throw Error('Invalid pause end time');
+  receiverStore_(type, address, status, until, reminderId, 'admin');
+  return { ok: true };
+}
+function receiverClear_(auth, type, address, reminderId) {
+  portalRequireAdmin_(auth); P.deleteProperty(receiverKey_(String(type || '').toLowerCase(), String(address || '').trim().toLowerCase(), reminderId)); return { ok: true };
+}
+
+/* ---------- delete a reminder (Family row or Jobs recipient) ---------- */
+function familyDeleteRows_(ids) {
+  ids = (ids || []).map(String).filter(function (x) { return /^[A-Za-z0-9_-]+$/.test(x); });
+  if (!ids.length) throw Error('No valid reminder ids.');
+  var rows = jobDbReq_('delete', 'family_reminders?id=in.(' + ids.map(encodeURIComponent).join(',') + ')', undefined, 'return=representation');
+  ids.forEach(function (id) { P.deleteProperty('SENT_FAM_' + id); P.deleteProperty('SEEN_FAM_' + id); });
+  return rows.length;
+}
+function reminderDelete_(type, address, id) {
+  address = String(address || '').trim().toLowerCase(); id = String(id || '');
+  if (type === 'family') {
+    if (id.indexOf('FAM_') !== 0) throw Error('Missing reminder id.');
+    var n = familyDeleteRows_([id.slice(4)]);
+    if (!n) throw Error('Reminder was not found (already deleted?).');
+    P.deleteProperty(receiverKey_('family', address, id));
+    return;
+  }
+  var list = jsonProp_('RECIPIENTS_JSON', []), before = list.length;
+  list = list.filter(function (r) { return !(r && 'JOBS_' + shortKey_(r.channel + ':' + String(r.address).toLowerCase()) === id); });
+  P.setProperty('RECIPIENTS_JSON', JSON.stringify(list));
+  P.deleteProperty('SENT_' + id); P.deleteProperty('SEEN_' + id);
+  // keep it blocked: the Jobs page re-sends its own recipient list on the next "Save & sync"
+  receiverStore_('jobs', address, 'disabled', '', id, 'delete');
+  if (list.length === before) Logger.log('Jobs recipient ' + address + ' was not in RECIPIENTS_JSON; blocked instead.');
+}
+function adminReminderDelete_(auth, type, address, id) {
+  portalRequireAdmin_(auth); type = String(type || '').toLowerCase();
+  if (['jobs', 'family'].indexOf(type) < 0) throw Error('Invalid reminder type');
+  reminderDelete_(type, address, id); return { ok: true };
+}
+
+/* ---------- e-mail link handling ---------- */
+var RECEIVER_ACTIONS_ = [['active', 'Enable', '#0b8a6f'], ['paused', 'Pause', '#c98a12'], ['disabled', 'Disable', '#5b6b76'], ['delete', 'Delete', '#b83232']];
+function receiverMailControls_(type, address, reminderId) {
+  var base = webAppUrl_(), expiry = Date.now() + 90 * 86400000, addr = String(address).trim().toLowerCase(), rid = String(reminderId || '');
+  var links = RECEIVER_ACTIONS_.map(function (a) {
+    var payload = [type, addr, a[0], expiry, rid].join('|');
+    return { label: a[1], color: a[2], url: base + '?action=receiver_manage&type=' + encodeURIComponent(type) + '&address=' + encodeURIComponent(addr) + '&status=' + a[0] + '&expires=' + expiry + '&reminderId=' + encodeURIComponent(rid) + '&sig=' + encodeURIComponent(receiverSignature_(payload)) };
+  });
+  var btns = links.map(function (x) { return '<a href="' + x.url + '" style="display:inline-block;margin:4px 6px 4px 0;padding:9px 16px;border-radius:8px;background:' + x.color + ';color:#ffffff;text-decoration:none;font-weight:bold;font-size:13px">' + x.label + '</a>'; }).join('');
+  return {
+    text: links.map(function (x) { return x.label + ': ' + x.url; }).join('\n'),
+    html: '<div style="margin-top:18px;padding:14px;border:1px solid #dde6ea;border-radius:12px;background:#f7fafb"><div style="font-size:13px;font-weight:bold;color:#17323e;margin-bottom:6px">Manage these ' + type + ' reminders</div>' + btns +
+      '<div style="font-size:11px;color:#667782;margin-top:6px">Each button asks you to confirm first. Delete removes the reminder permanently.</div></div>'
+  };
+}
+function receiverVerify_(p) {
+  var type = String(p.type || ''), address = String(p.address || '').trim().toLowerCase(), status = String(p.status || ''), expires = Number(p.expires);
+  if (['jobs', 'family'].indexOf(type) < 0 || ['active', 'paused', 'disabled', 'delete'].indexOf(status) < 0 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address) || !isFinite(expires) || expires < Date.now() || expires > Date.now() + 92 * 86400000) throw Error('Invalid or expired link');
+  var payload = [type, address, status, expires, String(p.reminderId || '')].join('|');
+  if (receiverSignature_(payload) !== String(p.sig || '')) throw Error('Invalid signature');
+  return { type: type, address: address, status: status, reminderId: String(p.reminderId || '') };
+}
+function receiverApply_(x) {
+  if (x.status === 'delete') { reminderDelete_(x.type, x.address, x.reminderId); return 'Your ' + x.type + ' reminder was deleted. You will not receive it again.'; }
+  receiverStore_(x.type, x.address, x.status, '', x.reminderId, 'email');
+  return { active: 'Your ' + x.type + ' reminders are enabled again.', paused: 'Your ' + x.type + ' reminders are paused. Use the Enable button in any earlier email to resume.', disabled: 'Your ' + x.type + ' reminders are disabled.' }[x.status];
+}
+/* Called from the confirm page through google.script.run (a plain <form> POST is blocked inside the Apps Script sandbox iframe). Needs the signed link parameters. */
+function receiverApplyPublic(p) { return receiverApply_(receiverVerify_(p || {})); }
+function receiverPageShell_(inner, script) {
+  return HtmlService.createHtmlOutput('<!doctype html><html><head><base target="_top"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font:16px system-ui,Segoe UI,Arial,sans-serif;background:#f3f7fa;color:#17323e;display:grid;place-items:center;min-height:100vh;padding:16px;box-sizing:border-box}.box{max-width:460px;width:100%;background:#fff;border-radius:20px;padding:30px 26px;box-shadow:0 14px 40px #17323e22;text-align:center}.ic{font-size:44px}h2{margin:10px 0 6px}p{color:#4b616c;line-height:1.55}button{border:0;border-radius:12px;padding:13px 26px;font-size:16px;font-weight:700;color:#fff;background:#087c6d;cursor:pointer;margin-top:8px}button:disabled{opacity:.6}.bad{background:#b83232}.out{margin-top:14px;font-weight:600}</style></head><body><div class="box">' + inner + '</div>' + (script || '') + '</body></html>').setTitle('CareerPulse reminders');
+}
+function receiverManagePage_(p) {
+  try {
+    var x = receiverVerify_(p), words = { active: 'enable', paused: 'pause', disabled: 'disable', 'delete': 'permanently delete' };
+    var params = { type: String(p.type || ''), address: String(p.address || ''), status: String(p.status || ''), expires: String(p.expires || ''), sig: String(p.sig || ''), reminderId: String(p.reminderId || '') };
+    var json = JSON.stringify(params).replace(/</g, '\\u003c');
+    var danger = x.status === 'delete' || x.status === 'disabled';
+    return receiverPageShell_('<div class="ic">' + (x.status === 'delete' ? '🗑️' : x.status === 'active' ? '✅' : x.status === 'paused' ? '⏸️' : '🚫') + '</div><h2>Please confirm</h2><p>Do you want to <b>' + words[x.status] + '</b> the <b>' + familyHtml_(x.type) + '</b> reminders for <b>' + familyHtml_(x.address) + '</b>?</p><button id="ok" class="' + (danger ? 'bad' : '') + '">Yes, ' + words[x.status] + '</button><p class="out" id="out"></p><p style="font-size:13px">To cancel, just close this page.</p>',
+      '<script>var P=' + json + ';var ok=document.getElementById("ok"),out=document.getElementById("out");ok.onclick=function(){ok.disabled=true;out.textContent="Saving…";google.script.run.withSuccessHandler(function(m){ok.style.display="none";out.style.color="#0b6b55";out.textContent="✓ "+m}).withFailureHandler(function(e){ok.disabled=false;out.style.color="#b83232";out.textContent="Could not save: "+(e&&e.message?e.message:e)}).receiverApplyPublic(P)}</script>');
+  } catch (e) { return receiverPageShell_('<div class="ic">⌛</div><h2>Link expired or invalid</h2><p>No changes were made. Please use the buttons in your latest reminder email.</p>'); }
+}
+/* Kept so links in older e-mails (plain form POST) still work. */
+function receiverConfirm_(p) {
+  try { var msg = receiverApply_(receiverVerify_(p)); return receiverPageShell_('<div class="ic">✅</div><h2>Preference saved</h2><p>' + familyHtml_(msg) + '</p>'); }
+  catch (e) { return receiverPageShell_('<div class="ic">⌛</div><h2>Link expired or invalid</h2><p>No changes were made.</p>'); }
+}
+
+/* ---------- admin: Family reminders through the service key (RLS can silently ignore browser updates / deletes) ---------- */
+function adminFamilyList_(auth) { portalRequireAdmin_(auth); return { ok: true, rows: familyAllSupabaseReminders_() }; }
+function adminFamilySetEnabled_(auth, id, enabled) {
+  portalRequireAdmin_(auth); id = String(id || '');
+  if (!/^[A-Za-z0-9_-]+$/.test(id)) throw Error('Invalid reminder id.');
+  var rows = jobDbReq_('patch', 'family_reminders?id=eq.' + encodeURIComponent(id), { enabled: String(enabled) === 'true' }, 'return=representation');
+  if (!rows.length) throw Error('Reminder not found.');
+  return { ok: true, enabled: rows[0].enabled };
+}
+function adminFamilyDelete_(auth, ids) {
+  portalRequireAdmin_(auth);
+  var list = Array.isArray(ids) ? ids : String(ids || '').indexOf('[') === 0 ? JSON.parse(ids) : String(ids || '').split(',');
+  return { ok: true, deleted: familyDeleteRows_(list) };
+}
+
+/* ---------- health monitor: failures + recoveries ---------- */
+var MON_SERVICES_ = ['jobs', 'family', 'backend', 'supabase'];
+function jobsHealth_() {
+  var on = g('ENABLED', '0') === '1', trig = trigExists_('digest') || trigExists_('jobsTick'), az = !!g('ADZUNA_ID', '') && !!g('ADZUNA_KEY', '');
+  if (!pageFlag_('jobs').sender) return { ok: true, reason: 'Jobs sender is paused from the Admin page' };
+  if (!on) return { ok: true, reason: 'Jobs reminders are switched off' };
+  if (!trig) return { ok: false, reason: 'Jobs reminders are ON but no scheduler trigger exists. Press Save & sync on the Jobs page or run setup().' };
+  if (!az) return { ok: false, reason: 'ADZUNA_ID / ADZUNA_KEY are missing in Script properties.' };
+  return { ok: true, reason: 'Jobs sender running' };
+}
+function familyHealth_() {
+  if (!pageFlag_('family').sender) return { ok: true, reason: 'Family sender is paused from the Admin page' };
+  return trigExists_('familySupabaseTick') ? { ok: true, reason: 'Family sender running' } : { ok: false, reason: 'Family sender trigger is missing. Run setupFamilySupabaseSender().' };
+}
+function monSave_(rows) {
+  var s = JSON.stringify(rows);
+  while (rows.length > 1 && Utilities.newBlob(s).getBytes().length > 8500) { rows.pop(); s = JSON.stringify(rows); }   // a Script property holds at most ~9 KB: older code threw here and stopped logging
+  P.setProperty('MONITOR_LOGS', s);
+}
+/* Logs only transitions: first failure, and the recovery that follows (with downtime). Returns true when something was written. */
+function monitorLog_(service, status, durationMs, reason, source, atIso) {
+  if (MON_SERVICES_.indexOf(service) < 0) return false;
+  status = status === 'working' ? 'working' : 'lost';
+  var now = Date.now(), at = Date.parse(atIso || '');
+  if (!isFinite(at) || at > now + 60000 || at < now - 7 * 86400000) at = now;
+  var state = jsonProp_('MONITOR_STATE', {}), prev = state[service] || {}, row = null;
+  reason = String(reason || '').slice(0, 160);
+  if (status === 'lost' && prev.status !== 'lost') {
+    state[service] = { status: 'lost', since: at };
+    row = { t: new Date(at).toISOString(), s: service, v: 'lost', d: Number(durationMs) || 0, r: reason || 'No reason provided', o: source || '' };
+  } else if (status === 'working' && prev.status === 'lost') {
+    var down = Math.max(0, at - (Number(prev.since) || at));
+    state[service] = { status: 'working', since: at };
+    row = { t: new Date(at).toISOString(), s: service, v: 'working', d: Number(durationMs) || 0, r: reason || 'Connection restored', m: down, f: Number(prev.since) || 0, o: source || '' };
+  } else if (status === 'working' && prev.status !== 'working') {
+    state[service] = { status: 'working', since: at };   // first ever observation: remember it, nothing to log
+  } else return false;
+  P.setProperty('MONITOR_STATE', JSON.stringify(state));
+  if (row) { var rows = jsonProp_('MONITOR_LOGS', []); rows.unshift(row); monSave_(rows); }
+  return !!row;
+}
+function monitorRecord_(auth, record) {
+  portalRequireAdmin_(auth);
+  var x = JSON.parse(record || '[]'), list = (Array.isArray(x) ? x : [x]).filter(function (r) { return r && MON_SERVICES_.indexOf(r.service) >= 0; });
+  list.sort(function (a, b) { return (Date.parse(a.at) || 0) - (Date.parse(b.at) || 0); });   // replay queued browser events in order
+  list.forEach(function (r) { monitorLog_(r.service, r.status, r.durationMs, r.reason, 'admin page', r.at); });
+  return { ok: true, recorded: list.length };
+}
+function monitorLogs_(auth) {
+  portalRequireAdmin_(auth);
+  var rows = jsonProp_('MONITOR_LOGS', []).map(function (r) {
+    return { time: r.t, service: r.s, status: r.v, durationMs: r.d || 0, reason: r.r || '', downMs: r.m || 0, since: r.f ? new Date(Number(r.f)).toISOString() : '', source: r.o || '' };
+  });
+  var st = jsonProp_('MONITOR_STATE', {}), state = {};
+  Object.keys(st).forEach(function (k) { state[k] = { status: st[k].status, since: new Date(Number(st[k].since)).toISOString() }; });
+  return { ok: true, rows: rows, state: state };
+}
+/* Runs on a 5-minute trigger even when nobody has the Admin page open, so a recovery is always logged. Run setupMonitor() once. */
+function monitorTick() {
+  monitorLog_('backend', 'working', 0, 'Backend responding', 'server');
+  var t = Date.now(), ok = false, err = '';
+  try { familySupabaseReminders_(); ok = true; } catch (e) { err = e.message; }
+  monitorLog_('supabase', ok ? 'working' : 'lost', Date.now() - t, ok ? 'Supabase reachable' : err, 'server');
+  var f = familyHealth_(), j = jobsHealth_();
+  monitorLog_('family', f.ok ? 'working' : 'lost', 0, f.reason, 'server');
+  monitorLog_('jobs', j.ok ? 'working' : 'lost', 0, j.reason, 'server');
+}
+function setupMonitor() { dropTriggers_(['monitorTick']); ScriptApp.newTrigger('monitorTick').timeBased().everyMinutes(5).create(); Logger.log('Health monitor enabled (every 5 minutes).'); }
+function disableMonitor() { dropTriggers_(['monitorTick']); Logger.log('Health monitor disabled.'); }
+
+/* =====================================================================
+   v10: ADMIN SESSIONS  (active-session count, per-device sign-out, sign out everywhere)
+   Supabase does not expose a session list to the REST API, so each Admin page registers
+   itself with a heartbeat. Revocation is enforced here (portalRequireAdmin_) AND by a
+   Supabase global sign-out, which also kills refresh tokens on every device.
+   ===================================================================== */
+var SESSION_ACTIVE_MS_ = 5 * 60 * 1000;
+function jwtClaims_(tok) {
+  try { var part = String(tok).split('.')[1].replace(/-/g, '+').replace(/_/g, '/'); while (part.length % 4) part += '='; return JSON.parse(Utilities.newBlob(Utilities.base64Decode(part)).getDataAsString()); } catch (e) { return {}; }
+}
+function sessionId_(c) { return String(c.session_id || ('t' + (c.iat || 0))); }
+function sessionsLoad_() { var o = jsonProp_('ADMIN_SESSIONS', {}); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {}; }
+function sessionsSave_(ss) {
+  var now = Date.now();
+  Object.keys(ss).forEach(function (k) { if (now - (ss[k].s || 0) > 7 * 86400000) delete ss[k]; });
+  var s = JSON.stringify(ss);
+  while (Utilities.newBlob(s).getBytes().length > 8500) {          // Script property limit ~9 KB: drop the stalest entry
+    var oldest = Object.keys(ss).sort(function (a, b) { return (ss[a].s || 0) - (ss[b].s || 0); })[0]; if (!oldest) break;
+    delete ss[oldest]; s = JSON.stringify(ss);
+  }
+  P.setProperty('ADMIN_SESSIONS', s);
+}
+function activeAdminSessions_() {
+  var ss = sessionsLoad_(), now = Date.now();
+  return Object.keys(ss).filter(function (k) { return !ss[k].x && now - (ss[k].s || 0) <= SESSION_ACTIVE_MS_; }).length;
+}
+function adminSessionPing_(auth, label) {
+  var u = portalRequireAdmin_(auth), ss = sessionsLoad_(), now = Date.now(), e = ss[u._sid] || { f: now };
+  e.u = u.id; e.m = String(u.email || '').slice(0, 60); e.l = String(label || 'Unknown device').slice(0, 50); e.s = now; delete e.x;
+  ss[u._sid] = e; sessionsSave_(ss);
+  return { ok: true, id: shortKey_(u._sid), active: activeAdminSessions_() };
+}
+function adminSessions_(auth) {
+  var u = portalRequireAdmin_(auth), ss = sessionsLoad_(), now = Date.now();
+  var rows = Object.keys(ss).filter(function (k) { return !ss[k].x; }).map(function (k) {
+    var e = ss[k];
+    return { id: shortKey_(k), email: e.m || '', device: e.l || 'Unknown device', first: new Date(e.f || e.s).toISOString(), last: new Date(e.s).toISOString(), active: now - e.s <= SESSION_ACTIVE_MS_, current: k === u._sid };
+  }).sort(function (a, b) { return Date.parse(b.last) - Date.parse(a.last); });
+  return { ok: true, active: rows.filter(function (r) { return r.active; }).length, known: rows.length, windowMinutes: SESSION_ACTIVE_MS_ / 60000, rows: rows.slice(0, 30) };
+}
+function adminSessionRevoke_(auth, id) {
+  var u = portalRequireAdmin_(auth), ss = sessionsLoad_(), hit = Object.keys(ss).filter(function (k) { return shortKey_(k) === String(id || ''); })[0];
+  if (!hit) throw Error('Session not found (it may have expired).');
+  ss[hit].x = true; ss[hit].s = Date.now(); sessionsSave_(ss);
+  return { ok: true, current: hit === u._sid };
+}
+function adminLogoutAll_(auth) {
+  var u = portalRequireAdmin_(auth);
+  P.setProperty('ADMIN_REVOKE_' + shortKey_(u.id), String(Date.now()));       // 1) our own enforcement: tokens issued before now are refused
+  var ss = sessionsLoad_(), n = 0;
+  Object.keys(ss).forEach(function (k) { if (ss[k].u === u.id) { delete ss[k]; n++; } });
+  sessionsSave_(ss);
+  var ok = false, code = 0;                                                       // 2) Supabase global sign-out: deletes every session and refresh token for this user
+  try {
+    var r = UrlFetchApp.fetch(String(g('SUPABASE_URL', '')).replace(/\/+$/, '') + '/auth/v1/logout?scope=global', { method: 'post', headers: { apikey: g('SUPABASE_SERVICE_KEY', ''), Authorization: 'Bearer ' + auth }, muteHttpExceptions: true });
+    code = r.getResponseCode(); ok = code >= 200 && code < 300;
+  } catch (e) { Logger.log('Global sign-out call failed: ' + e.message); }
+  return { ok: true, sessionsCleared: n, supabaseSignedOut: ok, supabaseStatus: code };
+}
+
+/* =====================================================================
+   v11: PAGE SWITCHES
+   - "Page live" switch for any page (built-in jobs / family, plus pages you register)
+   - "Sender" switch per page (stops the scheduled reminder e-mails of that page)
+   ===================================================================== */
+var PAGE_BUILTIN_ = { jobs: 'Jobs page', family: 'Family page' };
+var PAGE_DEFAULT_MESSAGE_ = 'This page is temporarily unavailable. Please check back soon.';
+function pageFlagsLoad_() { var o = jsonProp_('PAGE_FLAGS_JSON', {}); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {}; }
+function pageSlug_(s) { s = String(s || '').toLowerCase().trim(); if (!/^[a-z0-9][a-z0-9_-]{0,29}$/.test(s)) throw new Error('Page id must be 1-30 characters: letters, numbers, - or _.'); return s; }
+function pageFlag_(slug) {
+  slug = String(slug || '').toLowerCase(); var f = pageFlagsLoad_()[slug] || {};
+  return { slug: slug, enabled: f.enabled !== false, sender: f.sender !== false, message: f.message || '', title: f.title || PAGE_BUILTIN_[slug] || slug, custom: !!f.custom, updated: f.updated || '', by: f.by || '' };
+}
+function pageStatusPublic_(page) {
+  var slug = String(page || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30), f = pageFlag_(slug);
+  return { ok: true, page: slug, enabled: f.enabled, message: f.enabled ? '' : (f.message || PAGE_DEFAULT_MESSAGE_), title: f.title };
+}
+function adminPages_(auth) {
+  portalRequireAdmin_(auth); var all = pageFlagsLoad_(), slugs = Object.keys(PAGE_BUILTIN_);
+  Object.keys(all).forEach(function (k) { if (all[k].custom && slugs.indexOf(k) < 0) slugs.push(k); });
+  return { ok: true, rows: slugs.map(function (k) { var f = pageFlag_(k); return { slug: k, title: f.title, builtin: !!PAGE_BUILTIN_[k], hasSender: !!PAGE_BUILTIN_[k], enabled: f.enabled, sender: f.sender, message: f.message, updated: f.updated, by: f.by }; }) };
+}
+function pageFlagsStore_(all) {
+  var s = JSON.stringify(all); if (Utilities.newBlob(s).getBytes().length > 8500) throw new Error('Too many page settings. Remove unused custom pages first.');
+  P.setProperty('PAGE_FLAGS_JSON', s);
+}
+function adminPageFlagsSave_(auth, page, enabled, sender, message) {
+  var u = portalRequireAdmin_(auth), slug = pageSlug_(page), all = pageFlagsLoad_(), f = all[slug] || {};
+  if (!PAGE_BUILTIN_[slug] && !f.custom) throw new Error('Unknown page "' + slug + '". Add it first.');
+  var yes = function (v) { return v === true || String(v) === 'true'; };
+  if (enabled !== undefined && enabled !== '') f.enabled = yes(enabled);
+  if (sender !== undefined && sender !== '') { if (!PAGE_BUILTIN_[slug]) throw new Error('Only the Jobs and Family pages have a sender.'); f.sender = yes(sender); }
+  if (message !== undefined) f.message = String(message).trim().slice(0, 200);
+  f.updated = new Date().toISOString(); f.by = String(u.email || '').slice(0, 40);
+  all[slug] = f; pageFlagsStore_(all);
+  return adminPages_(auth);
+}
+function adminPageAdd_(auth, page, title) {
+  portalRequireAdmin_(auth); var slug = pageSlug_(page), all = pageFlagsLoad_();
+  if (PAGE_BUILTIN_[slug] || all[slug]) throw new Error('A page with this id already exists.');
+  all[slug] = { custom: true, enabled: true, title: String(title || slug).trim().slice(0, 50), updated: new Date().toISOString() }; pageFlagsStore_(all);
+  return adminPages_(auth);
+}
+function adminPageRemove_(auth, page) {
+  portalRequireAdmin_(auth); var slug = pageSlug_(page), all = pageFlagsLoad_();
+  if (!all[slug] || !all[slug].custom) throw new Error('Only custom pages can be removed.');
+  delete all[slug]; pageFlagsStore_(all); return adminPages_(auth);
+}
