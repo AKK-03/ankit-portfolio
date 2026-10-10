@@ -1,4 +1,4 @@
-var CAREERPULSE_BACKEND_VERSION = '2026-10-10-page-switches-v11';
+var CAREERPULSE_BACKEND_VERSION = '2026-10-10-privacy-whatsapp-v12';
 /* CareerPulse backend (Google Apps Script) — v7
    SCRIPT PROPERTIES: TOKEN, ADZUNA_ID, ADZUNA_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY
    OPTIONAL: WA_KEY (CallMeBot), ADMIN_EMAILS (comma-separated allow-list for Admin.html — STRONGLY recommended)
@@ -26,24 +26,24 @@ function senderInfo_() {
 }
 function footerParts_() {
   var i = senderInfo_(), t = [], h = [];
-  if (i.phone) { t.push('Phone: ' + i.phone); h.push('📞 ' + familyHtml_(i.phone)); }
-  if (i.email) { t.push('Email: ' + i.email); h.push('✉️ <a href="mailto:' + familyHtml_(i.email) + '">' + familyHtml_(i.email) + '</a>'); }
-  if (i.web) { t.push('Web: ' + i.web); h.push('🌐 ' + familyHtml_(i.web)); }
-  return { info: i, text: t, html: h };
+  if (i.phone && showFlag_('mailPhone')) { t.push('Phone: ' + i.phone); h.push('📞 ' + familyHtml_(i.phone)); }
+  if (i.email && showFlag_('mailEmail')) { t.push('Email: ' + i.email); h.push('✉️ <a href="mailto:' + familyHtml_(i.email) + '">' + familyHtml_(i.email) + '</a>'); }
+  if (i.web && showFlag_('mailWeb')) { t.push('Web: ' + i.web); h.push('🌐 ' + familyHtml_(i.web)); }
+  return { info: i, name: showFlag_('mailName') ? i.name : 'CareerPulse', text: t, html: h };
 }
 function footerText_() {
   var f = footerParts_();
-  return '--\nSent by ' + f.info.name + (f.text.length ? '\n' + f.text.join('\n') : '') + '\nJust reply to this email to reach us, or to change or stop these alerts.';
+  return '--\nSent by ' + f.name + (f.text.length ? '\n' + f.text.join('\n') : '') + '\nJust reply to this email to reach us, or to change or stop these alerts.';
 }
 function footerHtml_() {
   var f = footerParts_();
-  return '<hr style="border:0;border-top:1px solid #dde6ea;margin:18px 0"><p style="font-size:13px;color:#4b616c;line-height:1.6;margin:0">Sent by <b>' + familyHtml_(f.info.name) + '</b>' +
+  return '<hr style="border:0;border-top:1px solid #dde6ea;margin:18px 0"><p style="font-size:13px;color:#4b616c;line-height:1.6;margin:0">Sent by <b>' + familyHtml_(f.name) + '</b>' +
     (f.html.length ? '<br>' + f.html.join(' &nbsp;·&nbsp; ') : '') + '<br>Just reply to this email to reach us, or to change or stop these alerts.</p>';
 }
 /* One place that sends every email: display name + Reply-To + contact footer. */
 function sendMail_(to, subject, html, plain, kindOverride, reminderId) {
   if (/^Job radar:/.test(String(subject)) && receiverBlocked_('jobs',to)) return;
-  var i = senderInfo_(), m = { to: to, subject: subject, body: String(plain || subject) + '\n\n' + footerText_(), name: i.name };
+  var i = senderInfo_(), m = { to: to, subject: subject, body: String(plain || subject) + '\n\n' + footerText_(), name: showFlag_('mailName') ? i.name : 'CareerPulse' };
   if (i.replyTo) m.replyTo = i.replyTo;
   var kind=kindOverride||(/^Job radar:/.test(String(subject))?'jobs':null);
   if(kind){var manage=receiverMailControls_(kind,to,reminderId);m.body+='\n\nManage your alerts: '+manage.text;if(html)html+=manage.html;}
@@ -64,7 +64,7 @@ function doGet(e) {
     switch (a) {
       case 'deployment_check': var jh = jobsHealth_(); return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, adminAuth: 'supabase', family: true, jobsDb: true, jobsOk: jh.ok, jobsReason: jh.reason });
       case 'family_ping': var fh = familyHealth_(); return jsonOut_({ ok: true, service: 'family', version: CAREERPULSE_BACKEND_VERSION, senderRunning: fh.ok, senderReason: fh.reason });
-      case 'backend_version': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, execUrl: liveUrl_(), capabilities: ['admin_receiver_set','admin_receiver_reminders','admin_receiver_list','admin_mail_template_save','admin_mail_templates','admin_monitor_record','admin_monitor_logs','admin_family_list','admin_family_set_enabled','admin_family_delete','admin_reminder_delete','admin_receiver_clear','monitor_recovery','admin_sessions','admin_session_ping','admin_session_revoke','admin_logout_all','page_status','admin_pages','admin_page_flags_save','admin_page_add','admin_page_remove'] });
+      case 'backend_version': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, execUrl: liveUrl_(), capabilities: ['admin_receiver_set','admin_receiver_reminders','admin_receiver_list','admin_mail_template_save','admin_mail_templates','admin_monitor_record','admin_monitor_logs','admin_family_list','admin_family_set_enabled','admin_family_delete','admin_reminder_delete','admin_receiver_clear','monitor_recovery','admin_sessions','admin_session_ping','admin_session_revoke','admin_logout_all','page_status','admin_pages','admin_page_flags_save','admin_page_add','admin_page_remove','admin_privacy_save','admin_wa_keys','admin_wa_key_save','admin_wa_key_delete','admin_wa_test','admin_delivery_log','admin_delivery_clear'] });
       case 'family_status': return jsonOut_(familyPublicStatus_());
       case 'family_suggest': if (!pageFlag_('family').enabled) return jsonOut_({ ok: false, error: 'page_disabled' }); return jsonOut_(familySuggestions_(p.kind, p.q));
       case 'page_status': return jsonOut_(pageStatusPublic_(p.page));
@@ -88,6 +88,8 @@ function doGet(e) {
       case 'admin_family_list': return jsonOut_(adminFamilyList_(p.auth));
       case 'admin_sessions': return jsonOut_(adminSessions_(p.auth));
       case 'admin_pages': return jsonOut_(adminPages_(p.auth));
+      case 'admin_wa_keys': return jsonOut_(adminWaKeys_(p.auth));
+      case 'admin_delivery_log': return jsonOut_(adminDeliveryLog_(p.auth));
       case 'admin_receiver_list': return jsonOut_(receiverList_(p.auth));
       case 'admin_receiver_reminders': return jsonOut_(receiverReminders_(p.auth,p.type));
       case 'admin_mail_templates': return jsonOut_(mailTemplates_(p.auth));
@@ -126,6 +128,11 @@ function doPost(e) {
       case 'admin_logout_all': return jsonOut_(adminLogoutAll_(p.auth));
       case 'admin_page_flags_save': return jsonOut_(adminPageFlagsSave_(p.auth,p.page,p.enabled,p.sender,p.message));
       case 'admin_page_add': return jsonOut_(adminPageAdd_(p.auth,p.page,p.title));
+      case 'admin_privacy_save': return jsonOut_(adminPrivacySave_(p.auth,p.config));
+      case 'admin_wa_key_save': return jsonOut_(adminWaKeySave_(p.auth,p.phone,p.key));
+      case 'admin_wa_key_delete': return jsonOut_(adminWaKeyDelete_(p.auth,p.phone));
+      case 'admin_wa_test': return jsonOut_(adminWaTest_(p.auth,p.phone));
+      case 'admin_delivery_clear': return jsonOut_(adminDeliveryClear_(p.auth));
       case 'admin_page_remove': return jsonOut_(adminPageRemove_(p.auth,p.page));
       case 'admin_reminder_delete': return jsonOut_(adminReminderDelete_(p.auth,p.type,p.address,p.id));
       case 'admin_receiver_clear': return jsonOut_(receiverClear_(p.auth,p.type,p.address,p.reminderId));
@@ -177,12 +184,12 @@ function jobsTick() {
       try {
         var key = 'JOBS_' + shortKey_(r.channel + ':' + String(r.address).toLowerCase());
         var s = Object.assign({}, base, { repeats: [base.repeat], channel: r.channel === 'email' ? 'email' : 'whatsapp', address: r.address, firstName: r.firstName || '' });
-        if (r.channel === 'whatsapp_group') { Logger.log('Skipping WhatsApp group ' + r.address + ' (not supported by CallMeBot).'); return; }
+        if (r.channel === 'whatsapp_group') { deliveryLog_('whatsapp_group', r.address, 'WhatsApp groups are not supported (CallMeBot only sends to single numbers). Add the people as numbers instead.'); return; }
         s.roles = r.mode === 'specific' ? (r.roles || []) : r.mode === 'random' ? [] : kw;
         s.random = r.mode === 'random';
         var due = scheduleDueSlot_(key, s, now);
         if (due) sendReminder_(key, s, false, due);
-      } catch (err) { Logger.log('Jobs reminder failed: ' + err.message); }
+      } catch (err) { Logger.log('Jobs reminder failed: ' + err.message); deliveryLog_(r.channel, r.address, err.message); }
     });
   } finally { lock.releaseLock(); }
 }
@@ -398,10 +405,7 @@ function sendReminder_(key, s, force, dueSlot) {
     sendMail_(address, 'CareerPulse: ' + jobs.length + ' new job' + (jobs.length === 1 ? '' : 's') + ' for ' + roles, html,
       'CareerPulse found ' + jobs.length + ' new job(s) for ' + roles + ' in ' + locations + '.\n' + jobs.slice(0, 10).map(function (j) { return '- ' + j.t + ' - ' + j.c + ' ' + j.u; }).join('\n'),key.indexOf('FAM_')===0?'family':'jobs',key);
   } else if (s.channel === 'whatsapp') {
-    var waKey = g('WA_KEY', ''); if (!waKey) throw new Error('WA_KEY is missing; WhatsApp delivery is not configured.');
-    var msg = (s.firstName ? 'Hi ' + s.firstName + ', ' : '') + 'CareerPulse: ' + jobs.length + ' new job(s) for ' + roles + '.\n' + jobs.slice(0, 5).map(function (j) { return '- ' + j.t + ' - ' + j.c + '\n' + j.u; }).join('\n') + waFooter_();
-    var wa = UrlFetchApp.fetch('https://api.callmebot.com/whatsapp.php?phone=' + encodeURIComponent(address.replace(/[^\d+]/g, '')) + '&text=' + encodeURIComponent(msg) + '&apikey=' + encodeURIComponent(waKey), { muteHttpExceptions: true });
-    if (wa.getResponseCode() < 200 || wa.getResponseCode() >= 300) throw new Error('WhatsApp HTTP ' + wa.getResponseCode() + ': ' + wa.getContentText().slice(0, 150));
+    waSend_(address, waMessage_(s.firstName ? 'Hi ' + s.firstName + ',' : '', roles, jobs));
   } else throw new Error('Unsupported delivery channel: ' + s.channel);
   if (!force) {
     if (dueSlot) P.setProperty('SENT_' + key, dueSlot.marker);
@@ -409,7 +413,6 @@ function sendReminder_(key, s, force, dueSlot) {
   }
   return { ok: true, jobs: jobs.length, errors: errors, recipient: address };
 }
-function waFooter_() { var i = senderInfo_(); return '\n\n— ' + i.name + (i.phone ? ' · ' + i.phone : '') + (i.email ? ' · ' + i.email : ''); }
 function familyHtml_(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
 /* ================= FAMILY (Supabase) ================= */
@@ -446,7 +449,7 @@ function familySupabaseTick() {
     var now = new Date();
     familySupabaseReminders_().forEach(function (row) {
       try { var key = 'FAM_' + row.id, s = familySettings_(row), due = scheduleDueSlot_(key, s, now); if (due) sendReminder_(key, s, false, due); }
-      catch (err) { Logger.log('Family reminder ' + row.id + ' failed: ' + err.message); }
+      catch (err) { Logger.log('Family reminder ' + row.id + ' failed: ' + err.message); deliveryLog_((row.settings || {}).channel, (row.settings || {}).address, err.message); }
     });
   } finally { lock.releaseLock(); }
 }
@@ -655,7 +658,7 @@ var SENDER_KEYS_ = { name: 'SENDER_NAME', replyTo: 'REPLY_TO', phone: 'CONTACT_P
 function adminSenderGet_(auth) {
   portalRequireAdmin_(auth); var i = senderInfo_(), raw = {};
   Object.keys(SENDER_KEYS_).forEach(function (k) { raw[k] = g(SENDER_KEYS_[k], ''); });
-  return { ok: true, data: raw, effective: { fromAccount: (function () { try { return Session.getEffectiveUser().getEmail(); } catch (e) { return ''; } })(), name: i.name, replyTo: i.replyTo, phone: i.phone, email: i.email, web: i.web } };
+  return { ok: true, data: raw, show: showFlags_(), cc: g('DEFAULT_CC', '91'), effective: { fromAccount: (function () { try { return Session.getEffectiveUser().getEmail(); } catch (e) { return ''; } })(), name: i.name, replyTo: i.replyTo, phone: i.phone, email: i.email, web: i.web } };
 }
 function adminSenderSave_(auth, raw) {
   portalRequireAdmin_(auth); var c = typeof raw === 'object' ? raw : JSON.parse(String(raw || '{}')), set = {}, del = [];
@@ -1065,4 +1068,87 @@ function adminPageRemove_(auth, page) {
   portalRequireAdmin_(auth); var slug = pageSlug_(page), all = pageFlagsLoad_();
   if (!all[slug] || !all[slug].custom) throw new Error('Only custom pages can be removed.');
   delete all[slug]; pageFlagsStore_(all); return adminPages_(auth);
+}
+
+/* =====================================================================
+   v12: PRIVACY OF SENDER DETAILS + WORKING WHATSAPP / MOBILE DELIVERY
+   ===================================================================== */
+var SHOW_FLAGS_ = { mailName: 'SHOW_MAIL_NAME', mailPhone: 'SHOW_MAIL_PHONE', mailEmail: 'SHOW_MAIL_EMAIL', mailWeb: 'SHOW_MAIL_WEB', waName: 'SHOW_WA_NAME', waPhone: 'SHOW_WA_PHONE', waEmail: 'SHOW_WA_EMAIL' };
+function showFlag_(k) { return g(SHOW_FLAGS_[k], '1') !== '0'; }
+function showFlags_() { var o = {}; Object.keys(SHOW_FLAGS_).forEach(function (k) { o[k] = showFlag_(k); }); return o; }
+function adminPrivacySave_(auth, raw) {
+  portalRequireAdmin_(auth); var c = typeof raw === 'object' ? raw : JSON.parse(String(raw || '{}')), sh = c.show || {};
+  Object.keys(SHOW_FLAGS_).forEach(function (k) { if (sh[k] !== undefined) P.setProperty(SHOW_FLAGS_[k], (sh[k] === true || String(sh[k]) === 'true') ? '1' : '0'); });
+  if (c.cc !== undefined) { var cc = String(c.cc).replace(/\D/g, ''); if (cc && (cc.length > 4)) throw new Error('Country code must be 1 to 4 digits, e.g. 91.'); if (cc) P.setProperty('DEFAULT_CC', cc); else P.deleteProperty('DEFAULT_CC'); }
+  return { ok: true, show: showFlags_(), cc: g('DEFAULT_CC', '91') };
+}
+
+/* ---- delivery problems list (so "it does not work" shows the real reason in Admin) ---- */
+function deliveryLog_(channel, address, msg) {
+  try {
+    var rows = jsonProp_('DELIVERY_LOG', []), now = new Date().toISOString(); channel = String(channel || ''); address = String(address || ''); msg = String(msg || '').slice(0, 200);
+    var top = rows[0];
+    if (top && top.c === channel && top.a === address && top.m === msg) { top.n = (top.n || 1) + 1; top.t = now; }
+    else rows.unshift({ t: now, c: channel, a: address, m: msg, n: 1 });
+    rows = rows.slice(0, 15); var s = JSON.stringify(rows);
+    while (rows.length > 1 && Utilities.newBlob(s).getBytes().length > 8000) { rows.pop(); s = JSON.stringify(rows); }
+    P.setProperty('DELIVERY_LOG', s);
+  } catch (e) {}
+}
+function adminDeliveryLog_(auth) { portalRequireAdmin_(auth); return { ok: true, rows: jsonProp_('DELIVERY_LOG', []).map(function (r) { return { time: r.t, channel: r.c, address: r.a, message: r.m, count: r.n || 1 }; }) }; }
+function adminDeliveryClear_(auth) { portalRequireAdmin_(auth); P.deleteProperty('DELIVERY_LOG'); return { ok: true }; }
+
+/* ---- WhatsApp (CallMeBot) ----
+   CallMeBot gives EVERY phone number its own API key (the number must first message the CallMeBot contact to get it).
+   The old code used one global WA_KEY for all numbers, so it only ever worked for the one number that key belonged to.
+   Keys are now stored per number (Admin > Sender > WhatsApp keys); WA_KEY stays as fallback. */
+function waPhone_(raw) {
+  var d = String(raw || '').replace(/\D/g, '').replace(/^0+/, ''); if (!d) throw new Error('Phone number is empty.');
+  var cc = String(g('DEFAULT_CC', '91')).replace(/\D/g, ''); if (d.length === 10 && cc) d = cc + d;     // 9876543210 -> 919876543210
+  if (d.length < 11 || d.length > 15) throw new Error('Phone number looks wrong (' + String(raw).slice(0, 20) + '). Use the international format with country code, e.g. +91 98765 43210.');
+  return d;
+}
+function waSend_(phone, text) {
+  var d = waPhone_(phone), keys = jsonProp_('WA_KEYS_JSON', {}), key = keys[d] || g('WA_KEY', '');
+  if (!key) throw new Error('No CallMeBot API key for +' + d + '. Add it in Admin > Sender > WhatsApp keys.');
+  var r = UrlFetchApp.fetch('https://api.callmebot.com/whatsapp.php?phone=' + encodeURIComponent('+' + d) + '&text=' + encodeURIComponent(text) + '&apikey=' + encodeURIComponent(key), { muteHttpExceptions: true });
+  var code = r.getResponseCode(), body = String(r.getContentText() || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200);
+  // CallMeBot often answers HTTP 200 with an error sentence in the body, so the body must be checked too
+  if (code < 200 || code >= 300 || /invalid|incorrect|not (valid|registered|authori[sz]ed)|error|wrong|blocked|unauthori[sz]ed|fail|too many|limit/i.test(body))
+    throw new Error('WhatsApp to +' + d + ' failed (HTTP ' + code + '): ' + (body || 'no reply from CallMeBot') + (keys[d] ? '' : ' (used the shared WA_KEY; this number probably needs its own key)'));
+  return { ok: true, detail: body, phone: '+' + d };
+}
+function waFooter_() {
+  var i = senderInfo_(), p = [];
+  if (showFlag_('waName')) p.push(i.name); if (i.phone && showFlag_('waPhone')) p.push(i.phone); if (i.email && showFlag_('waEmail')) p.push(i.email);
+  return p.length ? '\n\n— ' + p.join(' · ') : '';
+}
+/* WhatsApp links break above ~2000 characters, so only as many jobs as fit are included. */
+function waMessage_(hi, roles, jobs) {
+  var head = (hi ? hi + ' ' : '') + 'CareerPulse: ' + jobs.length + ' new job(s) for ' + roles + '.', foot = waFooter_(), msg = head, shown = 0;
+  for (var k = 0; k < Math.min(jobs.length, 5); k++) {
+    var line = '\n- ' + (jobs[k].t || '') + (jobs[k].c ? ' - ' + jobs[k].c : '') + '\n' + (jobs[k].u || '');
+    if (encodeURIComponent(msg + line + foot).length > 1500) break; msg += line; shown++;
+  }
+  if (jobs.length > shown && shown) msg += '\n+' + (jobs.length - shown) + ' more';
+  return msg + foot;
+}
+function adminWaKeys_(auth) {
+  portalRequireAdmin_(auth); var keys = jsonProp_('WA_KEYS_JSON', {});
+  return { ok: true, cc: g('DEFAULT_CC', '91'), hasFallback: !!g('WA_KEY', ''), rows: Object.keys(keys).map(function (d) { return { phone: '+' + d, keyMasked: portalMask_(keys[d]) }; }) };
+}
+function adminWaKeySave_(auth, phone, key) {
+  portalRequireAdmin_(auth); var d = waPhone_(phone), k = String(key || '').trim();
+  if (!/^[A-Za-z0-9_-]{4,40}$/.test(k)) throw new Error('Enter the API key CallMeBot sent to that number (letters and digits only).');
+  var keys = jsonProp_('WA_KEYS_JSON', {}); keys[d] = k;
+  if (Utilities.newBlob(JSON.stringify(keys)).getBytes().length > 8500) throw new Error('Too many WhatsApp keys stored. Remove unused numbers first.');
+  P.setProperty('WA_KEYS_JSON', JSON.stringify(keys)); return adminWaKeys_(auth);
+}
+function adminWaKeyDelete_(auth, phone) {
+  portalRequireAdmin_(auth); var d = waPhone_(phone), keys = jsonProp_('WA_KEYS_JSON', {}); delete keys[d];
+  P.setProperty('WA_KEYS_JSON', JSON.stringify(keys)); return adminWaKeys_(auth);
+}
+function adminWaTest_(auth, phone) {
+  portalRequireAdmin_(auth); var r = waSend_(phone, '✅ CareerPulse test message. WhatsApp delivery works.' + waFooter_());
+  return { ok: true, phone: r.phone, reply: r.detail };
 }
