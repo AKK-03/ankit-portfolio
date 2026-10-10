@@ -1007,7 +1007,7 @@ r.classList.add('js')})();
 </div></div>
 <div class="cms-hint">Admin mode: edit text directly · click a block to select it</div>
 <div class="cms-bar" id="cmsBar"><span id="cmsStatus">Admin editing enabled</span>
-<button id="cmsSave" type="button">Save changes</button><button id="cmsResumeDl" type="button" class="secondary">Résumé download: <span id="cmsResumeDlState" class="cms-voice-state">…</span></button><button id="cmsAts" type="button" class="secondary">Generate ATS résumé</button><button id="cmsAddSection" type="button">+ Add section</button><button id="cmsMoveUp" type="button" class="secondary">↑ Move up</button><button id="cmsMoveDown" type="button" class="secondary">↓ Move down</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button type="button" class="secondary" id="cmsCompareBtn">⇄ Compare Portfolios</button>
+<button id="cmsSave" type="button">Save changes</button><button id="cmsUrlToggle" type="button" class="secondary">Page URL: <span id="cmsUrlState" class="cms-voice-state">…</span></button><button id="cmsResumeDl" type="button" class="secondary">Résumé download: <span id="cmsResumeDlState" class="cms-voice-state">…</span></button><button id="cmsAts" type="button" class="secondary">Generate ATS résumé</button><button id="cmsAddSection" type="button">+ Add section</button><button id="cmsMoveUp" type="button" class="secondary">↑ Move up</button><button id="cmsMoveDown" type="button" class="secondary">↓ Move down</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button type="button" class="secondary" id="cmsCompareBtn">⇄ Compare Portfolios</button>
 <button id="cmsLogout" type="button" class="secondary">Logout</button>
 <input id="cmsFile" type="file" accept="image/*" hidden></div>
 <script>
@@ -1518,6 +1518,21 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   var params=new URLSearchParams(location.search), pageSlug=params.get('portfolio')||'';
   var admin=params.get('admin')==='1', selected=null;
   function slugify(v){return (v||'resume').replace(/\.[^.]+$/,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'resume'}
+  function showBlocked(){main.innerHTML='<section style="min-height:70vh;display:grid;place-items:center;text-align:center;padding:40px"><div><h1>This page is currently unavailable</h1><p>The link you followed has been disabled by the site owner.</p></div></section>';document.title='Page unavailable'}
+  /* URL on/off for the page currently open: main page -> portfolio_content id=3, sub portfolio -> resume_portfolios.enabled */
+  async function getUrlEnabled(){
+    try{
+      if(pageSlug){var r=await sb.from('resume_portfolios').select('enabled').eq('slug',pageSlug).maybeSingle();return !(r.data&&r.data.enabled===false)}
+      var m=await sb.from('portfolio_content').select('html').eq('id',3).maybeSingle();
+      if(m.data&&m.data.html){return JSON.parse(m.data.html).enabled!==false}
+    }catch(e){}
+    return true;
+  }
+  async function setUrlEnabled(v){
+    if(pageSlug)return sb.from('resume_portfolios').update({enabled:v,updated_at:new Date().toISOString()}).eq('slug',pageSlug);
+    return sb.from('portfolio_content').upsert({id:3,html:JSON.stringify({enabled:v}),updated_at:new Date().toISOString()});
+  }
+  async function syncUrlState(){var on=await getUrlEnabled(),st=document.getElementById('cmsUrlState');if(st){st.textContent=on?'Enabled':'Disabled';st.className='cms-voice-state '+(on?'enabled':'disabled')}return on}
   async function loadSubPortfolio(){
     if(!pageSlug)return false;
     var r=await sb.from('resume_portfolios').select('html,title,resume_url,enabled').eq('slug',pageSlug).maybeSingle();
@@ -1562,6 +1577,7 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   }
   function editable(on){
     document.body.classList.toggle('cms-editing',on); bar.classList.toggle('open',on);
+    if(on)syncUrlState();
     main.querySelectorAll('[data-admin-button]').forEach(function(b){
       if(on&&b.dataset.adminDisabled==='1'){b.style.display='inline-flex';b.style.opacity='.42';b.title='Disabled for visitors — click to select';}
       else if(b.dataset.adminDisabled==='1'){b.style.display='none'}
@@ -1584,6 +1600,8 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   }
   async function boot(){
     loadTheme();
+    var adminSess=null;try{adminSess=admin?(await sb.auth.getSession()).data.session:null}catch(e){}
+    if(!pageSlug&&!adminSess&&(await getUrlEnabled())===false){showBlocked();return}
     if(!(await loadSubPortfolio())) await loadSaved();
     if(!admin) return;
     var sess=(await sb.auth.getSession()).data.session;
@@ -1612,6 +1630,11 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
     var html=window.pfClean(main); editable(true); if(selected) selected.classList.add('cms-selected');
     setStatus('Saving…'); var r=pageSlug?await sb.from('resume_portfolios').update({html:html,updated_at:new Date().toISOString()}).eq('slug',pageSlug):await sb.from('portfolio_content').upsert({id:1,html:html,updated_at:new Date().toISOString()});
     setStatus(r.error?'Save failed: '+r.error.message:'Saved successfully ✓');
+  };
+  document.getElementById('cmsUrlToggle').onclick=async function(){
+    var cur=await getUrlEnabled(),r=await setUrlEnabled(!cur);
+    if(r.error)return setStatus((pageSlug?'Add the "enabled" column first (see SQL). ':'')+'Failed: '+r.error.message);
+    await syncUrlState();setStatus('Page URL '+(!cur?'enabled':'disabled')+' for visitors.');
   };
   document.getElementById('cmsToggleButton').onclick=function(){
     if(!selected||!selected.matches||!selected.matches('[data-admin-button]')) return setStatus('Select a controllable button first');
