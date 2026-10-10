@@ -1523,6 +1523,8 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   async function getUrlEnabled(){
     try{
       if(pageSlug){var r=await sb.from('resume_portfolios').select('enabled').eq('slug',pageSlug).maybeSingle();return !(r.data&&r.data.enabled===false)}
+      var c=await sb.from('portfolio_content').select('enabled').eq('id',1).maybeSingle();
+      if(!c.error)return !(c.data&&c.data.enabled===false);
       var m=await sb.from('portfolio_content').select('html').eq('id',3).maybeSingle();
       if(m.data&&m.data.html){return JSON.parse(m.data.html).enabled!==false}
     }catch(e){}
@@ -1530,6 +1532,8 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   }
   async function setUrlEnabled(v){
     if(pageSlug)return sb.from('resume_portfolios').update({enabled:v,updated_at:new Date().toISOString()}).eq('slug',pageSlug);
+    var u=await sb.from('portfolio_content').update({enabled:v,updated_at:new Date().toISOString()}).eq('id',1);
+    if(!u.error)return u;
     return sb.from('portfolio_content').upsert({id:3,html:JSON.stringify({enabled:v}),updated_at:new Date().toISOString()});
   }
   async function syncUrlState(){var on=await getUrlEnabled(),st=document.getElementById('cmsUrlState');if(st){st.textContent=on?'Enabled':'Disabled';st.className='cms-voice-state '+(on?'enabled':'disabled')}return on}
