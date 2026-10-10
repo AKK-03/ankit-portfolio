@@ -228,6 +228,12 @@ dialog#pick[open]{animation:rise .25s ease both}
 .cms-editing main [contenteditable=true]{outline:1px dashed rgba(15,143,126,.45);outline-offset:2px}.cms-editing main [contenteditable=true]:focus{outline:2px solid var(--mint);background:color-mix(in srgb,var(--tint) 55%,transparent)}
 .cms-selected{outline:3px solid var(--amber)!important;outline-offset:3px!important}.cms-editing{padding-bottom:84px}
 .cms-hint{position:fixed;right:18px;top:88px;z-index:999;background:#0e1d2b;color:#fff;border:1px solid #27414f;border-radius:10px;padding:9px 12px;font-size:12px;display:none}.cms-editing .cms-hint{display:block}
+.cms-add-btn{display:none}
+.cms-editing main .cms-add-btn{display:inline-flex;align-items:center;gap:6px;margin:14px 0 4px;padding:9px 16px;border:1.5px dashed var(--mint);border-radius:10px;background:color-mix(in srgb,var(--mint) 8%,transparent);color:var(--mint);font:700 13px var(--body);cursor:pointer;transition:background .15s}
+.cms-editing main .cms-add-btn:hover{background:color-mix(in srgb,var(--mint) 20%,transparent)}
+.cms-editing main .cms-add-btn.sm{padding:4px 11px;font-size:12px;margin:6px 0 2px;border-radius:999px}
+.cms-idle-warn{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:1200;display:none;align-items:center;gap:14px;padding:12px 16px;background:#0e1d2b;color:#fff;border:1px solid #f2a541;border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.45);font:600 14px var(--body)}
+.cms-idle-warn.open{display:flex}.cms-idle-warn button{border:0;border-radius:8px;padding:8px 12px;background:var(--mint);color:#06231f;font:700 13px var(--body);cursor:pointer}
 @media(max-width:760px){.cms-bar{left:8px;right:8px;bottom:8px}.cms-hint{display:none!important}}
 
 /* ===== Premium achievement metrics V2 ===== */
@@ -1008,6 +1014,7 @@ r.classList.add('js')})();
 <div class="cms-hint">Admin mode: edit text directly · click a block to select it</div>
 <div class="cms-bar" id="cmsBar"><span id="cmsStatus">Admin editing enabled</span>
 <button id="cmsSave" type="button">Save changes</button><button id="cmsUrlToggle" type="button" class="secondary">Page URL: <span id="cmsUrlState" class="cms-voice-state">…</span></button><button id="cmsResumeDl" type="button" class="secondary">Résumé download: <span id="cmsResumeDlState" class="cms-voice-state">…</span></button><button id="cmsAts" type="button" class="secondary">Generate ATS résumé</button><button id="cmsAddSection" type="button">+ Add section</button><button id="cmsMoveUp" type="button" class="secondary">↑ Move up</button><button id="cmsMoveDown" type="button" class="secondary">↓ Move down</button><button id="cmsVoiceToggle" type="button" class="secondary">Voice: <span id="cmsVoiceState" class="cms-voice-state">…</span></button><button id="cmsResumes" type="button" class="secondary">Resume portfolios</button><button id="cmsToggleButton" type="button" class="secondary">Enable / disable selected button</button><button id="cmsImage" type="button" class="secondary">Change selected image</button><button id="cmsDuplicate" type="button" class="secondary">Duplicate selected</button><button id="cmsDelete" type="button" class="danger">Delete selected</button><button type="button" class="secondary" id="cmsCompareBtn">⇄ Compare Portfolios</button>
+<button id="cmsIdle" type="button" class="secondary">Auto logout: <span id="cmsIdleState" class="cms-voice-state">…</span></button>
 <button id="cmsLogout" type="button" class="secondary">Logout</button>
 <input id="cmsFile" type="file" accept="image/*" hidden></div>
 <script>
@@ -1561,6 +1568,7 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   }
 
   window.pfClean=function(root){var c=root.cloneNode(true);
+   c.querySelectorAll('.cms-add-btn').forEach(function(e){e.remove()});
    c.querySelectorAll('.rv,.in,.cms-selected').forEach(function(e){e.classList.remove('rv','in','cms-selected')});
    c.querySelectorAll('[style]').forEach(function(e){e.style.removeProperty('transform');e.style.removeProperty('--mx');e.style.removeProperty('--my');if(!e.getAttribute('style').trim())e.removeAttribute('style')});
    c.querySelectorAll('.count').forEach(function(e){var n=parseInt(e.textContent,10);if(n>0)e.dataset.target=n;e.removeAttribute('data-done')});
@@ -1581,25 +1589,133 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
   }
   function editable(on){
     document.body.classList.toggle('cms-editing',on); bar.classList.toggle('open',on);
-    if(on)syncUrlState();
+    if(on){syncUrlState();startIdle()}
     main.querySelectorAll('[data-admin-button]').forEach(function(b){
       if(on&&b.dataset.adminDisabled==='1'){b.style.display='inline-flex';b.style.opacity='.42';b.title='Disabled for visitors — click to select';}
       else if(b.dataset.adminDisabled==='1'){b.style.display='none'}
       else{b.style.display='';b.style.opacity='';}
     });
-    main.querySelectorAll('h1,h2,h3,p,li,strong,span,.tag,.client b,.node b').forEach(function(e){if(e.closest('.rte'))return;e.contentEditable=on?'true':'false'});main.querySelectorAll('.rte').forEach(function(e){e.contentEditable=on?'true':'false';e.spellcheck=true});
+    main.querySelectorAll('h1,h2,h3,p,li,strong,span,.tag,.client b,.node b,.machine-brand b,.yr,.ic').forEach(function(e){if(e.closest('.rte'))return;e.contentEditable=on?'true':'false'});main.querySelectorAll('.rte').forEach(function(e){e.contentEditable=on?'true':'false';e.spellcheck=true});
     if(on){
+      renderAdd();
       main.addEventListener('click',pick,true);
       main.querySelectorAll('img').forEach(function(i){i.title='Click to select image, then use Change selected image'});
     }
   }
+
+  /* ================= Add-row buttons ================= */
+  var REPEATS=[
+   {c:'.stats',i:'.stat',l:'highlight'},
+   {c:'.grid4',i:'.card',l:'card'},
+   {c:'.timeline',i:'.job',l:'job / experience'},
+   {c:'.clients',i:'.client',l:'client'},
+   {c:'.brand-grid',i:'.machine-brand:not(.more)',l:'machine brand',before:'.more'},
+   {c:'.skills',i:'.card',l:'skill group'},
+   {c:'#projects',i:'.project',l:'project',inside:1},
+   {c:'.edu',i:'.card',l:'education card'},
+   {c:'.tags',i:'.tag',l:'tag',sm:1},
+   {c:'ul',i:'li',l:'bullet',sm:1}
+  ];
+  var TXT=[['.client b','N'],['.client strong','New client'],['.client span','Active support'],['.machine-brand b','NB'],['.machine-brand strong','New brand'],['.job-top h3','Job title'],['.when','Start – End'],['.yr','Year'],['.big','00%'],['.ic','★'],['.stat h3','New metric'],['.stat > span','Short description']];
+  var tplCache={};
+  function blank(el){
+    el.classList.remove('cms-selected','now','stat-featured');
+    if(el.matches('li')){el.textContent='New point';return el}
+    if(el.matches('.tag')){el.textContent='New tag';return el}
+    el.querySelectorAll('.stat-badge,.cms-add-btn,.arch').forEach(function(x){x.remove()});
+    if(el.matches('.project'))el.style.gridTemplateColumns='1fr';
+    el.querySelectorAll('ul,ol,.tags').forEach(function(u){[].slice.call(u.children,1).forEach(function(x){x.remove()})});
+    el.querySelectorAll('h1,h2,h3,p,li,strong,span,.tag,b').forEach(function(n){
+      if(n.children.length||n.closest('svg'))return;
+      n.textContent=n.matches('h1,h2,h3')?'New title':n.matches('p')?'Describe this item':n.matches('li')?'New point':n.matches('.tag')?'New tag':'Edit text';
+    });
+    el.querySelectorAll('.org').forEach(function(o){o.innerHTML='<strong>Company name</strong> · Location · Role'});
+    TXT.forEach(function(t){el.querySelectorAll(t[0]).forEach(function(n){if(!n.children.length)n.textContent=t[1]})});
+    el.querySelectorAll('.count').forEach(function(c){c.textContent='10';c.dataset.target='10';c.dataset.done='1'});
+    return el;
+  }
+  function addItem(cfg,k,cont){
+    var items=[].slice.call(cont.querySelectorAll(':scope > '+cfg.i)),last=items[items.length-1],node;
+    if(last)node=blank(last.cloneNode(true));
+    else if(tplCache[k]){var d=document.createElement('div');d.innerHTML=tplCache[k];node=d.firstElementChild}
+    else return setStatus('Nothing to copy here yet – add one with “Duplicate selected” first.');
+    var btn=cont.querySelector(':scope > .cms-add-btn'),bef=cfg.before&&cont.querySelector(':scope > '+cfg.before);
+    if(last)last.after(node);else if(bef)bef.before(node);else if(btn)btn.before(node);else cont.appendChild(node);
+    editable(true);
+    if(selected)selected.classList.remove('cms-selected');
+    selected=node;node.classList.add('cms-selected');
+    var f=node.matches('[contenteditable=true]')?node:node.querySelector('[contenteditable=true]');
+    try{node.scrollIntoView({block:'center',behavior:'smooth'});if(f){f.focus();var r=document.createRange();r.selectNodeContents(f);var sl=window.getSelection();sl.removeAllRanges();sl.addRange(r)}}catch(e){}
+    setStatus('New '+cfg.l+' added – type to edit it, then click Save changes.');
+  }
+  function renderAdd(){
+    main.querySelectorAll('.cms-add-btn').forEach(function(x){x.remove()});
+    REPEATS.forEach(function(cfg,k){
+      main.querySelectorAll(cfg.c).forEach(function(cont){
+        if(cont.closest('.rte')||cont.closest('.flow'))return;
+        if(!tplCache[k]){var it=cont.querySelector(':scope > '+cfg.i);if(it)tplCache[k]=blank(it.cloneNode(true)).outerHTML}
+        var b=document.createElement('button');b.type='button';b.className='cms-add-btn'+(cfg.sm?' sm':'');b.contentEditable='false';b.textContent='+ Add '+cfg.l;
+        b.onclick=function(e){e.preventDefault();e.stopPropagation();addItem(cfg,k,cont)};
+        if(cfg.inside)cont.appendChild(b);else cont.after(b);
+      });
+    });
+  }
+
+  /* ================= Auto logout after inactivity ================= */
+  var IDLE_KEY='pf_idle_min',ACT_KEY='pf_last_activity';
+  function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  var idleMin=(function(){var v=parseInt(lsGet(IDLE_KEY),10);return isNaN(v)||v<0?15:v})();
+  var idleIv=null,idleBound=false,warnEl=null,lastAct=Date.now(),lastWrite=0;
+  function touch(){var n=Date.now();lastAct=n;if(n-lastWrite>1000){lastWrite=n;lsSet(ACT_KEY,String(n))}}
+  function lastActivity(){return Math.max(lastAct,parseInt(lsGet(ACT_KEY)||'0',10)||0)}
+  function syncIdleLabel(){var st=document.getElementById('cmsIdleState');if(!st)return;st.textContent=idleMin>0?idleMin+' min':'Off';st.className='cms-voice-state '+(idleMin>0?'enabled':'disabled')}
+  async function loadIdleSetting(){
+    try{var r=await sb.from('portfolio_content').select('html').eq('id',4).maybeSingle();
+      if(r.data&&r.data.html){var v=parseInt(JSON.parse(r.data.html).idleMinutes,10);if(!isNaN(v)&&v>=0){idleMin=v;lsSet(IDLE_KEY,String(v))}}}catch(e){}
+    syncIdleLabel();
+  }
+  function showWarn(sec){
+    if(!warnEl){warnEl=document.createElement('div');warnEl.className='cms-idle-warn';warnEl.innerHTML='<span></span><button type="button">Stay signed in</button>';warnEl.querySelector('button').onclick=function(){touch();hideWarn()};document.body.appendChild(warnEl)}
+    warnEl.firstChild.textContent='Logging out in '+sec+'s due to inactivity.';warnEl.classList.add('open');
+  }
+  function hideWarn(){if(warnEl)warnEl.classList.remove('open')}
+  async function idleLogout(){clearInterval(idleIv);idleIv=null;try{await sb.auth.signOut()}catch(e){}lsSet(ACT_KEY,'');location.href=location.pathname}
+  function idleCheck(){
+    if(idleMin<=0){hideWarn();return}
+    var lim=idleMin*60000,idle=Date.now()-lastActivity();
+    if(idle>=lim){idleLogout();return}
+    var left=lim-idle;if(left<=30000)showWarn(Math.ceil(left/1000));else hideWarn();
+  }
+  function startIdle(){
+    touch();syncIdleLabel();
+    if(!idleBound){idleBound=true;['mousemove','mousedown','keydown','scroll','touchstart','wheel','click'].forEach(function(ev){document.addEventListener(ev,touch,{passive:true,capture:true})});document.addEventListener('visibilitychange',function(){if(!document.hidden)idleCheck()})}
+    if(!idleIv)idleIv=setInterval(idleCheck,1000);
+  }
+  var im=document.createElement('div');im.className='cms-resume-modal';im.id='cmsIdleModal';
+  im.innerHTML='<div class="cms-resume-box" style="max-width:460px"><h2>Auto logout</h2><p>Log the admin out automatically after this many minutes without any activity. Enter 0 to turn it off.</p><div class="cms-resume-row"><input id="cmsIdleMin" type="number" min="0" max="1440" step="1" placeholder="Minutes"><button type="button" id="cmsIdleSave">Save</button></div><div class="cms-resume-row" id="cmsIdlePresets"></div><p class="cms-msg" id="cmsIdleMsg"></p><div class="cms-resume-row"><button type="button" id="cmsIdleClose" style="background:#243b4c;color:#fff">Close</button></div></div>';
+  document.body.appendChild(im);
+  [[5,'5 min'],[15,'15 min'],[30,'30 min'],[60,'1 hour'],[0,'Off']].forEach(function(p){var b=document.createElement('button');b.type='button';b.textContent=p[1];b.style.cssText='background:#243b4c;color:#fff';b.onclick=function(){document.getElementById('cmsIdleMin').value=p[0]};document.getElementById('cmsIdlePresets').appendChild(b)});
+  document.getElementById('cmsIdle').onclick=function(){document.getElementById('cmsIdleMin').value=idleMin;document.getElementById('cmsIdleMsg').textContent='';im.classList.add('open')};
+  document.getElementById('cmsIdleClose').onclick=function(){im.classList.remove('open')};
+  document.getElementById('cmsIdleSave').onclick=async function(){
+    var m=document.getElementById('cmsIdleMsg'),v=parseInt(document.getElementById('cmsIdleMin').value,10);
+    if(isNaN(v)||v<0||v>1440){m.textContent='Enter a number from 0 to 1440.';return}
+    idleMin=v;lsSet(IDLE_KEY,String(v));touch();syncIdleLabel();hideWarn();
+    m.textContent='Saving…';
+    var r=await sb.from('portfolio_content').upsert({id:4,html:JSON.stringify({idleMinutes:v}),updated_at:new Date().toISOString()});
+    m.textContent=r.error?'Saved on this browser only ('+r.error.message+')':(v>0?'Saved. Admin is logged out after '+v+' min of inactivity.':'Saved. Auto logout is off.');
+    setStatus(v>0?'Auto logout set to '+v+' min.':'Auto logout turned off.');
+  };
+  syncIdleLabel();
+
   window.pfEditable=editable;
   window.pfUpload=async function(f){var ext=((f.name||'').split('.').pop()||'png').toLowerCase().replace(/[^a-z0-9]/g,''),path='sections/'+Date.now()+'-'+Math.random().toString(36).slice(2,7)+'.'+ext,bk=cfg.bucket||'portfolio',u=await sb.storage.from(bk).upload(path,f,{upsert:false,contentType:f.type});if(u.error)throw u.error;return sb.storage.from(bk).getPublicUrl(path).data.publicUrl};
   function pick(e){
-    if(e.target.closest('input,textarea,dialog')) return;
+    if(e.target.closest('input,textarea,dialog,.cms-add-btn')) return;
     e.preventDefault(); e.stopPropagation();
     if(selected) selected.classList.remove('cms-selected');
-    selected=e.target.closest('[data-admin-button],.client,.card,.stat,.job,.project,img,section[data-custom]')||e.target;
+    selected=e.target.closest(e.target.closest('.rte')?'[data-admin-button],.client,.card,.stat,.job,.project,img,section[data-custom]':'[data-admin-button],.client,.machine-brand,.card,.stat,.job,.project,li,.tag,img,section[data-custom]')||e.target;
     selected.classList.add('cms-selected'); setStatus('Selected: '+selected.tagName.toLowerCase()+(selected.className?' · '+selected.className.replace('cms-selected','').trim():''));
   }
   async function boot(){
@@ -1608,7 +1724,9 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
     if(!pageSlug&&!adminSess&&(await getUrlEnabled())===false){showBlocked();return}
     if(!(await loadSubPortfolio())) await loadSaved();
     if(!admin) return;
+    await loadIdleSetting();
     var sess=(await sb.auth.getSession()).data.session;
+    if(sess&&idleMin>0){var la=parseInt(lsGet(ACT_KEY)||'0',10);if(la&&Date.now()-la>idleMin*60000){try{await sb.auth.signOut()}catch(e){}sess=null;msg.textContent='Logged out after '+idleMin+' min of inactivity. Please sign in again.'}}
     if(sess) editable(true); else {login.classList.add('open');login.setAttribute('aria-hidden','false')}
   }
   document.getElementById('cmsResumes').onclick=function(){document.getElementById('cmsResumeModal').classList.add('open');listResumePortfolios()};
@@ -1619,7 +1737,7 @@ function has(a){return a.some(function(w){return q.indexOf(w)>=0})}
     m.textContent='Uploading resume…';var u=await sb.storage.from(cfg.resumeBucket||'resumes').upload(path,f,{upsert:false});if(u.error){m.textContent='Upload failed: '+u.error.message;return}
     var pub=sb.storage.from(cfg.resumeBucket||'resumes').getPublicUrl(path).data.publicUrl;
     /* Browser-only builds cannot reliably parse every PDF/DOCX. Create the sub-portfolio from the current template; a server/Edge Function can replace html with parsed resume data. */
-    var html=main.innerHTML, r=await sb.from('resume_portfolios').insert({title:title,slug:slug,resume_url:pub,storage_path:path,html:html,created_at:new Date().toISOString()}).select('id').single();
+    var html=window.pfClean(main), r=await sb.from('resume_portfolios').insert({title:title,slug:slug,resume_url:pub,storage_path:path,html:html,created_at:new Date().toISOString()}).select('id').single();
     if(r.error){await sb.storage.from(cfg.resumeBucket||'resumes').remove([path]);m.textContent='Create failed: '+r.error.message;return}
     m.textContent='Created: '+slug+'.html';this.value='';document.getElementById('cmsResumeTitle').value='';listResumePortfolios();
   };

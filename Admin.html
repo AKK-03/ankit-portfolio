@@ -62,7 +62,7 @@ button{min-height:42px;border-radius:12px;padding:10px 16px;transition:transform
 #monitor .logError{color:#b93838}
 @media(max-width:560px){#monitor .logSummary{gap:7px}#monitor .logStat{padding:11px}#monitor .logStat strong{font-size:21px}#monitor .logHeading{align-items:flex-start}#monitor .logEvent{padding:12px}}
 </style><style id="mailPresetStyle">
-.presetPanel{border:1px solid var(--line,#dce7eb);background:color-mix(in srgb,var(--a,#087c6d) 5%,var(--card,#fff));border-radius:16px;padding:16px;margin:14px 0 18px}.presetIntro{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}.presetActions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.presetActions select{flex:1 1 220px;width:auto;margin:0;min-width:180px}.presetActions button{margin:0}.presetPreview{margin-top:14px}.presetPreview iframe{width:100%;height:390px;border:1px solid var(--line,#dce7eb);border-radius:12px;background:#fff;margin-top:8px}@media(max-width:550px){.presetActions>*{flex:1 1 100%!important}}
+.presetPanel{border:1px solid var(--line,#dce7eb);background:color-mix(in srgb,var(--a,#087c6d) 5%,var(--card,#fff));border-radius:16px;padding:16px;margin:14px 0 18px}.presetIntro{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}.presetActions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.presetActions select{flex:1 1 220px;width:auto;margin:0;min-width:180px}.presetActions button{margin:0}.presetPreview{margin-top:14px}.presetPreview iframe{width:100%;height:640px;resize:vertical;border:1px solid var(--line,#dce7eb);border-radius:12px;background:#fff;margin-top:8px}@media(max-width:550px){.presetActions>*{flex:1 1 100%!important}}
 </style><style id="premiumPolish">
 body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
 .hero{position:relative;overflow:hidden;padding:30px 30px 28px}.hero::after{content:"";position:absolute;right:-60px;top:-70px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,#ffffff30,transparent 70%)}
@@ -88,6 +88,7 @@ button,.primary{background:linear-gradient(135deg,var(--a),#0a9a86)}button.secon
 .tabArrow{flex:none;width:36px;height:36px;border-radius:50%;padding:0;margin:0 2px;font-size:24px;line-height:1;background:var(--card)!important;background-image:none!important;color:var(--ink);border:1px solid var(--line);box-shadow:0 2px 8px #0002}.tabArrow:hover{background:var(--a)!important;color:#fff}
 .tabArrow[hidden]{display:none}@media (pointer:coarse){.tabArrow{display:none!important}}
 #homeBtn{white-space:nowrap}</style>
+<style id="idleStyle">#idleWarn{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:2147483000;display:flex;align-items:center;gap:14px;max-width:min(560px,calc(100vw - 24px));padding:14px 18px;border-radius:16px;background:#fff;color:#17323e;border:2px solid #c94a4a;box-shadow:0 18px 50px #0006;font-size:14px}#idleWarn[hidden]{display:none}#idleWarn b{display:block;font-size:16px;color:#a12d2d}@media(prefers-color-scheme:dark){#idleWarn{background:#1b2a36;color:#e8eff4}#idleWarn b{color:#ff9a9a}}.idleChip{padding:6px 12px;border-radius:99px;font-size:13px}.idleChip.on{background:var(--a)!important;color:#fff}</style>
 </head><body><div class="wrap"><div class="hero"><h1>CareerPulse Admin</h1><div>Simple control center for Jobs, Family, job sources and page content.</div></div>
 <div id="login" class="card"><h2>Admin sign in</h2><label>Email<input id="email" type="email"></label><label>Password<input id="password" type="password"></label><button id="signin">Sign in</button><div id="loginMsg" class="msg">Use your Supabase Authentication admin account.</div></div>
 <div id="app" hidden>
@@ -142,8 +143,12 @@ button,.primary{background:linear-gradient(135deg,var(--a),#0a9a86)}button.secon
 <h3 style="margin-top:26px">⚠️ Recent delivery problems</h3><p class="small">The newest reason a reminder could not be sent (same error repeated is counted, not listed again).</p>
 <div id="delList"></div><div class="row"><button id="delRefresh" class="secondary">↻ Refresh</button><button id="delClear" class="secondary">Clear list</button></div>
 </section>
-<section id="mailTemplates" class="view card"><h2>Reminder email templates</h2><p class="small">Customize Jobs and Family emails separately. Keep {{content}} for job results and {{controls}} for recipient Pause / Resume / Disable links. Leave HTML blank to restore the default.</p><div class="presetPanel"><div class="presetIntro"><strong>✨ Ready-made email designs</strong><span class="small">Choose a design, preview it, then apply it to the editor. Saving is separate.</span></div><div class="presetActions"><select id="mailPreset" aria-label="Choose email design"><option value="modern">🌿 Modern teal</option><option value="corporate">💼 Professional blue</option><option value="warm">☀️ Warm and friendly</option><option value="minimal">✦ Minimal clean</option></select><button id="mailPresetPreview" type="button" class="secondary">Preview design</button><button id="mailPresetApply" type="button">Use this design</button></div><div id="mailPresetPreviewWrap" class="presetPreview" hidden><div class="small">Sample preview — placeholder data only</div><iframe id="mailPresetFrame" title="Sample email preview" sandbox="" loading="lazy"></iframe></div></div><label>Reminder type<select id="mailType"><option value="jobs">Jobs</option><option value="family">Family</option></select></label><label>Email subject<input id="mailSubject" placeholder="{{subject}}"></label><label>Email HTML template<textarea id="mailHtml" rows="10" placeholder="<div><h2>Your alerts</h2>{{content}}{{controls}}</div>"></textarea></label><div class="row"><button id="mailSave">Save email template</button><button id="mailLoad" class="secondary">Load saved template</button><button id="mailReset" class="danger">Restore default</button></div><div id="mailMsg" class="msg"></div></section><section id="security" class="view card"><h2>Security &amp; sessions</h2><p class="small">Every open Admin page reports in every 2 minutes. A session counts as active if it was seen in the last 5 minutes.</p>
+<section id="mailTemplates" class="view card"><h2>Reminder email templates</h2><p class="small">Customize Jobs and Family emails separately. Keep {{content}} for job results and {{controls}} for recipient Pause / Resume / Disable links. Leave HTML blank to restore the default.</p><div class="presetPanel"><div class="presetIntro"><strong>✨ Ready-made email designs</strong><span class="small">Choose a design, preview it, then apply it to the editor. Saving is separate.</span></div><div class="presetActions"><select id="mailPreset" aria-label="Choose email design"><option value="modern">🌿 Modern teal</option><option value="corporate">💼 Professional blue</option><option value="warm">☀️ Warm and friendly</option><option value="minimal">✦ Minimal clean</option></select><button id="mailPresetPreview" type="button" class="secondary">Preview design</button><button id="mailPresetApply" type="button">Use this design</button></div><div id="mailPresetPreviewWrap" class="presetPreview" hidden><div class="small">Sample preview — 25 jobs with long titles, the most one email holds (placeholder data only). Scroll inside the preview.</div><iframe id="mailPresetFrame" title="Sample email preview" sandbox="" loading="lazy"></iframe></div></div><label>Reminder type<select id="mailType"><option value="jobs">Jobs</option><option value="family">Family</option></select></label><label>Email subject<input id="mailSubject" placeholder="{{subject}}"></label><label>Email HTML template<textarea id="mailHtml" rows="10" placeholder="<div><h2>Your alerts</h2>{{content}}{{controls}}</div>"></textarea></label><div class="row"><button id="mailSave">Save email template</button><button id="mailTest" class="secondary" title="Sends the saved format with sample jobs to your own address">✉ Send test email to me</button><button id="mailLoad" class="secondary">Load saved template</button><button id="mailReset" class="danger">Restore default</button></div><div id="mailMsg" class="msg"></div></section><section id="security" class="view card"><h2>Security &amp; sessions</h2><p class="small">Every open Admin page reports in every 2 minutes. A session counts as active if it was seen in the last 5 minutes.</p>
 <div class="sessStats" id="sessStats"></div>
+<div class="swBox" style="margin:6px 0 16px"><b>⏱ Auto sign-out after inactivity</b>
+<p class="small">When nobody touches the Admin page for this long, you are signed out automatically (a 60-second warning appears first). The time you set applies to every admin device. Reading a page without clicking or typing counts as inactive.</p>
+<div class="row"><label style="max-width:210px">Minutes of inactivity (0 = off)<input id="idleMin" type="number" min="0" max="1440" step="1" placeholder="e.g. 15"></label><button id="idleSave">Save</button></div>
+<div class="row" id="idleChips" style="gap:6px"></div><div id="idleMsg" class="msg"></div></div>
 <div class="row"><button id="logoutAll" class="danger">⏻ Sign out of all devices</button><button id="sessRefresh" class="secondary">↻ Refresh</button></div>
 <p class="small">“Sign out” (top right) only ends <b>this</b> device. “Sign out of all devices” ends every session of your account everywhere, including this one, and old tokens are refused immediately.</p>
 <div id="sessMsg" class="msg"></div><div id="sessList"></div></section>
@@ -432,14 +437,22 @@ $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword
   const d=designs[key]||designs.modern, family=type==='family';
   const heading=family?'Family reminders':'Job alerts';
   const subject=key==='minimal'?'{{subject}}':(family?'Family reminders':'Job opportunities')+' · {{subject}}';
-  const html=`<div style="margin:0;padding:30px 12px;background:${d.bg};font-family:${d.font};color:#213340"><div style="max-width:620px;margin:auto;background:#fff;border:1px solid #e4e9ee;border-radius:18px;overflow:hidden"><div style="background:${d.accent};color:#fff;padding:28px 30px"><div style="font-size:12px;letter-spacing:2px;font-weight:bold">CAREERPULSE · ${family?'FAMILY':'JOBS'}</div><h1 style="margin:13px 0 5px;font-size:26px;color:#fff">${d.heading}</h1><p style="margin:0;color:#fff;opacity:.9;font-size:14px">${d.sub}</p></div><div style="padding:28px 30px"><h2 style="font-size:19px;margin:0 0 15px;color:${d.accent}">${heading}</h2><div style="font-size:15px;line-height:1.7">{{content}}</div><div style="margin-top:25px;padding-top:18px;border-top:1px solid #e6e9ec">{{controls}}</div></div><div style="padding:17px 30px;background:#f8fafb;color:#667782;font-size:12px;text-align:center">CareerPulse · Manage your notification preferences using the links above.</div></div></div>`;
+  const html=`<div style="margin:0;padding:30px 12px;background:${d.bg};font-family:${d.font};color:#213340"><div style="max-width:620px;margin:auto;background:#fff;border:1px solid #e4e9ee;border-radius:18px;overflow:hidden"><div style="background:${d.accent};color:#fff;padding:28px 30px"><div style="font-size:12px;letter-spacing:2px;font-weight:bold">CAREERPULSE · ${family?'FAMILY':'JOBS'}</div><h1 style="margin:13px 0 5px;font-size:26px;color:#fff">${d.heading}</h1><p style="margin:0;color:#fff;opacity:.9;font-size:14px">${d.sub}</p></div><div style="padding:28px 30px"><h2 style="font-size:19px;margin:0 0 15px;color:${d.accent}">${heading}</h2><div style="font-size:15px;line-height:1.7;word-break:break-word;overflow-wrap:anywhere">{{content}}</div><div style="margin-top:25px;padding-top:18px;border-top:1px solid #e6e9ec">{{controls}}</div></div><div style="padding:17px 30px;background:#f8fafb;color:#667782;font-size:12px;text-align:center">CareerPulse · Manage your notification preferences using the links above.</div></div></div>`;
   return {subject,html};
  }
  function sample(html,type){
+  /* Realistic LARGE dummy data: 25 results (the most one reminder email holds), long titles and many roles/locations,
+     built with the same markup the backend sends, so wrapping and length can be judged before saving. */
   const family=type==='family';
-  const content=family?'<p style="margin:0 0 12px">Hi Alex, here are your upcoming family reminders.</p><div style="padding:15px;background:#f7fafb;border-radius:10px"><b>Family event reminder</b><div>Saturday · 10:00 AM</div><div>Remember to prepare for the event.</div></div>':'<p style="margin:0 0 12px">Hi Alex, we found some opportunities for you.</p><div style="padding:15px;background:#f7fafb;border-radius:10px"><b>Frontend Developer</b><div>Sample Company · Remote</div><div>Recently posted · View opportunity</div></div>';
-  const controls='<div style="font-size:13px;color:#586875">Manage reminders: <span style="color:#087c6d">Pause</span> · <span style="color:#087c6d">Resume</span> · <span style="color:#a63333">Disable</span></div>';
-  return html.replaceAll('{{content}}',content).replaceAll('{{controls}}',controls).replaceAll('{{subject}}','Sample notification');
+  const roles=family?['Senior QA Engineer','Automation Test Lead','SDET','Business Analyst','Product Analyst','Operations Manager','Customer Success Manager','Data Analyst']:['Software Engineer','Frontend Developer','Backend Developer','Full Stack Developer','DevOps Engineer','Data Scientist'];
+  const locs=['Gurugram','Delhi NCR','Noida','Bengaluru','Hyderabad','Pune','Remote'];
+  const titles=['Senior Software Engineer - Platform and Infrastructure','Frontend Developer (React, TypeScript)','Quality Assurance Lead - Automation and Performance','Backend Engineer, Payments and Risk','Product Analyst - Growth and Retention','Business Analyst (Banking and Fintech domain)','Data Engineer - Streaming Pipelines','Customer Success Manager - Enterprise Accounts','DevOps Engineer - Kubernetes and Cloud Security','Operations Manager, Supply Chain and Logistics'];
+  const cos=['Northwind Technologies Private Limited','Contoso Digital Solutions','Fabrikam Global Services','Globex Corporation India','Initech Software','Umbrella Health Sciences','Wayne Enterprises','Stark Industries R&amp;D'];
+  const cards=Array.from({length:25},(_,i)=>'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e1eaee;border-radius:12px;margin:0 0 10px;background:#ffffff"><tr><td style="padding:14px 16px"><div style="font-size:16px;font-weight:bold;color:#17323e">'+titles[i%titles.length]+'</div><div style="font-size:13px;color:#5b707b;margin:3px 0 10px">'+cos[i%cos.length]+' &middot; '+locs[i%locs.length]+'</div><a href="#" style="display:inline-block;padding:8px 14px;border-radius:8px;background:#087c6d;color:#ffffff;text-decoration:none;font-size:13px;font-weight:bold">View &amp; apply</a></td></tr></table>').join('');
+  const content='<p style="font-size:13px;color:#4b616c;margin:0 2px 14px"><b>Hi Alex,</b><br><b>Roles:</b> '+roles.join(', ')+'<br><b>Locations:</b> '+locs.join(', ')+'</p>'+cards+'<p style="color:#60747d;font-size:12px;margin:10px 2px">Posted within 7 day(s)</p>';
+  const btn=(t,c)=>'<a href="#" style="display:inline-block;margin:4px 6px 4px 0;padding:9px 16px;border-radius:8px;background:'+c+';color:#ffffff;text-decoration:none;font-weight:bold;font-size:13px">'+t+'</a>';
+  const controls='<div style="padding:14px;border:1px solid #dde6ea;border-radius:12px;background:#f7fafb"><div style="font-size:13px;font-weight:bold;color:#17323e;margin-bottom:6px">Manage these '+(family?'family':'jobs')+' reminders</div>'+btn('Enable','#0b8a6f')+btn('Pause','#c98a12')+btn('Disable','#5b6b76')+btn('Delete','#b83232')+'<div style="font-size:11px;color:#667782;margin-top:6px">Each button asks you to confirm first. Delete removes the reminder permanently.</div></div>';
+  return html.replaceAll('{{content}}',content).replaceAll('{{controls}}',controls).replaceAll('{{subject}}','CareerPulse: 25 new jobs for '+roles.slice(0,3).join(', '));
  }
  $p('mailPresetPreview').addEventListener('click',()=>{
   const t=$p('mailType').value,d=build($p('mailPreset').value,t);
@@ -465,9 +478,9 @@ $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword
  function device(){const u=navigator.userAgent;const b=/Edg\//.test(u)?'Edge':/OPR\//.test(u)?'Opera':/Chrome\//.test(u)?'Chrome':/Firefox\//.test(u)?'Firefox':/Safari\//.test(u)?'Safari':'Browser';const o=/Android/.test(u)?'Android':/iPhone|iPad/.test(u)?'iOS':/Windows/.test(u)?'Windows':/Mac OS/.test(u)?'macOS':/Linux/.test(u)?'Linux':'device';return b+' on '+o}
  const ago=iso=>{const s=Math.max(0,Math.round((Date.now()-Date.parse(iso))/1000));return s<60?'just now':s<3600?Math.floor(s/60)+' min ago':s<86400?Math.floor(s/3600)+' h ago':Math.floor(s/86400)+' d ago'};
  function badge(n){const b=$('sessBadge');if(b&&Number.isFinite(Number(n)))b.textContent='🟢 '+n+' active session'+(n===1?'':'s')}
- async function ping(){try{const r=await post('admin_session_ping',{label:device()});window._sessId=r.id;badge(r.active)}catch(e){if(/signed out/i.test(e.message)){await db().auth.signOut({scope:'local'});state()}}}
+ async function ping(){try{const r=await post('admin_session_ping',{label:device(),activeAt:(window.cpLastActivity?window.cpLastActivity():Date.now())});window._sessId=r.id;badge(r.active);if(window.cpSetIdle)window.cpSetIdle(r.idleMinutes)}catch(e){if(/signed out/i.test(e.message)){await db().auth.signOut({scope:'local'});state()}}}
  async function load(){
-  try{const x=await get('admin_sessions');badge(x.active);
+  try{const x=await get('admin_sessions');badge(x.active);if(window.cpSetIdle)window.cpSetIdle(x.idleMinutes);
    const st=$('sessStats');st.replaceChildren();[['Active now',x.active,'on'],['Devices seen (7 days)',x.known,'']].forEach(([l,n,c])=>{const d=document.createElement('div');d.className='sessStat '+c;const s=document.createElement('strong');s.textContent=n;const t=document.createElement('span');t.textContent=l;d.append(s,t);st.append(d)});
    const host=$('sessList');host.replaceChildren();
    if(!x.rows.length){host.textContent='No sessions recorded yet.';return}
@@ -567,6 +580,45 @@ $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword
  setTimeout(upd,150);setTimeout(upd,900);
  /* show the real From account next to the note */
  const f=$('fromAcct');if(f){const t=setInterval(()=>{const m=($('senderFrom')||{}).textContent||'',x=m.match(/sent from: (\S+)/);if(x){f.textContent=x[1];clearInterval(t)}},800);setTimeout(()=>clearInterval(t),15000)}
+})();
+</script>
+
+<script>
+(function(){
+ const $=id=>document.getElementById(id),KEY='cp_last_activity';let mins=0,lastWrite=0,mem=0,busy=false,lastOut=0;
+ const rd=()=>{try{return Number(localStorage.getItem(KEY))||0}catch(e){return 0}};
+ const last=()=>rd()||mem;   // shared across tabs through localStorage; memory only if storage is blocked
+ function touch(){lastWrite=Date.now();mem=lastWrite;try{localStorage.setItem(KEY,String(lastWrite))}catch(e){}}
+ window.cpLastActivity=last;
+ /* real user activity, from any open tab of this site (shared through localStorage) */
+ ['mousemove','mousedown','keydown','scroll','touchstart','wheel','click'].forEach(ev=>window.addEventListener(ev,()=>{if(Date.now()-lastWrite>1000)touch()},{passive:true,capture:true}));
+ if(!rd())touch();
+ /* warning banner */
+ const w=document.createElement('div');w.id='idleWarn';w.hidden=true;w.setAttribute('role','alert');
+ const t=document.createElement('div');const h=document.createElement('b');h.textContent='Still there?';const sec=document.createElement('span');t.append(h,sec);
+ const stay=document.createElement('button');stay.textContent='Stay signed in';stay.onclick=()=>{touch();w.hidden=true};w.append(t,stay);document.body.append(w);
+ async function logout(){
+  try{if(window._sessId)await post('admin_session_revoke',{id:window._sessId})}catch(e){}
+  try{await db().auth.signOut({scope:'local'})}catch(e){}
+  await state();message('loginMsg','🔒 You were signed out after '+mins+' minute'+(mins===1?'':'s')+' of inactivity. Please sign in again.')
+ }
+ async function check(){
+  if(!mins||$('app').hidden){w.hidden=true;return}
+  const remain=mins*60000-(Date.now()-last());
+  if(remain<=0){if(busy||Date.now()-lastOut<5000)return;busy=true;lastOut=Date.now();w.hidden=true;try{await logout()}finally{busy=false}}
+  else if(remain<=60000){w.hidden=false;sec.textContent='You will be signed out in '+Math.ceil(remain/1000)+' s because of inactivity.'}
+  else w.hidden=true;
+ }
+ setInterval(check,1000);
+ /* settings UI (Security tab) */
+ const PRESETS=[[5,'5 min'],[10,'10 min'],[15,'15 min'],[30,'30 min'],[60,'1 hour'],[120,'2 hours'],[0,'Off']],chips=$('idleChips');
+ PRESETS.forEach(([m,l])=>{const b=document.createElement('button');b.type='button';b.className='secondary idleChip';b.textContent=l;b.dataset.m=m;b.onclick=()=>{$('idleMin').value=m;save()};chips.append(b)});
+ function paint(){[...chips.children].forEach(b=>b.classList.toggle('on',Number(b.dataset.m)===mins));if(document.activeElement!==$('idleMin'))$('idleMin').value=mins}
+ window.cpSetIdle=m=>{mins=Math.max(0,Number(m)||0);paint();check()};
+ async function save(){const b=$('idleSave');b.disabled=true;try{const r=await post('admin_idle_save',{minutes:$('idleMin').value||0});window.cpSetIdle(r.minutes);message('idleMsg',r.minutes?'✓ Admins are signed out after '+r.minutes+' minute'+(r.minutes===1?'':'s')+' of inactivity.':'✓ Auto sign-out is off.')}catch(e){message('idleMsg','✕ '+e.message,true)}finally{b.disabled=false}}
+ $('idleSave').onclick=save;
+ /* e-mail format test */
+ const mt=$('mailTest');if(mt)mt.onclick=async()=>{mt.disabled=true;try{const r=await post('admin_mail_template_test',{type:$('mailType').value});message('mailMsg','✓ Test email sent to '+r.sentTo+' using '+(r.usedCustomFormat?'your saved custom format.':'the default format (no custom format is saved for this type).'))}catch(e){message('mailMsg','✕ '+e.message,true)}finally{mt.disabled=false}};
 })();
 </script>
 </body></html>

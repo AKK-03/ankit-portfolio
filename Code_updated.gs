@@ -1,4 +1,4 @@
-var CAREERPULSE_BACKEND_VERSION = '2026-10-10-header-controls-v13';
+var CAREERPULSE_BACKEND_VERSION = '2026-10-10-idle-formats-v14';
 /* CareerPulse backend (Google Apps Script) — v7
    SCRIPT PROPERTIES: TOKEN, ADZUNA_ID, ADZUNA_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY
    OPTIONAL: WA_KEY (CallMeBot), ADMIN_EMAILS (comma-separated allow-list for Admin.html — STRONGLY recommended)
@@ -64,7 +64,7 @@ function doGet(e) {
     switch (a) {
       case 'deployment_check': var jh = jobsHealth_(); return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, adminAuth: 'supabase', family: true, jobsDb: true, jobsOk: jh.ok, jobsReason: jh.reason });
       case 'family_ping': var fh = familyHealth_(); return jsonOut_({ ok: true, service: 'family', version: CAREERPULSE_BACKEND_VERSION, senderRunning: fh.ok, senderReason: fh.reason });
-      case 'backend_version': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, execUrl: liveUrl_(), capabilities: ['admin_receiver_set','admin_receiver_reminders','admin_receiver_list','admin_mail_template_save','admin_mail_templates','admin_monitor_record','admin_monitor_logs','admin_family_list','admin_family_set_enabled','admin_family_delete','admin_reminder_delete','admin_receiver_clear','monitor_recovery','admin_sessions','admin_session_ping','admin_session_revoke','admin_logout_all','page_status','admin_pages','admin_page_flags_save','admin_page_add','admin_page_remove','admin_privacy_save','admin_wa_keys','admin_wa_key_save','admin_wa_key_delete','admin_wa_test','admin_delivery_log','admin_delivery_clear'] });
+      case 'backend_version': return jsonOut_({ ok: true, version: CAREERPULSE_BACKEND_VERSION, execUrl: liveUrl_(), capabilities: ['admin_receiver_set','admin_receiver_reminders','admin_receiver_list','admin_mail_template_save','admin_mail_templates','admin_monitor_record','admin_monitor_logs','admin_family_list','admin_family_set_enabled','admin_family_delete','admin_reminder_delete','admin_receiver_clear','monitor_recovery','admin_sessions','admin_session_ping','admin_session_revoke','admin_logout_all','page_status','admin_pages','admin_page_flags_save','admin_page_add','admin_page_remove','admin_privacy_save','admin_wa_keys','admin_wa_key_save','admin_wa_key_delete','admin_wa_test','admin_delivery_log','admin_delivery_clear','admin_idle_save','admin_mail_template_test'] });
       case 'family_status': return jsonOut_(familyPublicStatus_());
       case 'family_suggest': if (!pageFlag_('family').enabled) return jsonOut_({ ok: false, error: 'page_disabled' }); return jsonOut_(familySuggestions_(p.kind, p.q));
       case 'page_status': return jsonOut_(pageStatusPublic_(p.page));
@@ -123,7 +123,9 @@ function doPost(e) {
       case 'admin_monitor_record': return jsonOut_(monitorRecord_(p.auth,p.record));
       case 'admin_family_set_enabled': return jsonOut_(adminFamilySetEnabled_(p.auth,p.id,p.enabled));
       case 'admin_family_delete': return jsonOut_(adminFamilyDelete_(p.auth,p.ids));
-      case 'admin_session_ping': return jsonOut_(adminSessionPing_(p.auth,p.label));
+      case 'admin_session_ping': return jsonOut_(adminSessionPing_(p.auth,p.label,p.activeAt));
+      case 'admin_idle_save': return jsonOut_(adminIdleSave_(p.auth,p.minutes));
+      case 'admin_mail_template_test': return jsonOut_(mailTemplateTest_(p.auth,p.type));
       case 'admin_session_revoke': return jsonOut_(adminSessionRevoke_(p.auth,p.id));
       case 'admin_logout_all': return jsonOut_(adminLogoutAll_(p.auth));
       case 'admin_page_flags_save': return jsonOut_(adminPageFlagsSave_(p.auth,p.page,p.enabled,p.sender,p.message));
@@ -401,7 +403,7 @@ function sendReminder_(key, s, force, dueSlot) {
   var errors = res.errors, roles = (s.roles || []).join(', ') || 'All jobs', locations = (s.locations || []).join(', ') || 'Any location';
   var hi = s.firstName ? 'Hi ' + familyHtml_(s.firstName) + ',' : '';
   if (s.channel === 'email') {
-    var html = reminderHtml_(hi, roles, locations, jobs, errors, s.days);
+    var html = reminderHtml_(hi, roles, locations, jobs, errors, s.days, !!mailTemplatePublic_(key.indexOf('FAM_') === 0 ? 'family' : 'jobs'));
     sendMail_(address, 'CareerPulse: ' + jobs.length + ' new job' + (jobs.length === 1 ? '' : 's') + ' for ' + roles, html,
       'CareerPulse found ' + jobs.length + ' new job(s) for ' + roles + ' in ' + locations + '.\n' + jobs.slice(0, 10).map(function (j) { return '- ' + j.t + ' - ' + j.c + ' ' + j.u; }).join('\n'),key.indexOf('FAM_')===0?'family':'jobs',key);
   } else if (s.channel === 'whatsapp') {
@@ -467,6 +469,8 @@ function portalRequireAdmin_(tok) {
   if (rv && Number(c.iat || 0) * 1000 < rv) throw new Error('You were signed out of all devices. Please sign in again.');
   u._sid = sessionId_(c);
   var ss = sessionsLoad_(); if (ss[u._sid] && ss[u._sid].x) throw new Error('This device was signed out. Please sign in again.');
+  var idle = idleMinutes_(), en = ss[u._sid];
+  if (idle > 0 && en && en.a && Date.now() - en.a > idle * 60000 + 120000) throw new Error('You were signed out after ' + idle + ' minutes of inactivity. Please sign in again.');
   return u;
 }
 function portalLoad_() { return jsonProp_('PORTALS_JSON', []); }
@@ -715,9 +719,7 @@ function receiverReminders_(auth,type){
   return {ok:true,rows:rows};
 }
 /* Templates are admin-only and persist across deployments. {{content}} and {{controls}} are placeholders. */
-function mailTemplatePublic_(type){try{return JSON.parse(PropertiesService.getScriptProperties().getProperty('MAIL_TEMPLATE_'+type)||'null');}catch(e){return null;}}
 function mailTemplates_(auth){portalRequireAdmin_(auth);return {ok:true,jobs:mailTemplatePublic_('jobs'),family:mailTemplatePublic_('family')};}
-function mailTemplateSave_(auth,type,subject,html){portalRequireAdmin_(auth);if(['jobs','family'].indexOf(type)<0)throw Error('Invalid template type');subject=String(subject||'').slice(0,250);html=String(html||'');if(html.length>25000)throw Error('Template too large');if(html&&html.indexOf('{{content}}')<0)throw Error('Include {{content}} in HTML template');if(html&&html.indexOf('{{controls}}')<0)throw Error('Include {{controls}} so recipients can manage reminders');var data=html?{subject:subject||'{{subject}}',html:html}:null;var p=PropertiesService.getScriptProperties();if(data)p.setProperty('MAIL_TEMPLATE_'+type,JSON.stringify(data));else p.deleteProperty('MAIL_TEMPLATE_'+type);return {ok:true};}
 
 /* =====================================================================
    v9 ADDITIONS
@@ -742,13 +744,17 @@ function webAppUrl_() {
 function safeUrl_(u) { u = String(u || ''); return familyHtml_(/^https?:\/\//i.test(u) ? u : '#'); }
 
 /* ---------- attractive default reminder e-mail ---------- */
-function reminderHtml_(hi, roles, locations, jobs, errors, days) {
+function reminderHtml_(hi, roles, locations, jobs, errors, days, bare) {
   var cards = jobs.length ? jobs.slice(0, 25).map(function (j) {
     return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e1eaee;border-radius:12px;margin:0 0 10px;background:#ffffff"><tr><td style="padding:14px 16px">' +
       '<div style="font-size:16px;font-weight:bold;color:#17323e">' + familyHtml_(j.t) + '</div>' +
       '<div style="font-size:13px;color:#5b707b;margin:3px 0 10px">' + familyHtml_(j.c || 'Company not listed') + ' &middot; ' + familyHtml_(j.l || 'Location not listed') + '</div>' +
       '<a href="' + safeUrl_(j.u) + '" style="display:inline-block;padding:8px 14px;border-radius:8px;background:#087c6d;color:#ffffff;text-decoration:none;font-size:13px;font-weight:bold">View &amp; apply</a></td></tr></table>';
   }).join('') : '<div style="padding:16px;border:1px dashed #b9ccd3;border-radius:12px;color:#4b616c">No new matching openings right now. Your reminder is still active.</div>';
+  var intro = '<p style="font-size:13px;color:#4b616c;margin:0 2px 14px">' + (hi ? '<b>' + hi + '</b><br>' : '') + '<b>Roles:</b> ' + familyHtml_(roles) + '<br><b>Locations:</b> ' + familyHtml_(locations) + '</p>';
+  var err = errors.length ? '<p style="color:#a33;font-size:12px">Some searches failed: ' + familyHtml_(errors.join(' | ')) + '</p>' : '';
+  var foot = '<p style="color:#60747d;font-size:12px;margin:10px 2px">Posted within ' + familyHtml_(String(days || 7)) + ' day(s)</p>';
+  if (bare) return intro + cards + err + foot;      // custom format from Admin > Email formats wraps this
   return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:auto;background:#f3f7fa;padding:18px;border-radius:16px">' +
     '<div style="background:linear-gradient(135deg,#087c6d,#155d75);background-color:#087c6d;color:#ffffff;padding:22px 24px;border-radius:14px">' +
     '<div style="font-size:12px;letter-spacing:2px;font-weight:bold;opacity:.9">CAREERPULSE</div><div style="font-size:22px;font-weight:bold;margin-top:6px">' + (hi ? hi : 'Your job reminder') + '</div>' +
@@ -987,11 +993,11 @@ function activeAdminSessions_() {
   var ss = sessionsLoad_(), now = Date.now();
   return Object.keys(ss).filter(function (k) { return !ss[k].x && now - (ss[k].s || 0) <= SESSION_ACTIVE_MS_; }).length;
 }
-function adminSessionPing_(auth, label) {
+function adminSessionPing_(auth, label, activeAt) {
   var u = portalRequireAdmin_(auth), ss = sessionsLoad_(), now = Date.now(), e = ss[u._sid] || { f: now };
-  e.u = u.id; e.m = String(u.email || '').slice(0, 60); e.l = String(label || 'Unknown device').slice(0, 50); e.s = now; delete e.x;
+  e.u = u.id; e.m = String(u.email || '').slice(0, 60); e.l = String(label || 'Unknown device').slice(0, 50); e.s = now; delete e.x; var aa = Number(activeAt); e.a = (isFinite(aa) && aa > 0) ? Math.min(aa, now) : now;   // last real user activity, reported by the page
   ss[u._sid] = e; sessionsSave_(ss);
-  return { ok: true, id: shortKey_(u._sid), active: activeAdminSessions_() };
+  return { ok: true, id: shortKey_(u._sid), active: activeAdminSessions_(), idleMinutes: idleMinutes_() };
 }
 function adminSessions_(auth) {
   var u = portalRequireAdmin_(auth), ss = sessionsLoad_(), now = Date.now();
@@ -999,7 +1005,7 @@ function adminSessions_(auth) {
     var e = ss[k];
     return { id: shortKey_(k), email: e.m || '', device: e.l || 'Unknown device', first: new Date(e.f || e.s).toISOString(), last: new Date(e.s).toISOString(), active: now - e.s <= SESSION_ACTIVE_MS_, current: k === u._sid };
   }).sort(function (a, b) { return Date.parse(b.last) - Date.parse(a.last); });
-  return { ok: true, active: rows.filter(function (r) { return r.active; }).length, known: rows.length, windowMinutes: SESSION_ACTIVE_MS_ / 60000, rows: rows.slice(0, 30) };
+  return { ok: true, idleMinutes: idleMinutes_(), active: rows.filter(function (r) { return r.active; }).length, known: rows.length, windowMinutes: SESSION_ACTIVE_MS_ / 60000, rows: rows.slice(0, 30) };
 }
 function adminSessionRevoke_(auth, id) {
   var u = portalRequireAdmin_(auth), ss = sessionsLoad_(), hit = Object.keys(ss).filter(function (k) { return shortKey_(k) === String(id || ''); })[0];
@@ -1151,4 +1157,57 @@ function adminWaKeyDelete_(auth, phone) {
 function adminWaTest_(auth, phone) {
   portalRequireAdmin_(auth); var r = waSend_(phone, '✅ CareerPulse test message. WhatsApp delivery works.' + waFooter_());
   return { ok: true, phone: r.phone, reply: r.detail };
+}
+
+/* =====================================================================
+   v14: AUTO SIGN-OUT AFTER INACTIVITY  +  EMAIL FORMAT FIXES
+   ===================================================================== */
+function idleMinutes_() { return Math.max(0, Number(g('ADMIN_IDLE_MIN', '0')) || 0); }
+function adminIdleSave_(auth, minutes) {
+  portalRequireAdmin_(auth); var m = Math.round(Number(minutes));
+  if (!isFinite(m) || m < 0 || m > 1440) throw new Error('Enter 0 (off) or a number of minutes up to 1440 (24 hours).');
+  if (m) P.setProperty('ADMIN_IDLE_MIN', String(m)); else P.deleteProperty('ADMIN_IDLE_MIN');
+  return { ok: true, minutes: m };
+}
+
+/* ---- e-mail templates: a Script property holds ~9 KB, but templates may be 25 KB, so they are stored in chunks.
+   (Before this, saving any custom format larger than ~9 KB failed with "Argument too large".) ---- */
+var TPL_CHUNK_ = 2200;
+function mailTemplatePublic_(type) {
+  try {
+    var n = Number(P.getProperty('MAIL_TEMPLATE_' + type + '_N') || 0);
+    if (n > 0) { var s = ''; for (var i = 0; i < n; i++) s += P.getProperty('MAIL_TEMPLATE_' + type + '_' + i) || ''; return JSON.parse(s); }
+    return JSON.parse(P.getProperty('MAIL_TEMPLATE_' + type) || 'null');   // formats saved by older versions
+  } catch (e) { return null; }
+}
+function mailTemplateClear_(type) {
+  var n = Number(P.getProperty('MAIL_TEMPLATE_' + type + '_N') || 0);
+  for (var i = 0; i < Math.max(n, 12); i++) P.deleteProperty('MAIL_TEMPLATE_' + type + '_' + i);
+  P.deleteProperty('MAIL_TEMPLATE_' + type + '_N'); P.deleteProperty('MAIL_TEMPLATE_' + type);
+}
+function mailTemplateSave_(auth, type, subject, html) {
+  portalRequireAdmin_(auth);
+  if (['jobs', 'family'].indexOf(type) < 0) throw Error('Invalid template type');
+  subject = String(subject || '').slice(0, 250); html = String(html || '');
+  if (html.length > 25000) throw Error('Template too large (max 25,000 characters).');
+  if (html && html.indexOf('{{content}}') < 0) throw Error('Include {{content}} in HTML template');
+  if (html && html.indexOf('{{controls}}') < 0) throw Error('Include {{controls}} so recipients can manage reminders');
+  mailTemplateClear_(type);
+  if (html) {
+    var s = JSON.stringify({ subject: subject || '{{subject}}', html: html }), n = Math.ceil(s.length / TPL_CHUNK_);
+    for (var i = 0; i < n; i++) P.setProperty('MAIL_TEMPLATE_' + type + '_' + i, s.slice(i * TPL_CHUNK_, (i + 1) * TPL_CHUNK_));
+    P.setProperty('MAIL_TEMPLATE_' + type + '_N', String(n));
+  }
+  return { ok: true };
+}
+/* Sends the saved format (or the default) to the admin's own address with sample content, so it can be checked end to end. */
+function mailTemplateTest_(auth, type) {
+  var u = portalRequireAdmin_(auth); type = String(type || '');
+  if (['jobs', 'family'].indexOf(type) < 0) throw Error('Invalid template type');
+  var bare = !!mailTemplatePublic_(type), jobs = [], titles = ['Senior Software Engineer - Platform and Infrastructure', 'Frontend Developer (React, TypeScript)', 'Quality Assurance Lead - Automation and Performance', 'Backend Engineer, Payments and Risk', 'Product Analyst - Growth and Retention', 'Business Analyst (Banking and Fintech domain)', 'Data Engineer - Streaming Pipelines', 'Customer Success Manager - Enterprise Accounts', 'DevOps Engineer - Kubernetes and Cloud Security', 'Operations Manager, Supply Chain and Logistics'],
+    cos = ['Northwind Technologies Private Limited', 'Contoso Digital Solutions', 'Fabrikam Global Services', 'Globex Corporation India', 'Initech Software', 'Umbrella Health Sciences'], locs = ['Gurugram', 'Delhi NCR', 'Noida', 'Bengaluru', 'Hyderabad', 'Pune', 'Remote'];
+  for (var k = 0; k < 25; k++) jobs.push({ t: titles[k % titles.length], c: cos[k % cos.length], l: locs[k % locs.length], u: 'https://example.com/job/' + (k + 1) });   // large sample: the most one reminder holds
+  var html = reminderHtml_('Hi there,', 'Software Engineer, Frontend Developer, Backend Developer, Full Stack Developer, DevOps Engineer, Data Scientist', locs.join(', '), jobs, [], 7, bare);
+  sendMail_(u.email, 'CareerPulse ' + type + ' email format test', html, 'This is a test of your ' + type + ' email format with 25 sample jobs.', type, (type === 'family' ? 'FAM_' : 'JOBS_') + 'FORMATTEST');
+  return { ok: true, sentTo: u.email, usedCustomFormat: bare };
 }
