@@ -82,11 +82,17 @@ button,.primary{background:linear-gradient(135deg,var(--a),#0a9a86)}button.secon
 </style>
 <style id="sessStyle">.sessStats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}.sessStat{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--card)}.sessStat strong{display:block;font-size:28px;font-variant-numeric:tabular-nums}.sessStat span{font-size:12px;color:var(--mut);font-weight:600}.sessStat.on strong{color:#087c6d}.sessItem{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sessItem .dot{margin:0}.sessItem .grow{flex:1;min-width:200px}#sessBadge{font-size:12px;padding:6px 10px}</style>
 <style id="pageSwStyle">.tg{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;font-size:14px;user-select:none}.tg input{position:absolute;opacity:0;width:0;height:0}.tg i{width:46px;height:26px;border-radius:99px;background:#9aa9b2;position:relative;transition:background .2s;flex:none}.tg i::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0004;transition:transform .2s}.tg input:checked+i{background:#087c6d}.tg input:checked+i::after{transform:translateX(20px)}.tg input:focus-visible+i{outline:3px solid #087c6d55}.tg input:disabled+i{opacity:.5}.pgCard{border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0;background:var(--card)}.pgCard.off{border-left:5px solid #c94a4a}.pgCard.on{border-left:5px solid #15966f}.pgHead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.pgHead h3{margin:0;font-size:18px}.pgSw{display:flex;gap:26px;flex-wrap:wrap;margin:12px 0}.pgMsg{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.pgMsg input{flex:1;min-width:220px}.swGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:10px 0}.swBox{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--card)}.swBox small{display:block;color:var(--mut);margin-top:6px}</style>
+<style id="tabScrollStyle">.tabwrap{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:4px;margin:14px -4px 0;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tabwrap .tabbar{position:static;flex:1;min-width:0;margin:0;border:0;background:none;backdrop-filter:none;scroll-behavior:smooth;cursor:grab;overscroll-behavior-x:contain}
+.tabbar.drag{cursor:grabbing;scroll-behavior:auto;user-select:none}
+.tabArrow{flex:none;width:36px;height:36px;border-radius:50%;padding:0;margin:0 2px;font-size:24px;line-height:1;background:var(--card)!important;background-image:none!important;color:var(--ink);border:1px solid var(--line);box-shadow:0 2px 8px #0002}.tabArrow:hover{background:var(--a)!important;color:#fff}
+.tabArrow[hidden]{display:none}@media (pointer:coarse){.tabArrow{display:none!important}}
+#homeBtn{white-space:nowrap}</style>
 </head><body><div class="wrap"><div class="hero"><h1>CareerPulse Admin</h1><div>Simple control center for Jobs, Family, job sources and page content.</div></div>
 <div id="login" class="card"><h2>Admin sign in</h2><label>Email<input id="email" type="email"></label><label>Password<input id="password" type="password"></label><button id="signin">Sign in</button><div id="loginMsg" class="msg">Use your Supabase Authentication admin account.</div></div>
 <div id="app" hidden>
-<div class="card topbar"><div><b id="who"></b><div class="small">Changes to page content use Draft → Preview → Publish.</div></div><div class="row"><span id="sessBadge" class="badge" title="Admin sessions active in the last 5 minutes">🟢 … active</span><button id="signout" class="secondary">Sign out</button></div></div>
-<nav class="tabbar" id="tabbar" aria-label="Admin sections"></nav>
+<div class="card topbar"><div><b id="who"></b><div class="small">Changes to page content use Draft → Preview → Publish.</div></div><div class="row"><span id="sessBadge" class="badge" title="Admin sessions active in the last 5 minutes">🟢 … active</span><button id="homeBtn" class="secondary" title="Back to the overview">🏠 Home</button><button id="signout" class="secondary">Sign out</button></div></div>
+<div class="tabwrap" id="tabwrap"><button type="button" class="tabArrow" id="tabL" aria-label="Scroll tabs left" hidden>‹</button><nav class="tabbar" id="tabbar" aria-label="Admin sections"></nav><button type="button" class="tabArrow" id="tabR" aria-label="Scroll tabs right" hidden>›</button></div>
 <div id="home" class="view active">
 <div class="card"><h2>System status</h2><div id="statusGrid" class="statusGrid"></div></div>
 <div class="card"><h2>Manage</h2><div class="dashboard">
@@ -127,7 +133,7 @@ button,.primary{background:linear-gradient(135deg,var(--a),#0a9a86)}button.secon
 <p class="small">Untick anything you do not want shown. It is removed from the footer of every message. This does not change who replies go to (Reply-To above).</p>
 <div class="swGrid"><div class="swBox"><b>📧 Emails</b><div id="privMail" style="display:grid;gap:10px;margin-top:10px"></div></div><div class="swBox"><b>💬 WhatsApp / mobile messages</b><div id="privWa" style="display:grid;gap:10px;margin-top:10px"></div></div></div>
 <div class="row"><label style="max-width:300px">Default country code for numbers saved without one<input id="ccIn" maxlength="4" placeholder="91"></label><button id="privSave">Save privacy settings</button></div><div id="privMsg" class="msg"></div>
-<p class="small"><b>Limit:</b> the “From” address in the recipient’s inbox is always the Google account this script runs under (Gmail does not allow hiding or changing it). Hiding it completely needs a separate Google account for this app, so your personal address is never used.</p>
+<p class="small"><b>About the “From” address:</b> switching off “Reply to” removes that second line, but the <b>From</b> address (<span id="fromAcct">your Google account</span>) is added by Gmail and cannot be hidden or changed by a script. To keep your personal address out of every email, deploy this script under a separate Google account made just for CareerPulse (for example careerpulse.alerts@gmail.com).</p>
 <h3 style="margin-top:26px">💬 WhatsApp / mobile delivery</h3>
 <p class="small">Messages go through CallMeBot. <b>Every phone number needs its own API key</b>: the person must first message the CallMeBot contact (instructions at callmebot.com, “Free WhatsApp API”) and CallMeBot replies with a key. Add each number and its key here. Before this fix one shared key was used for everybody, so it only worked for one number.</p>
 <div id="waList"></div>
@@ -521,9 +527,9 @@ $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword
 <script>
 (function(){
  const $=id=>document.getElementById(id);
- const MAIL=[['mailName','Sender name'],['mailPhone','Phone number'],['mailEmail','Email address'],['mailWeb','Website']],WA=[['waName','Sender name'],['waPhone','Phone number'],['waEmail','Email address']];
+ const MAIL=[['mailName','Show sender name'],['mailPhone','Show phone number'],['mailEmail','Show email address in footer'],['mailWeb','Show website'],['mailReplyTo','Add “Reply to” line (header)'],['mailReplyLine','Show “Just reply to this email…” line']],WA=[['waName','Show sender name'],['waPhone','Show phone number'],['waEmail','Show email address']];
  const boxes={};
- function tg(host,key,label,on){const l=document.createElement('label');l.className='tg';const i=document.createElement('input');i.type='checkbox';i.checked=on;const t=document.createElement('i');const s=document.createElement('span');s.textContent='Show '+label.toLowerCase();l.append(i,t,s);host.append(l);boxes[key]=i}
+ function tg(host,key,label,on){const l=document.createElement('label');l.className='tg';const i=document.createElement('input');i.type='checkbox';i.checked=on;const t=document.createElement('i');const s=document.createElement('span');s.textContent=label;l.append(i,t,s);host.append(l);boxes[key]=i}
  async function loadPrivacy(){try{const r=await get('admin_sender_get'),sh=r.show||{};$('privMail').replaceChildren();$('privWa').replaceChildren();MAIL.forEach(([k,l])=>tg($('privMail'),k,l,sh[k]!==false));WA.forEach(([k,l])=>tg($('privWa'),k,l,sh[k]!==false));$('ccIn').value=r.cc||'91'}catch(e){message('privMsg','✕ '+e.message,true)}}
  $('privSave').onclick=async()=>{const b=$('privSave');b.disabled=true;try{const show={};Object.keys(boxes).forEach(k=>show[k]=boxes[k].checked);await post('admin_privacy_save',{config:{show,cc:$('ccIn').value}});message('privMsg','✓ Saved. New messages use these settings.')}catch(e){message('privMsg','✕ '+e.message,true)}finally{b.disabled=false}};
  async function loadWa(){try{const x=await get('admin_wa_keys'),h=$('waList');h.replaceChildren();
@@ -538,6 +544,29 @@ $('signin').onclick=async()=>{try{let {error}=await db().auth.signInWithPassword
   x.rows.forEach(r=>{const d=document.createElement('div');d.className='item';const b=document.createElement('b');b.textContent=(r.channel==='email'?'✉️ ':'💬 ')+r.address+(r.count>1?'  ×'+r.count:'');const p=document.createElement('p');p.textContent=r.message;const t=document.createElement('div');t.className='small';t.textContent='Last seen '+ago(r.time)+' · '+new Date(r.time).toLocaleString();d.append(b,p,t);h.append(d)})}catch(e){$('delList').textContent='✕ '+e.message}}
  $('delRefresh').onclick=loadDel;$('delClear').onclick=async()=>{try{await post('admin_delivery_clear');loadDel()}catch(e){alert(e.message)}};
  const prev=window.openView;window.openView=function(id){prev(id);if(id==='sender'){loadPrivacy();loadWa();loadDel()}};
+})();
+</script>
+
+<script>
+(function(){
+ const $=id=>document.getElementById(id),bar=$('tabbar'),L=$('tabL'),R=$('tabR');
+ $('homeBtn').onclick=()=>openView('home');
+ function upd(){const max=bar.scrollWidth-bar.clientWidth;L.hidden=bar.scrollLeft<=2;R.hidden=max<=2||bar.scrollLeft>=max-2}
+ const step=()=>Math.max(220,bar.clientWidth*.6);
+ L.onclick=()=>bar.scrollBy({left:-step(),behavior:'smooth'});R.onclick=()=>bar.scrollBy({left:step(),behavior:'smooth'});
+ bar.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);
+ /* mouse wheel scrolls the strip sideways */
+ bar.addEventListener('wheel',e=>{if(bar.scrollWidth>bar.clientWidth&&Math.abs(e.deltaY)>Math.abs(e.deltaX)){bar.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
+ /* click-and-drag with the mouse */
+ let down=false,moved=false,sx=0,sl=0;
+ bar.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;down=true;moved=false;sx=e.clientX;sl=bar.scrollLeft});
+ window.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>5){moved=true;bar.classList.add('drag')}if(moved)bar.scrollLeft=sl-dx});
+ window.addEventListener('pointerup',()=>{down=false;bar.classList.remove('drag')});
+ bar.addEventListener('click',e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false}},true);
+ const prev=window.openView;window.openView=function(id){prev(id);setTimeout(upd,350)};
+ setTimeout(upd,150);setTimeout(upd,900);
+ /* show the real From account next to the note */
+ const f=$('fromAcct');if(f){const t=setInterval(()=>{const m=($('senderFrom')||{}).textContent||'',x=m.match(/sent from: (\S+)/);if(x){f.textContent=x[1];clearInterval(t)}},800);setTimeout(()=>clearInterval(t),15000)}
 })();
 </script>
 </body></html>

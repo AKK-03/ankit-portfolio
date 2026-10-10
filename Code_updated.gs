@@ -1,4 +1,4 @@
-var CAREERPULSE_BACKEND_VERSION = '2026-10-10-privacy-whatsapp-v12';
+var CAREERPULSE_BACKEND_VERSION = '2026-10-10-header-controls-v13';
 /* CareerPulse backend (Google Apps Script) — v7
    SCRIPT PROPERTIES: TOKEN, ADZUNA_ID, ADZUNA_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY
    OPTIONAL: WA_KEY (CallMeBot), ADMIN_EMAILS (comma-separated allow-list for Admin.html — STRONGLY recommended)
@@ -33,18 +33,18 @@ function footerParts_() {
 }
 function footerText_() {
   var f = footerParts_();
-  return '--\nSent by ' + f.name + (f.text.length ? '\n' + f.text.join('\n') : '') + '\nJust reply to this email to reach us, or to change or stop these alerts.';
+  return '--\nSent by ' + f.name + (f.text.length ? '\n' + f.text.join('\n') : '') + (showFlag_('mailReplyLine') ? '\nJust reply to this email to reach us, or to change or stop these alerts.' : '');
 }
 function footerHtml_() {
   var f = footerParts_();
   return '<hr style="border:0;border-top:1px solid #dde6ea;margin:18px 0"><p style="font-size:13px;color:#4b616c;line-height:1.6;margin:0">Sent by <b>' + familyHtml_(f.name) + '</b>' +
-    (f.html.length ? '<br>' + f.html.join(' &nbsp;·&nbsp; ') : '') + '<br>Just reply to this email to reach us, or to change or stop these alerts.</p>';
+    (f.html.length ? '<br>' + f.html.join(' &nbsp;·&nbsp; ') : '') + (showFlag_('mailReplyLine') ? '<br>Just reply to this email to reach us, or to change or stop these alerts.' : '') + '</p>';
 }
 /* One place that sends every email: display name + Reply-To + contact footer. */
 function sendMail_(to, subject, html, plain, kindOverride, reminderId) {
   if (/^Job radar:/.test(String(subject)) && receiverBlocked_('jobs',to)) return;
   var i = senderInfo_(), m = { to: to, subject: subject, body: String(plain || subject) + '\n\n' + footerText_(), name: showFlag_('mailName') ? i.name : 'CareerPulse' };
-  if (i.replyTo) m.replyTo = i.replyTo;
+  if (i.replyTo && showFlag_('mailReplyTo')) m.replyTo = i.replyTo;   // switched off in Admin > Sender > Privacy: no "Reply to" line is added
   var kind=kindOverride||(/^Job radar:/.test(String(subject))?'jobs':null);
   if(kind){var manage=receiverMailControls_(kind,to,reminderId);m.body+='\n\nManage your alerts: '+manage.text;if(html)html+=manage.html;}
   if(kind){var tpl=mailTemplatePublic_(kind);if(tpl){var subj0=subject;subject=tpl.subject.replace(/\{\{subject\}\}/g,function(){return subj0;});m.subject=subject;var content=String(html||'').replace(manage.html,'');html=tpl.html.replace(/\{\{subject\}\}/g,function(){return subject;}).replace(/\{\{content\}\}/g,function(){return content;}).replace(/\{\{controls\}\}/g,function(){return manage.html;});}}
@@ -658,7 +658,7 @@ var SENDER_KEYS_ = { name: 'SENDER_NAME', replyTo: 'REPLY_TO', phone: 'CONTACT_P
 function adminSenderGet_(auth) {
   portalRequireAdmin_(auth); var i = senderInfo_(), raw = {};
   Object.keys(SENDER_KEYS_).forEach(function (k) { raw[k] = g(SENDER_KEYS_[k], ''); });
-  return { ok: true, data: raw, show: showFlags_(), cc: g('DEFAULT_CC', '91'), effective: { fromAccount: (function () { try { return Session.getEffectiveUser().getEmail(); } catch (e) { return ''; } })(), name: i.name, replyTo: i.replyTo, phone: i.phone, email: i.email, web: i.web } };
+  return { ok: true, data: raw, show: showFlags_(), cc: g('DEFAULT_CC', '91'), effective: { fromAccount: (function () { try { return Session.getEffectiveUser().getEmail(); } catch (e) { return ''; } })(), name: i.name, replyTo: showFlag_('mailReplyTo') ? i.replyTo : (function () { try { return Session.getEffectiveUser().getEmail(); } catch (e) { return ''; } })(), phone: i.phone, email: i.email, web: i.web } };
 }
 function adminSenderSave_(auth, raw) {
   portalRequireAdmin_(auth); var c = typeof raw === 'object' ? raw : JSON.parse(String(raw || '{}')), set = {}, del = [];
@@ -1073,7 +1073,7 @@ function adminPageRemove_(auth, page) {
 /* =====================================================================
    v12: PRIVACY OF SENDER DETAILS + WORKING WHATSAPP / MOBILE DELIVERY
    ===================================================================== */
-var SHOW_FLAGS_ = { mailName: 'SHOW_MAIL_NAME', mailPhone: 'SHOW_MAIL_PHONE', mailEmail: 'SHOW_MAIL_EMAIL', mailWeb: 'SHOW_MAIL_WEB', waName: 'SHOW_WA_NAME', waPhone: 'SHOW_WA_PHONE', waEmail: 'SHOW_WA_EMAIL' };
+var SHOW_FLAGS_ = { mailName: 'SHOW_MAIL_NAME', mailPhone: 'SHOW_MAIL_PHONE', mailEmail: 'SHOW_MAIL_EMAIL', mailWeb: 'SHOW_MAIL_WEB', mailReplyTo: 'SHOW_MAIL_REPLYTO', mailReplyLine: 'SHOW_MAIL_REPLYLINE', waName: 'SHOW_WA_NAME', waPhone: 'SHOW_WA_PHONE', waEmail: 'SHOW_WA_EMAIL' };
 function showFlag_(k) { return g(SHOW_FLAGS_[k], '1') !== '0'; }
 function showFlags_() { var o = {}; Object.keys(SHOW_FLAGS_).forEach(function (k) { o[k] = showFlag_(k); }); return o; }
 function adminPrivacySave_(auth, raw) {
