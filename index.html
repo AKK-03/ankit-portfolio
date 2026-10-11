@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Name</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f4ff;--ink:#1a1838;--muted:#5f5d85;--card:rgba(255,255,255,.72);--line:rgba(90,80,200,.18);--a:#6d5bff;--b:#ff7ab6}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#100f24;--ink:#f1f0ff;--muted:#a9a7d0;--card:rgba(34,32,70,.65);--line:rgba(160,150,255,.2)}}
+:root[data-theme=dark]{--bg:#100f24;--ink:#f1f0ff;--muted:#a9a7d0;--card:rgba(34,32,70,.65);--line:rgba(160,150,255,.2)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.65 "DM Sans",system-ui,sans-serif;min-height:100vh;position:relative;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;width:60vmax;height:60vmax;border-radius:50%;filter:blur(90px);opacity:.28;z-index:-1;pointer-events:none}
+body::before{background:var(--a);top:-25vmax;left:-20vmax}
+body::after{background:var(--b);bottom:-30vmax;right:-20vmax}
+main{max-width:760px;margin:0 auto;padding:max(48px,env(safe-area-inset-top)) 22px 80px}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0}
+.hero{text-align:center;padding:30px 0 10px}
+.avatar{width:140px;height:140px;margin:0 auto 26px;border-radius:50%;padding:5px;background:conic-gradient(var(--a),var(--b),var(--a));box-shadow:0 18px 50px -12px var(--a)}
+.avatar>div{width:100%;height:100%;border-radius:50%;background:var(--a);color:#fff;display:grid;place-items:center;font:800 46px "Bricolage Grotesque",sans-serif;overflow:hidden;border:4px solid var(--bg)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+h1{font-size:clamp(46px,11vw,88px);line-height:1;font-weight:800;letter-spacing:-.035em;background:linear-gradient(100deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise .8s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){h1{animation:none}*{transition:none!important}}
+.tag{font-size:21px;color:var(--muted);margin:16px auto 24px;max-width:34ch}
+.cta{display:inline-block;background:var(--ink);color:var(--bg);padding:12px 26px;border-radius:99px;text-decoration:none;font-weight:500}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;margin-top:28px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+h2{font-size:25px;font-weight:800;margin-bottom:14px}
+.card p{margin:0 0 12px;max-width:62ch}.card p:last-child{margin:0}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.facts li{border:1px solid var(--line);border-radius:16px;padding:12px 16px}
+.facts small{display:block;color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.chips li{border:1.5px solid var(--a);color:var(--ink);border-radius:99px;padding:5px 16px;font-size:15px}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.link{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:18px;padding:12px 14px;color:inherit;text-decoration:none;transition:transform .18s,box-shadow .18s}
+.link:hover{transform:translateY(-4px);box-shadow:0 14px 30px -14px var(--a)}
+.link:focus-visible,button:focus-visible,.cta:focus-visible{outline:3px solid var(--a);outline-offset:3px}
+.badge{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;color:#fff;font:800 19px "Bricolage Grotesque",sans-serif;flex:none}
+.link b{display:block;font-weight:500;line-height:1.3}.link small{color:var(--muted);font-size:14px}
+footer{margin-top:44px;text-align:center;color:var(--muted);font-size:14px}
+.pill{background:none;border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer;margin-top:10px}
+[hidden]{display:none!important}
+section{scroll-margin-top:84px}
+.nav{position:sticky;top:max(10px,env(safe-area-inset-top));z-index:10;display:flex;gap:2px;justify-content:center;flex-wrap:wrap;width:fit-content;max-width:calc(100% - 24px);margin:14px auto 0;padding:5px;border-radius:99px;background:var(--card);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.nav a{padding:6px 14px;border-radius:99px;color:var(--ink);text-decoration:none;font-size:15px}
+.nav a:hover{background:var(--a);color:#fff}
+.cta{margin:4px}
+.cta.alt{background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:10.5px 24px}
+.cta.alt:hover{background:var(--ink);color:var(--bg)}
+.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:4px 14px;font-size:14px;margin:0 0 18px}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.25)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:38px;text-align:center}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;backdrop-filter:blur(14px)}
+.stats b{display:block;font:800 34px "Bricolage Grotesque",sans-serif;color:var(--a)}
+.stats span{color:var(--muted);font-size:14px}
+.projs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.proj{border:1px solid var(--line);border-radius:20px;overflow:hidden;color:inherit;text-decoration:none;display:block;transition:transform .18s,box-shadow .18s}
+.proj:hover{transform:translateY(-5px);box-shadow:0 18px 36px -16px var(--a)}
+.thumb{height:120px;background:linear-gradient(135deg,var(--a),var(--b));display:grid;place-items:center;color:#fff;font:800 56px "Bricolage Grotesque",sans-serif}
+.pb{padding:14px 16px}.pb small{color:var(--a);font-weight:500}
+.pb b{display:block;font:800 19px "Bricolage Grotesque",sans-serif}
+.card .pb p{margin:4px 0 0;color:var(--muted);font-size:15px}
+.tl{list-style:none;margin:0;padding:0 0 0 22px;border-left:2px solid var(--line)}
+.tl li{position:relative;padding:0 0 22px 8px}.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:-31px;top:7px;width:14px;height:14px;border-radius:50%;background:var(--a);border:3px solid var(--bg)}
+.tl small{color:var(--muted);display:block}.tl span{color:var(--a)}
+.card .tl p{margin:2px 0 0;color:var(--muted)}
+#cf{display:grid;gap:10px;margin-top:14px}
+#cf input,#cf textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);font:inherit}
+#cf button{justify-self:start;background:var(--a);color:#fff;border:0;border-radius:99px;padding:12px 26px;font:500 16px "DM Sans",sans-serif;cursor:pointer}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.rv.in{opacity:1;transform:none}
+/* editor */
+#editBtn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:20;background:var(--a);color:#fff;border:0;border-radius:99px;padding:12px 20px;font:500 15px "DM Sans",sans-serif;cursor:pointer;box-shadow:0 10px 30px -8px var(--a)}
+#ed{position:fixed;top:0;right:0;bottom:0;width:min(430px,100%);background:var(--bg);color:var(--ink);border-left:1px solid var(--line);z-index:30;display:flex;flex-direction:column;transform:translateX(105%);transition:transform .25s;box-shadow:-20px 0 60px -20px rgba(0,0,0,.4)}
+#ed.open{transform:none}
+#ed header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+#edBody{overflow:auto;padding:6px 18px 40px;flex:1;font-size:15px}
+#edBody h3{margin:22px 0 8px;font-size:17px}
+#edBody label{display:block;margin:8px 0;color:var(--muted);font-size:13px}
+#edBody input:not([type=color]):not([type=checkbox]),#edBody textarea{width:100%;margin-top:3px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+#edBody .row{display:flex;gap:6px;align-items:center;margin:6px 0}
+#edBody .row input{margin:0!important}
+#edBody .box{border:1px solid var(--line);border-radius:14px;padding:10px;margin:10px 0}
+#edBody input[type=color]{width:44px;height:38px;border:0;padding:0;background:none;flex:none}
+#edBody button{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font:inherit;font-size:14px;cursor:pointer}
+#edBody button.main{background:var(--a);color:#fff;border-color:var(--a);width:100%;margin:6px 0;padding:11px}
+.hint{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Sections"><a href="#aboutme">About</a><a href="#projects">Projects</a><a href="#exp">Journey</a><a href="#links">Social</a><a href="#contact">Contact</a></nav>
+<main>
+  <header class="hero">
+    <div class="avatar"><div data-r id="avatar"></div></div>
+    <p class="status" data-r id="status"></p><br><h1 data-r id="name"></h1>
+    <p class="tag" data-r id="tagline"></p>
+    <a class="cta" href="#contact">Get in touch</a>
+    <a class="cta alt" data-r id="pfBtn" target="_blank" rel="noopener" hidden></a>
+    <div class="stats" data-r id="stats"></div>
+  </header>
+  <section class="card" id="aboutme"><h2>About me</h2><div data-r id="about"></div></section>
+  <section class="card"><h2>Details</h2><ul class="facts" data-r id="facts"></ul></section>
+  <section class="card"><h2>What I do</h2><ul class="chips" data-r id="skills"></ul></section>
+  <section class="card" id="projects"><h2>Projects</h2><div class="projs" data-r id="projList"></div></section>
+  <section class="card" id="exp"><h2>Journey</h2><ul class="tl" data-r id="expList"></ul></section>
+  <section class="card" id="links"><h2>Find me online</h2><div class="links" data-r id="linkList"></div></section>
+  <section class="card" id="contact"><h2>Let's talk</h2><p id="cnote" data-r></p>
+    <form id="cf"><input name="nm" placeholder="Your name" required><input name="em" type="email" placeholder="Your email" required><textarea name="msg" rows="4" placeholder="Your message" required></textarea><button type="submit">Send message</button></form></section>
+  <footer><span data-r id="foot"></span><br><button class="pill" id="theme" type="button">Switch light / dark</button> <button class="pill" id="adminBtn" type="button" hidden>Admin login</button></footer>
+</main>
+
+<!-- ===== ADMIN SETUP: paste your Firebase details here (see instructions) ===== -->
+<script>
+window.FB={
+  apiKey:"", authDomain:"", projectId:"", appId:"",
+  admins:["you@gmail.com"]   /* emails allowed to edit */
+};
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script id="site-data" type="application/json">
+{"name":"Your Name","tagline":"Designer, developer and curious human based in Delhi.","photo":"","about":"Write two or three friendly sentences about who you are and what you care about.\n\nAdd what you are working on now, or what people can contact you for.","facts":[["Location","Delhi, India"],["Work","Your job or studies"],["Email","you@example.com"],["Languages","English, Hindi"]],"skills":"Photography, Web design, Writing, Travel","links":[{"n":"Instagram","h":"@yourhandle","u":"https://instagram.com/yourhandle","c":"#e1306c"},{"n":"LinkedIn","h":"Your Name","u":"https://linkedin.com/in/yourname","c":"#0a66c2"},{"n":"GitHub","h":"yourhandle","u":"https://github.com/yourhandle","c":"#24292f"},{"n":"X","h":"@yourhandle","u":"https://x.com/yourhandle","c":"#111111"},{"n":"YouTube","h":"Your channel","u":"https://youtube.com/@yourhandle","c":"#e62117"},{"n":"Email","h":"you@example.com","u":"mailto:you@example.com","c":"#6d5bff"}],"a":"#6d5bff","b":"#ff7ab6","status":"Open to new opportunities","portfolio":"https://example.com","email":"you@example.com","note":"Have a project in mind, or just want to say hi? Send me a message.","stats":[{"n":"5+","l":"Years of experience"},{"n":"40","l":"Projects completed"},{"n":"12","l":"Happy clients"}],"projects":[{"t":"Project one","g":"Web design","d":"A short line about what you built and the result.","u":"https://example.com"},{"t":"Project two","g":"Photography","d":"Describe the idea, your role and the outcome.","u":"https://example.com"},{"t":"Project three","g":"Writing","d":"Add a link so visitors can see the full work.","u":"https://example.com"}],"exp":[{"y":"2024 – Now","r":"Your role","o":"Company or studio","d":"What you do and what you are proud of."},{"y":"2021 – 2024","r":"Previous role","o":"Company name","d":"One line about the work and what you learned."},{"y":"2017 – 2021","r":"Your degree","o":"College or university","d":"Subject, achievements or activities."}],"hideEdit":false}
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const EMBED=JSON.parse($("site-data").textContent);
+const FBC=window.FB||{},CLOUD=!!FBC.apiKey&&typeof firebase!=="undefined";
+let D=null,db,admin=false;
+if(!CLOUD){try{D=JSON.parse(localStorage.getItem("site-data")||"null")}catch(e){}}
+D=D||JSON.parse(JSON.stringify(EMBED));
+const save=()=>{if(!CLOUD){try{localStorage.setItem("site-data",JSON.stringify(D))}catch(e){}}};
+if(CLOUD){
+  firebase.initializeApp(FBC);db=firebase.firestore();
+  db.doc("site/main").get().then(s=>{if(s.exists&&!admin){try{D=JSON.parse(s.data().json);render()}catch(e){}}}).catch(()=>{});
+  firebase.auth().onAuthStateChanged(u=>{
+    admin=!!u&&(FBC.admins||[]).map(x=>x.toLowerCase()).includes((u.email||"").toLowerCase());
+    if(u&&!admin){firebase.auth().signOut();alert("This account is not an admin.")}
+    vis();
+  });
+}
+
+function render(){
+  const r=document.documentElement.style;
+  r.setProperty("--a",D.a);r.setProperty("--b",D.b);
+  document.title=D.name;
+  $("name").textContent=D.name;
+  $("tagline").textContent=D.tagline;
+  const ini=D.name.split(/\s+/).map(w=>w[0]||"").join("").slice(0,2).toUpperCase();
+  $("avatar").innerHTML=D.photo?`<img src="${esc(D.photo)}" alt="${esc(D.name)}">`:esc(ini);
+  $("about").innerHTML=D.about.split(/\n\s*\n/).filter(Boolean).map(p=>`<p>${esc(p)}</p>`).join("");
+  $("facts").innerHTML=D.facts.map(f=>`<li><small>${esc(f[0])}</small>${esc(f[1])}</li>`).join("");
+  $("skills").innerHTML=D.skills.split(",").map(s=>s.trim()).filter(Boolean).map(s=>`<li>${esc(s)}</li>`).join("");
+  $("linkList").innerHTML=D.links.map(l=>`<a class="link" href="${esc(l.u)}" target="_blank" rel="noopener"><span class="badge" style="background:${esc(l.c)}">${esc((l.n||"?")[0])}</span><span><b>${esc(l.n)}</b><small>${esc(l.h)}</small></span></a>`).join("");
+  const pf=(D.portfolio||"").trim(),pfOk=/^https?:\/\//i.test(pf);
+  $("pfBtn").hidden=!pfOk;if(pfOk){$("pfBtn").href=pf;$("pfBtn").textContent="View my portfolio"}
+  $("status").textContent=D.status||"";$("status").hidden=!D.status;
+  $("stats").innerHTML=(D.stats||[]).map(x=>`<div><b>${esc(x.n)}</b><span>${esc(x.l)}</span></div>`).join("");
+  $("stats").hidden=!(D.stats||[]).length;
+  $("projList").innerHTML=(D.projects||[]).map((x,i)=>`<a class="proj" href="${esc(x.u||"#")}" target="_blank" rel="noopener"><div class="thumb" style="filter:hue-rotate(${i*55}deg)">${esc((x.t||"?")[0])}</div><div class="pb"><small>${esc(x.g)}</small><b>${esc(x.t)}</b><p>${esc(x.d)}</p></div></a>`).join("");
+  $("projects").hidden=!(D.projects||[]).length;
+  $("expList").innerHTML=(D.exp||[]).map(x=>`<li><small>${esc(x.y)}</small><b>${esc(x.r)}</b> <span>${esc(x.o)}</span><p>${esc(x.d)}</p></li>`).join("");
+  $("exp").hidden=!(D.exp||[]).length;
+  $("contact").hidden=!D.email;$("cnote").textContent=D.note||"";
+  $("foot").textContent="© "+new Date().getFullYear()+" "+D.name;
+}
+render();
+$("theme").onclick=()=>{const r=document.documentElement;const dk=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dk?"light":"dark"};
+
+/* ---------- editor ---------- */
+const ui=document.createElement("div");
+ui.className="ed-ui";
+ui.innerHTML=`<button id="editBtn" type="button">✎ Edit site</button><aside id="ed" aria-label="Site editor"><header><h3>Edit your site</h3><button class="pill" id="edClose" type="button" style="margin:0">Close</button></header><div id="edBody"></div></aside>`;
+document.body.appendChild(ui);
+const inp=(p,v,ph,t="text")=>`<input data-p="${p}" value="${esc(v)}" placeholder="${ph}" type="${t}">`;
+function form(){
+  $("edBody").innerHTML=`
+  <p class="hint">${CLOUD?"Press “Publish changes” to update the live site for everyone.":"Changes save in this browser automatically. Use “Download website” to get the updated file for your host."}</p>
+  <h3>Profile</h3>
+  <label>Name${inp("name",D.name,"Your name")}</label>
+  <label>Tagline${inp("tagline",D.tagline,"One line about you")}</label>
+  <label>Portfolio website URL (empty hides the button)${inp("portfolio",D.portfolio||"","https://yourportfolio.com")}</label>
+  <label>Status badge (empty hides it)${inp("status",D.status||"","Open to new opportunities")}</label>
+  <label>About (blank line starts a new paragraph)<textarea data-p="about" rows="7">${esc(D.about)}</textarea></label>
+  <label>Photo<input type="file" accept="image/*" id="ph"></label>
+  <button data-act="nophoto" type="button">Remove photo</button>
+  <h3>Details</h3>
+  ${D.facts.map((f,i)=>`<div class="row">${inp(`facts.${i}.0`,f[0],"Label")}${inp(`facts.${i}.1`,f[1],"Value")}<button data-act="rm" data-l="facts" data-i="${i}" type="button" aria-label="Remove">✕</button></div>`).join("")}
+  <button data-act="add" data-l="facts" type="button">+ Add detail</button>
+  <h3>Skills</h3>
+  <label>Separate with commas${inp("skills",D.skills,"Design, Music, Travel")}</label>
+  <h3>Highlights</h3>
+  ${(D.stats||[]).map((x,i)=>`<div class="row">${inp(`stats.${i}.n`,x.n,"10+")}${inp(`stats.${i}.l`,x.l,"Label")}<button data-act="rm" data-l="stats" data-i="${i}" type="button" aria-label="Remove">✕</button></div>`).join("")}
+  <button data-act="add" data-l="stats" type="button">+ Add highlight</button>
+  <h3>Projects</h3>
+  ${(D.projects||[]).map((x,i)=>`<div class="box"><div class="row">${inp(`projects.${i}.t`,x.t,"Title")}${inp(`projects.${i}.g`,x.g,"Category")}<button data-act="rm" data-l="projects" data-i="${i}" type="button" aria-label="Remove">✕</button></div>${inp(`projects.${i}.d`,x.d,"Short description")}<div style="margin-top:6px">${inp(`projects.${i}.u`,x.u,"Link https://…")}</div></div>`).join("")}
+  <button data-act="add" data-l="projects" type="button">+ Add project</button>
+  <h3>Journey (work and education)</h3>
+  ${(D.exp||[]).map((x,i)=>`<div class="box"><div class="row">${inp(`exp.${i}.y`,x.y,"2024 – Now")}<button data-act="rm" data-l="exp" data-i="${i}" type="button" aria-label="Remove">✕</button></div>${inp(`exp.${i}.r`,x.r,"Role or degree")}<div style="margin-top:6px">${inp(`exp.${i}.o`,x.o,"Company or school")}</div><div style="margin-top:6px">${inp(`exp.${i}.d`,x.d,"Short description")}</div></div>`).join("")}
+  <button data-act="add" data-l="exp" type="button">+ Add entry</button>
+  <h3>Contact form</h3>
+  <label>Your email (empty hides the form)${inp("email",D.email||"","you@example.com")}</label>
+  <label>Message above the form${inp("note",D.note||"","Have a project in mind?")}</label>
+  <h3>Social links</h3>
+  ${D.links.map((l,i)=>`<div class="box"><div class="row">${inp(`links.${i}.n`,l.n,"Site name")}<input type="color" data-p="links.${i}.c" value="${l.c}" aria-label="Colour"></div>${inp(`links.${i}.h`,l.h,"Handle or text")}<div class="row" style="margin-top:6px">${inp(`links.${i}.u`,l.u,"https://…")}<button data-act="up" data-i="${i}" type="button" aria-label="Move up">↑</button><button data-act="rm" data-l="links" data-i="${i}" type="button" aria-label="Remove">✕</button></div></div>`).join("")}
+  <button data-act="add" data-l="links" type="button">+ Add link</button>
+  <h3>Look</h3>
+  <div class="row"><label style="flex:1">Main colour<br><input type="color" data-p="a" value="${D.a}"></label><label style="flex:1">Second colour<br><input type="color" data-p="b" value="${D.b}"></label></div>
+  <h3>Publish</h3>
+  ${CLOUD?'<button class="main" data-act="publish" type="button">Publish changes to live site</button>':""}<button ${CLOUD?"":'class="main"'} data-act="download" type="button">Download backup copy (index.html)</button>${CLOUD?'<button data-act="signout" type="button">Sign out</button>':""}
+  <div class="row"><button data-act="export" type="button">Export data</button><button data-act="import" type="button">Import data</button><button data-act="reset" type="button">Reset</button></div>
+  <input type="file" id="imp" accept=".json" hidden>`;
+}
+function setPath(p,v){const k=p.split(".");let o=D;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
+function dl(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function bake(){
+  const c=document.documentElement.cloneNode(true);
+  c.querySelectorAll(".ed-ui").forEach(e=>e.remove());
+  c.querySelectorAll("[data-r]").forEach(e=>e.innerHTML="");
+  c.removeAttribute("style");c.removeAttribute("data-theme");
+  c.querySelector("#site-data").textContent=JSON.stringify(D).replace(/</g,"\\u003c");
+  dl("index.html","<!DOCTYPE html>\n"+c.outerHTML,"text/html");
+}
+const body=$("edBody");
+body.addEventListener("input",e=>{
+  const p=e.target.dataset.p;if(!p)return;
+  setPath(p,e.target.type==="checkbox"?e.target.checked:e.target.value);
+  save();render();
+});
+body.addEventListener("change",e=>{
+  if(e.target.id==="ph"&&e.target.files[0]){
+    const im=new Image();im.onload=()=>{const s=Math.min(1,480/Math.max(im.width,im.height));const cv=document.createElement("canvas");cv.width=im.width*s;cv.height=im.height*s;cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);D.photo=cv.toDataURL("image/jpeg",.85);save();render()};
+    im.src=URL.createObjectURL(e.target.files[0]);
+  }
+  if(e.target.id==="imp"&&e.target.files[0]){
+    e.target.files[0].text().then(t=>{try{D=JSON.parse(t);save();render();form()}catch(x){alert("That file is not valid site data.")}});
+  }
+});
+body.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const a=b.dataset.act,i=+b.dataset.i,l=b.dataset.l;
+  if(a==="nophoto")D.photo="";
+  else if(a==="add"){const N={facts:["",""],links:{n:"New link",h:"",u:"https://",c:D.a},stats:{n:"",l:""},projects:{t:"New project",g:"Category",d:"",u:""},exp:{y:"Year",r:"Role",o:"Place",d:""}};(D[l]=D[l]||[]).push(N[l])}
+  else if(a==="rm")D[l].splice(i,1);
+  else if(a==="up"&&i>0)[D.links[i-1],D.links[i]]=[D.links[i],D.links[i-1]];
+  else if(a==="publish"){b.textContent="Publishing…";db.doc("site/main").set({json:JSON.stringify(D)}).then(()=>{b.textContent="Published ✓"}).catch(x=>{b.textContent="Failed: "+(x.code||"error")});return}
+  else if(a==="signout"){firebase.auth().signOut();$("ed").classList.remove("open");return}
+  else if(a==="download")return bake();
+  else if(a==="export")return dl("site-data.json",JSON.stringify(D,null,2),"application/json");
+  else if(a==="import")return $("imp").click();
+  else if(a==="reset"){if(!confirm("Discard your edits and go back to the file's version?"))return;D=JSON.parse(JSON.stringify(EMBED));}
+  save();render();form();
+});
+const LOCALHOST=["","localhost","127.0.0.1"].includes(location.hostname);
+const vis=()=>{
+  $("editBtn").hidden=CLOUD?!admin:!(LOCALHOST&&location.hash==="#edit");
+  $("adminBtn").hidden=!(CLOUD&&!admin&&location.hash==="#admin");
+  if(!CLOUD&&location.hash==="#admin"&&!LOCALHOST)$("foot").textContent="Admin login is not set up: the Firebase details are missing in this file, or Firebase failed to load.";
+};
+$("cf").onsubmit=e=>{e.preventDefault();const f=e.target;location.href="mailto:"+D.email+"?subject="+encodeURIComponent("Message from "+f.nm.value)+"&body="+encodeURIComponent(f.msg.value+"\n\n— "+f.nm.value+" ("+f.em.value+")")};
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}}),{threshold:.08});
+document.querySelectorAll(".card").forEach(c=>{c.classList.add("rv");io.observe(c)});
+$("adminBtn").onclick=()=>firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(x=>alert("Sign-in failed: "+(x.code||x.message)));
+vis();addEventListener("hashchange",vis);
+$("editBtn").onclick=()=>{if(CLOUD&&!admin)return;form();$("ed").classList.add("open")};
+$("edClose").onclick=()=>{$("ed").classList.remove("open");vis()};
+</script>
+</body>
+</html>
