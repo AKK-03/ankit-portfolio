@@ -137,7 +137,7 @@ D=D||JSON.parse(JSON.stringify(EMBED));
 const save=()=>{if(!CLOUD){try{localStorage.setItem("site-data",JSON.stringify(D))}catch(e){}}};
 if(CLOUD){
   sb=supabase.createClient(SBC.url,SBC.key);
-  sb.from("site").select("data").eq("id","main").maybeSingle().then(r=>{if(r.data&&!admin){try{D=JSON.parse(r.data.data);render()}catch(e){}}});
+  sb.from("portfolio_site").select("data").eq("id","main").maybeSingle().then(r=>{if(r.data&&!admin){try{D=JSON.parse(r.data.data);render()}catch(e){}}});
   sb.auth.onAuthStateChange((_e,ss)=>{
     const em=((ss&&ss.user&&ss.user.email)||"").toLowerCase();
     admin=(SBC.admins||[]).length?SBC.admins.map(x=>x.toLowerCase()).includes(em):!!em;
@@ -249,7 +249,7 @@ body.addEventListener("click",e=>{
   else if(a==="add"){const N={facts:["",""],links:{n:"New link",h:"",u:"https://",c:D.a},stats:{n:"",l:""},projects:{t:"New project",g:"Category",d:"",u:""},exp:{y:"Year",r:"Role",o:"Place",d:""}};(D[l]=D[l]||[]).push(N[l])}
   else if(a==="rm")D[l].splice(i,1);
   else if(a==="up"&&i>0)[D.links[i-1],D.links[i]]=[D.links[i],D.links[i-1]];
-  else if(a==="publish"){b.textContent="Publishing…";sb.from("site").upsert({id:"main",data:JSON.stringify(D)}).then(r=>{b.textContent=r.error?"Failed: "+r.error.message:"Published ✓"});return}
+  else if(a==="publish"){b.textContent="Publishing…";sb.from("portfolio_site").upsert({id:"main",data:JSON.stringify(D)}).then(r=>{b.textContent=r.error?"Failed: "+r.error.message:"Published ✓"});return}
   else if(a==="signout"){sb.auth.signOut();$("ed").classList.remove("open");return}
   else if(a==="download")return bake();
   else if(a==="export")return dl("site-data.json",JSON.stringify(D,null,2),"application/json");
