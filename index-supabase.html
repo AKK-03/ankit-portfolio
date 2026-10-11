@@ -72,6 +72,7 @@ section{scroll-margin-top:84px}
 #cf input,#cf textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);font:inherit}
 #cf button{justify-self:start;background:var(--a);color:#fff;border:0;border-radius:99px;padding:12px 26px;font:500 16px "DM Sans",sans-serif;cursor:pointer}
 .rv{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}.rv.in{opacity:1;transform:none}
+#af input{padding:8px 14px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--ink);font:inherit;font-size:14px;margin:4px}
 /* editor */
 #editBtn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:20;background:var(--a);color:#fff;border:0;border-radius:99px;padding:12px 20px;font:500 15px "DM Sans",sans-serif;cursor:pointer;box-shadow:0 10px 30px -8px var(--a)}
 #ed{position:fixed;top:0;right:0;bottom:0;width:min(430px,100%);background:var(--bg);color:var(--ink);border-left:1px solid var(--line);z-index:30;display:flex;flex-direction:column;transform:translateX(105%);transition:transform .25s;box-shadow:-20px 0 60px -20px rgba(0,0,0,.4)}
@@ -109,19 +110,18 @@ section{scroll-margin-top:84px}
   <section class="card" id="links"><h2>Find me online</h2><div class="links" data-r id="linkList"></div></section>
   <section class="card" id="contact"><h2>Let's talk</h2><p id="cnote" data-r></p>
     <form id="cf"><input name="nm" placeholder="Your name" required><input name="em" type="email" placeholder="Your email" required><textarea name="msg" rows="4" placeholder="Your message" required></textarea><button type="submit">Send message</button></form></section>
-  <footer><span data-r id="foot"></span><br><button class="pill" id="theme" type="button">Switch light / dark</button> <button class="pill" id="adminBtn" type="button" hidden>Admin login</button></footer>
+  <footer><span data-r id="foot"></span><br><button class="pill" id="theme" type="button">Switch light / dark</button> <form id="af" hidden style="margin-top:12px"><input name="e" type="email" placeholder="Admin email" required autocomplete="username"> <input name="p" type="password" placeholder="Password" required autocomplete="current-password"> <button class="pill" type="submit">Admin login</button></form></footer>
 </main>
 
-<!-- ===== ADMIN SETUP: paste your Firebase details here (see instructions) ===== -->
+<!-- ===== ADMIN SETUP: paste your Supabase details here ===== -->
 <script>
-window.FB={
-  apiKey:"", authDomain:"", projectId:"", appId:"",
-  admins:["you@gmail.com"]   /* emails allowed to edit */
+window.SB={
+  url:"https://ydeeqtusqjhdfedgxvmo.supabase.co",
+  key:"sb_publishable_vztnU6vyB7q96TfQShhVKw_qNq4lTLm",   /* publishable key only, never a secret key */
+  admins:[]   /* optional: admin emails. Empty = any signed-in user (safe when sign-ups are off and the SQL rules list your email) */
 };
 </script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script id="site-data" type="application/json">
 {"name":"Your Name","tagline":"Designer, developer and curious human based in Delhi.","photo":"","about":"Write two or three friendly sentences about who you are and what you care about.\n\nAdd what you are working on now, or what people can contact you for.","facts":[["Location","Delhi, India"],["Work","Your job or studies"],["Email","you@example.com"],["Languages","English, Hindi"]],"skills":"Photography, Web design, Writing, Travel","links":[{"n":"Instagram","h":"@yourhandle","u":"https://instagram.com/yourhandle","c":"#e1306c"},{"n":"LinkedIn","h":"Your Name","u":"https://linkedin.com/in/yourname","c":"#0a66c2"},{"n":"GitHub","h":"yourhandle","u":"https://github.com/yourhandle","c":"#24292f"},{"n":"X","h":"@yourhandle","u":"https://x.com/yourhandle","c":"#111111"},{"n":"YouTube","h":"Your channel","u":"https://youtube.com/@yourhandle","c":"#e62117"},{"n":"Email","h":"you@example.com","u":"mailto:you@example.com","c":"#6d5bff"}],"a":"#6d5bff","b":"#ff7ab6","status":"Open to new opportunities","portfolio":"https://example.com","email":"you@example.com","note":"Have a project in mind, or just want to say hi? Send me a message.","stats":[{"n":"5+","l":"Years of experience"},{"n":"40","l":"Projects completed"},{"n":"12","l":"Happy clients"}],"projects":[{"t":"Project one","g":"Web design","d":"A short line about what you built and the result.","u":"https://example.com"},{"t":"Project two","g":"Photography","d":"Describe the idea, your role and the outcome.","u":"https://example.com"},{"t":"Project three","g":"Writing","d":"Add a link so visitors can see the full work.","u":"https://example.com"}],"exp":[{"y":"2024 – Now","r":"Your role","o":"Company or studio","d":"What you do and what you are proud of."},{"y":"2021 – 2024","r":"Previous role","o":"Company name","d":"One line about the work and what you learned."},{"y":"2017 – 2021","r":"Your degree","o":"College or university","d":"Subject, achievements or activities."}],"hideEdit":false}
 </script>
@@ -130,18 +130,19 @@ window.FB={
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const EMBED=JSON.parse($("site-data").textContent);
-const FBC=window.FB||{},CLOUD=!!FBC.apiKey&&typeof firebase!=="undefined";
-let D=null,db,admin=false;
+const SBC=window.SB||{},CLOUD=!!SBC.url&&!!SBC.key&&typeof supabase!=="undefined";
+let D=null,sb,admin=false;
 if(!CLOUD){try{D=JSON.parse(localStorage.getItem("site-data")||"null")}catch(e){}}
 D=D||JSON.parse(JSON.stringify(EMBED));
 const save=()=>{if(!CLOUD){try{localStorage.setItem("site-data",JSON.stringify(D))}catch(e){}}};
 if(CLOUD){
-  firebase.initializeApp(FBC);db=firebase.firestore();
-  db.doc("site/main").get().then(s=>{if(s.exists&&!admin){try{D=JSON.parse(s.data().json);render()}catch(e){}}}).catch(()=>{});
-  firebase.auth().onAuthStateChanged(u=>{
-    admin=!!u&&(FBC.admins||[]).map(x=>x.toLowerCase()).includes((u.email||"").toLowerCase());
-    if(u&&!admin){firebase.auth().signOut();alert("This account is not an admin.")}
-    vis();
+  sb=supabase.createClient(SBC.url,SBC.key);
+  sb.from("site").select("data").eq("id","main").maybeSingle().then(r=>{if(r.data&&!admin){try{D=JSON.parse(r.data.data);render()}catch(e){}}});
+  sb.auth.onAuthStateChange((_e,ss)=>{
+    const em=((ss&&ss.user&&ss.user.email)||"").toLowerCase();
+    admin=(SBC.admins||[]).length?SBC.admins.map(x=>x.toLowerCase()).includes(em):!!em;
+    if(ss&&!admin){sb.auth.signOut();alert("This account is not an admin.")}
+    setTimeout(vis,0);
   });
 }
 
@@ -248,8 +249,8 @@ body.addEventListener("click",e=>{
   else if(a==="add"){const N={facts:["",""],links:{n:"New link",h:"",u:"https://",c:D.a},stats:{n:"",l:""},projects:{t:"New project",g:"Category",d:"",u:""},exp:{y:"Year",r:"Role",o:"Place",d:""}};(D[l]=D[l]||[]).push(N[l])}
   else if(a==="rm")D[l].splice(i,1);
   else if(a==="up"&&i>0)[D.links[i-1],D.links[i]]=[D.links[i],D.links[i-1]];
-  else if(a==="publish"){b.textContent="Publishing…";db.doc("site/main").set({json:JSON.stringify(D)}).then(()=>{b.textContent="Published ✓"}).catch(x=>{b.textContent="Failed: "+(x.code||"error")});return}
-  else if(a==="signout"){firebase.auth().signOut();$("ed").classList.remove("open");return}
+  else if(a==="publish"){b.textContent="Publishing…";sb.from("site").upsert({id:"main",data:JSON.stringify(D)}).then(r=>{b.textContent=r.error?"Failed: "+r.error.message:"Published ✓"});return}
+  else if(a==="signout"){sb.auth.signOut();$("ed").classList.remove("open");return}
   else if(a==="download")return bake();
   else if(a==="export")return dl("site-data.json",JSON.stringify(D,null,2),"application/json");
   else if(a==="import")return $("imp").click();
@@ -259,12 +260,13 @@ body.addEventListener("click",e=>{
 const LOCALHOST=["","localhost","127.0.0.1"].includes(location.hostname);
 const vis=()=>{
   $("editBtn").hidden=CLOUD?!admin:!(LOCALHOST&&location.hash==="#edit");
-  $("adminBtn").hidden=!(CLOUD&&!admin&&location.hash==="#admin");
+  $("af").hidden=!(CLOUD&&!admin&&location.hash==="#admin");
+  if(!CLOUD&&location.hash==="#admin"&&!LOCALHOST)$("foot").textContent="Admin login is not set up: the Supabase details are missing in this file, or Supabase failed to load.";
 };
 $("cf").onsubmit=e=>{e.preventDefault();const f=e.target;location.href="mailto:"+D.email+"?subject="+encodeURIComponent("Message from "+f.nm.value)+"&body="+encodeURIComponent(f.msg.value+"\n\n— "+f.nm.value+" ("+f.em.value+")")};
 const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}}),{threshold:.08});
 document.querySelectorAll(".card").forEach(c=>{c.classList.add("rv");io.observe(c)});
-$("adminBtn").onclick=()=>firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(x=>alert("Sign-in failed: "+(x.code||x.message)));
+$("af").onsubmit=async e=>{e.preventDefault();const f=e.target;const r=await sb.auth.signInWithPassword({email:f.e.value,password:f.p.value});if(r.error)alert("Login failed: "+r.error.message)};
 vis();addEventListener("hashchange",vis);
 $("editBtn").onclick=()=>{if(CLOUD&&!admin)return;form();$("ed").classList.add("open")};
 $("edClose").onclick=()=>{$("ed").classList.remove("open");vis()};
