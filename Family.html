@@ -67,7 +67,7 @@ button{border-radius:12px;min-height:44px;background:linear-gradient(135deg,#087
 <div class="full"><div class="title">Shift — select multiple</div><details class="ms"><summary><span class="msLabel">Select shift</span></summary><div class="msPanel"><div class="msTools"><button type="button" class="secondary" data-act="all">Select all</button><button type="button" class="secondary" data-act="none">Clear</button></div><div class="msList" id="shift"><label class="opt"><input type="checkbox" value="morning" checked>Morning</label><label class="opt"><input type="checkbox" value="evening">Evening</label><label class="opt"><input type="checkbox" value="night">Night</label></div></div></details><div class="chips msChips"></div></div>
 </div></section><section data-admin-target="actionsSection"><div class="actions"><button id="check" class="secondary" type="button">Check Family Service</button><button id="save" type="submit">Save my reminder</button></div><div id="msg" class="msg" role="status"></div></section></form></div></div>
 <script src="./cms-config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
-const FAMILY_SENDER_URL=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'https://script.google.com/macros/s/AKfycbzuByGQzLkLBhpSa3IvUELyfrLxfi6URoR_z4dBsZl1aAafuk5w_Yyg-H1lZ4RQBdir/exec';
+const FAMILY_SENDER_URL=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'';
 const $=id=>document.getElementById(id),msg=(t,c='info')=>{$('msg').className='msg show '+c;$('msg').textContent=t},ck=id=>[...$(id).querySelectorAll('input:checked')].map(x=>x.value);
 const vals={role:[],location:[]}, times=[];
 let _db;function db(){if(!window.PORTFOLIO_CMS?.url||!window.PORTFOLIO_CMS?.anonKey)throw Error('Supabase config was not found. Check cms-config.js.');return _db||(_db=window.supabase.createClient(window.PORTFOLIO_CMS.url,window.PORTFOLIO_CMS.anonKey))}
@@ -228,7 +228,7 @@ msg('✓ Reminder saved successfully.'+(data&&data!=='saved'?'\nReference: '+dat
 })();
 </script><script>
 /* Page switch (Admin > Pages). Fails open: if the check cannot be made, the page stays usable. */
-(function(){var URL_=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'https://script.google.com/macros/s/AKfycbzuByGQzLkLBhpSa3IvUELyfrLxfi6URoR_z4dBsZl1aAafuk5w_Yyg-H1lZ4RQBdir/exec';
+(function(){var URL_=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'';
 fetch(URL_+'?action=page_status&page=family&ts='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){
  if(!d||d.enabled!==false)return;
  var o=document.createElement('div');o.id='pageOff';o.setAttribute('role','alert');

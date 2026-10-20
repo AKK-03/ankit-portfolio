@@ -192,7 +192,7 @@ function reminderKey(r){return r.channel+':'+String(r.address||'').trim().toLowe
 function recipientSnapshot(snapshot,r){var copy=Object.assign(JSON.parse(JSON.stringify(D)),JSON.parse(JSON.stringify(snapshot)));copy.recipients=[JSON.parse(JSON.stringify(r))];copy.email=r.channel==='email'?r.address:'';copy.wa=r.channel==='whatsapp'?r.address:'';copy.groups=r.channel==='whatsapp_group'?[r.address]:[];return copy}
 function quickFillHistory(){var history=[];try{var raw=JSON.parse(L.getItem('jr_quickfill_history')||'null');if(Array.isArray(raw))history=raw;else{var old=JSON.parse(L.getItem('jr_quickfill')||'null');if(old)history=[{snapshot:old,savedAt:null}]}}catch(e){}var byRecipient=new Map();history.forEach(function(entry){if(!entry||!entry.snapshot)return;var recipients=entry.snapshot.recipients||[];if(!recipients.length){recipients=emails(entry.snapshot.email||'').map(function(address){return {channel:'email',address:address,enabled:true,mode:'all',roles:[]}}).concat(mobiles(entry.snapshot.wa||'').map(function(address){return {channel:'whatsapp',address:address,enabled:true,mode:'all',roles:[]}}))}recipients.forEach(function(r){if(!r.address)return;var key=reminderKey(r),previous=byRecipient.get(key);if(!previous||String(entry.savedAt||'')>=String(previous.savedAt||''))byRecipient.set(key,{id:key,savedAt:entry.savedAt||null,snapshot:recipientSnapshot(entry.snapshot,r)})})});var result=Array.from(byRecipient.values());L.setItem('jr_quickfill_history',JSON.stringify(result));return result}
 
-const DEFAULT_API=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'https://script.google.com/macros/s/AKfycbzuByGQzLkLBhpSa3IvUELyfrLxfi6URoR_z4dBsZl1aAafuk5w_Yyg-H1lZ4RQBdir/exec';
+const DEFAULT_API=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'';
 function jobDbApi(){var u=($('url')&&$('url').value.trim())||DEFAULT_API;return /^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(u)?u:DEFAULT_API}
 let dbProfiles=[];
 function jobDbToken(){return ($('tok')&&$('tok').value)||L.getItem('jr_tok')||''}
@@ -405,7 +405,7 @@ var ap=document.getElementById('app');new MutationObserver(function(){if(!ap.hid
 </script>
 <script>
 /* Page switch (Admin > Pages). Fails open: if the check cannot be made, the page stays usable. */
-(function(){var URL_=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'https://script.google.com/macros/s/AKfycbzuByGQzLkLBhpSa3IvUELyfrLxfi6URoR_z4dBsZl1aAafuk5w_Yyg-H1lZ4RQBdir/exec';try{if(typeof FAMILY_SENDER_URL==='string'&&FAMILY_SENDER_URL)URL_=FAMILY_SENDER_URL}catch(e){}
+(function(){var URL_=(window.PORTFOLIO_CMS&&window.PORTFOLIO_CMS.apiUrl)||window.CAREERPULSE_API||'';try{if(typeof FAMILY_SENDER_URL==='string'&&FAMILY_SENDER_URL)URL_=FAMILY_SENDER_URL}catch(e){}
 fetch(URL_+'?action=page_status&page=jobs&ts='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){
  if(!d||d.enabled!==false)return;
  var o=document.createElement('div');o.id='pageOff';o.setAttribute('role','alert');

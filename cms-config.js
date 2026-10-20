@@ -6,5 +6,5 @@ window.PORTFOLIO_CMS = {
 
   /* CareerPulse Apps Script backend (Admin, Jobs and Family pages all read this).
      After a "New deployment", paste the new /exec URL here. Nothing else to edit. */
-  apiUrl: 'https://script.google.com/macros/s/AKfycbwUxnItxWvnW5cxvq6e1oxi_0Rbr-w7BADivzQp-0GHttL7SA9YYRoZTeFGovmvYn4y/exec'
+  apiUrl: 'https://script.google.com/macros/s/AKfycbxAI79njBkBJswbLQfGW1R2OSQJWOa_N8VUlh0ExR0pubNRWz7S6sevJBKUF6D0gTAg/exec'
 };

@@ -735,7 +735,7 @@ function liveUrl_() { try { var u = ScriptApp.getService().getUrl() || ''; retur
    Email links now always use DEFAULT_WEBAPP_URL_ (or a manually set WEBAPP_URL property). */
 function rememberUrl_() { /* intentionally does nothing */ }
 function clearUrl() { P.deleteProperty('WEBAPP_URL'); Logger.log('WEBAPP_URL cleared. E-mail links now use: ' + webAppUrl_()); }
-var DEFAULT_WEBAPP_URL_ = 'https://script.google.com/macros/s/AKfycbzuByGQzLkLBhpSa3IvUELyfrLxfi6URoR_z4dBsZl1aAafuk5w_Yyg-H1lZ4RQBdir/exec';
+var DEFAULT_WEBAPP_URL_ = 'https://script.google.com/macros/s/AKfycbwYwROWcenj0XRFLa26D5xK4-O4tLeruhkk_i-dJMD3MqvxFLzmIfBCvAoJwtvldekc/exec';
 /* Public /exec URL used inside e-mail links. Optional script property WEBAPP_URL overrides it.
    (ScriptApp.getService().getUrl() can return a /dev URL when called from a trigger, which broke the links.) */
 function webAppUrl_() {
