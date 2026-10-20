@@ -731,15 +731,17 @@ function mailTemplates_(auth){portalRequireAdmin_(auth);return {ok:true,jobs:mai
 /* The URL the current request arrived on. Saved automatically so e-mail buttons always use the newest deployment
    (no more editing DEFAULT_WEBAPP_URL_ after a new deployment). */
 function liveUrl_() { try { var u = ScriptApp.getService().getUrl() || ''; return /\/exec$/.test(u) ? u : ''; } catch (e) { return ''; } }
-function rememberUrl_() { try { var u = liveUrl_(); if (u && g('WEBAPP_URL', '') !== u) P.setProperty('WEBAPP_URL', u); } catch (e) {} }
+/* Disabled: ScriptApp.getService().getUrl() can return a different (newer/dead) deployment URL, which overwrote WEBAPP_URL and broke the e-mail buttons.
+   Email links now always use DEFAULT_WEBAPP_URL_ (or a manually set WEBAPP_URL property). */
+function rememberUrl_() { /* intentionally does nothing */ }
+function clearUrl() { P.deleteProperty('WEBAPP_URL'); Logger.log('WEBAPP_URL cleared. E-mail links now use: ' + webAppUrl_()); }
 var DEFAULT_WEBAPP_URL_ = 'https://script.google.com/macros/s/AKfycbwx3QFZKcyvzKzXRca_ms_g7l4rj-G45VvmdMq9-qY13BQ2fJGbXGofJeei5pqDtld3/exec';
 /* Public /exec URL used inside e-mail links. Optional script property WEBAPP_URL overrides it.
    (ScriptApp.getService().getUrl() can return a /dev URL when called from a trigger, which broke the links.) */
 function webAppUrl_() {
-  var u = g('WEBAPP_URL', '').trim();
-  if (/^https:\/\/script\.google\.com\/.+\/exec$/.test(u)) return u;
-  try { u = ScriptApp.getService().getUrl() || ''; } catch (e) { u = ''; }
-  return /\/exec$/.test(u) ? u : DEFAULT_WEBAPP_URL_;
+  var u = g('WEBAPP_URL', '').trim();   // optional manual override only
+  if (/^https:\/\/script\.google\.com\/macros\/s\/[^\/]+\/exec$/.test(u)) return u;
+  return DEFAULT_WEBAPP_URL_;
 }
 function safeUrl_(u) { u = String(u || ''); return familyHtml_(/^https?:\/\//i.test(u) ? u : '#'); }
 
