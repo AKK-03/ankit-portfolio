@@ -739,9 +739,17 @@ var DEFAULT_WEBAPP_URL_ = 'https://script.google.com/macros/s/AKfycbwYwROWcenj0X
 /* Public /exec URL used inside e-mail links. Optional script property WEBAPP_URL overrides it.
    (ScriptApp.getService().getUrl() can return a /dev URL when called from a trigger, which broke the links.) */
 function webAppUrl_() {
-  var u = g('WEBAPP_URL', '').trim();   // optional manual override only
-  if (/^https:\/\/script\.google\.com\/macros\/s\/[^\/]+\/exec$/.test(u)) return u;
+  // Always the constant above. The WEBAPP_URL property is ignored so a stale saved value can never break e-mail buttons.
   return DEFAULT_WEBAPP_URL_;
+}
+/* Run once from the editor: shows exactly which URL the e-mail buttons use, and whether that deployment answers. */
+function debugMailLinks() {
+  Logger.log('Stale WEBAPP_URL property (ignored): ' + g('WEBAPP_URL', '(empty)'));
+  Logger.log('URL used in e-mail buttons: ' + webAppUrl_());
+  var c = receiverMailControls_('jobs', 'test@example.com', '');
+  Logger.log('Sample Pause link: ' + c.text.split('\n')[1]);
+  var r = UrlFetchApp.fetch(webAppUrl_() + '?action=deployment_check', { muteHttpExceptions: true, followRedirects: true });
+  Logger.log('deployment_check: HTTP ' + r.getResponseCode() + ' ' + r.getContentText().slice(0, 300));
 }
 function safeUrl_(u) { u = String(u || ''); return familyHtml_(/^https?:\/\//i.test(u) ? u : '#'); }
 
